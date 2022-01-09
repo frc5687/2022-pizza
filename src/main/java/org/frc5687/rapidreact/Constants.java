@@ -89,4 +89,9 @@ public class Constants {
         public static final double SENSOR_WHEEL_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double CONTROL_EFFORT = VOLTAGE;
     }
+
+    public class Jetson{
+        public static final int PORT = 1234;
+        public static final String LOCAL_HOST = "127.0.0.1";
+}
 }
