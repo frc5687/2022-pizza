@@ -50,6 +50,7 @@ public class Jetson extends Thread{
         //Start to listen from the Jetson
         listener = new Listener();
         listener.run();
+
     }
 
     public Pose2d getPose(){
@@ -100,6 +101,7 @@ public class Jetson extends Thread{
                     packet = packet.replace(")", "");
                     String[] rData = packet.split(",");
                     estTheta = Double.parseDouble(rData[2]);
+                    //Switch to metric
                     SmartDashboard.putString("Rotation Y: ", rData[0]);
                     SmartDashboard.putString("Rotation Z: ", rData[1]);
                     SmartDashboard.putString("Rotation X: ", rData[2]);
