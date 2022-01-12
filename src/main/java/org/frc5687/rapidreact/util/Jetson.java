@@ -6,8 +6,14 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.frc5687.rapidreact.Constants;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +29,7 @@ public class Jetson extends Thread{
     private DriverInterface driver;
     private Helpers helpers;
     private boolean end = false;
+    private Matrix<N3, N1> maPose;
     //Variables to stroe the robots position
     private double estX = 0.0;
     private double estY = 0.0;
@@ -49,6 +56,7 @@ public class Jetson extends Thread{
         //Get the robots observed pose from V-SLAM
         Rotation2d robotRot = new Rotation2d(estTheta);
         Pose2d robotPose = new Pose2d(estX, estY, robotRot);
+        maPose = VecBuilder.fill(estX, estY, estTheta);
         return robotPose;
     }
 
