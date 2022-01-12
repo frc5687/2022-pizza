@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import org.frc5687.rapidreact.Constants;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,17 +34,19 @@ public class Jetson extends Thread{
     }
 
     public void startListening(){
+        //Set up the server socket to read form the Jetson
         try {
             serverSocket = new ServerSocket(Constants.Jetson.PORT);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        //Start to listen from the Jetson
         listener = new Listener();
         listener.run();
     }
 
     public Pose2d getPose(){
+        //Get the robots observed pose from V-SLAM
         Rotation2d robotRot = new Rotation2d(estTheta);
         Pose2d robotPose = new Pose2d(estX, estY, robotRot);
         return robotPose;
@@ -58,11 +58,13 @@ public class Jetson extends Thread{
     }
 
     public double[] getDataArray(){
+        //Don't use
         double[] hold = {estX, estY, estTheta};
         return hold;
     }
 
     public void proccessPacket(String packet){
+        //Process the data packet from the Jetson and pull out the useful stuff
         getPose();
         //{x, y, theta}
         try{
@@ -114,14 +116,6 @@ public class Jetson extends Thread{
             socket.close();
             serverSocket.close();
         }catch(Exception e){
-
-        }
-    }
-
-    public void periodic(){
-        if(isServerRunning() == true){
-            getPose();
-        }else{
 
         }
     }
