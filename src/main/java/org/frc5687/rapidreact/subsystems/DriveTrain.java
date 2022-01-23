@@ -244,6 +244,10 @@ public class DriveTrain extends OutliersSubsystem {
         return _odomerty.getPoseMeters();
     }
 
+    public void resetOdometry(Pose2d position) {
+        _odomerty.resetPosition(position, getHeading());
+    }
+
     public void startModules() {
         _frontRight.start();
         _frontLeft.start();

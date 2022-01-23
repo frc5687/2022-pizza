@@ -3,6 +3,9 @@ package org.frc5687.rapidreact;
 
 import static org.frc5687.rapidreact.util.Helpers.*;
 
+import org.frc5687.rapidreact.commands.DriveTrajectory;
+
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -54,7 +57,9 @@ public class OI extends OutliersProxy {
                 new AxisButton(_driverGamepad, Gamepad.Axes.RIGHT_TRIGGER.getNumber(), 0.2);
     }
 
-    public void initializeButtons(DriveTrain driveTrain) {}
+    public void initializeButtons(DriveTrain driveTrain, Trajectory trajectory) {
+        _driverAButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
+    }
 
     public double getDriveY() {
         //        yIn = getSpeedFromAxis(_leftJoystick, _leftJoystick.getYChannel());
