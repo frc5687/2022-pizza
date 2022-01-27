@@ -1,21 +1,20 @@
 package org.frc5687.rapidreact.commands.auto;
 
 import org.frc5687.rapidreact.Constants.DriveTrain;
-import org.frc5687.rapidreact.Constants;
 import org.frc5687.rapidreact.commands.DriveTrajectory;
 
 import edu.wpi.first.math.trajectory.Trajectory;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-
-public class ZeroBallAuto extends SequentialCommandGroup{
-    public ZeroBallAuto(
+public class OneBallAuto extends SequentialCommandGroup{
+    public OneBallAuto (
         DriveTrain driveTrain,
         Trajectory trajectory
     ) {
         addCommands(
             new DriveTrajectory(driveTrain, trajectory)
+            //shoot
          );
     }
 }
