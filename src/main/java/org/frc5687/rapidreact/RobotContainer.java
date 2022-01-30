@@ -40,7 +40,8 @@ public class RobotContainer extends OutliersContainer {
         //_imu = new AHRS(SPI.Port.kMXP, (byte) 200);
         //_driveTrain = new DriveTrain(this, _oi, _imu);
 
-        Trajectory zeroBall = getTrajectory("output/ZeroBall/bottom1ballT.wpilib.json");
+        Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
+        metric("initial", zeroBall.getInitialPose().toString());
 
         //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
         //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);

@@ -7,13 +7,14 @@ import org.frc5687.rapidreact.util.RotarySwitch;
 public class AutoChooser extends OutliersProxy {
     private RotarySwitch _autoSwitch;
     private RotarySwitch _positionSwitch;
-    private final double TOLERANCE = 0.2;
+    private final double TOLERANCE = 0.05;
     private static MetricTracker _metric;
 
     public AutoChooser() {
-        _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-                0.7, 0.8, 0.9, 1, 1.1, 1.2);        
-        _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH, TOLERANCE, 0.25, 0.5, 0.75, 1);
+        _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.07, 0.14, 0.23, 0.3, 0.38, 0.46,
+                0.54, 0.62, 0.69, 0.77, 0.85, 0.93);        
+        _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH, TOLERANCE, 0.07, 0.15, 0.21, 0.3, 0.38, 0.46,
+                0.54, 0.61, 0.69, 0.76, 0.83, 0.93);
 
 
         // _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH,

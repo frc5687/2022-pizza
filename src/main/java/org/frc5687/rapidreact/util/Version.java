@@ -7,6 +7,6 @@ package org.frc5687.rapidreact.util;
 
 public class Version {
     public static final String BRANCH = "Auto/#14-ZeroBall";
-    public static final String REVISION = "00c364f";
+    public static final String REVISION = "ae93198";
     public static final String MODIFIED = " *";
 }
