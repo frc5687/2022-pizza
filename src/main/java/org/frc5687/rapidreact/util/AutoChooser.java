@@ -10,16 +10,12 @@ public class AutoChooser extends OutliersProxy {
     private final double TOLERANCE = 0.2;
     private static MetricTracker _metric;
 
-    public PositionChooser(OutliersContainer.IdentityMode identityMode) {
-        _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH, TOLERANCE, 0.25, 0.5, 0.75, 1);
-        // _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH,
-        // Constants.RotarySwitch.TOLERANCE, .09, .17, .23, .31, .5, .59, .68, .75, .82,
-        // .91, .96);
-    }
-
-    public AutoChooser(OutliersContainer.IdentityMode identityMode) {
+    public AutoChooser() {
         _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.077, 0.154, 0.231, 0.308, 0.385, 0.462,
-                0.538, 0.615, 0.693, 0.770, 0.847, 0.925);
+                0.538, 0.615, 0.693, 0.770, 0.847, 0.925);        
+        _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH, TOLERANCE, 0.25, 0.5, 0.75, 1);
+
+
         // _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH,
         // Constants.RotarySwitch.TOLERANCE, .09, .17, .23, .31, .5, .59, .68, .75, .82,
         // .91, .96);
@@ -33,12 +29,12 @@ public class AutoChooser extends OutliersProxy {
         try {
             return Mode.values()[raw];
         } catch (Exception e) {
-            return Mode.StayPut;
+            return Mode.ZeroBall;
         }
     }
 
     public Position getSelectedPosition() {
-        int raw = _autoSwitch.get();
+        int raw = _positionSwitch.get();
         if (raw >= Position.values().length) {
             raw = 0;
         }
@@ -59,8 +55,8 @@ public class AutoChooser extends OutliersProxy {
     }
 
     public enum Position {
-        LeftOneBall(0, "Left One-Ball Tarmac"), RightOneBall(1, "Right One-Ball Tarmac"), 
-        LeftTwoBall(2, "Left Two-Ball Tarmac"), RightTwoBall(3, "Right Two-Ball Tarmac");
+        LeftOneBall(0, "Left1ballT"), RightOneBall(1, "Right1ballT"), 
+        LeftTwoBall(2, "Left2ballT"), RightTwoBall(3, "Right2ballT");
 
         private String _label;
         private int _value;
@@ -80,10 +76,7 @@ public class AutoChooser extends OutliersProxy {
         }
     }
     public enum Mode {
-        StayPut(0, "Stay Put"), ShootAndGo(1, "Shoot and Cross"), ShootAndNearTrench(2, "Shoot and Near Trench"),
-        ShootAndFarTrench(3, "Shoot and Far Trench"), Generator2NearTrench(4, "Generator 2 and Near Trench"),
-        Generator2FarTrench(5, "Generator 2 and Far Trench"), SnipeAndNearTrench(6, "Snipe and Near Trench"),
-        StealTenBall(7, "Steal and Generator Balls");
+        ZeroBall(0, "ZB"), OneBall(1, "ZB");
 
         private String _label;
         private int _value;
@@ -101,6 +94,12 @@ public class AutoChooser extends OutliersProxy {
         public String getLabel() {
             return _label;
         }
+    }
+
+    public String getPath(Mode mode, Position position) {
+        String pathMode = mode.getLabel();
+        String pathPosition = position.getLabel();
+        return pathMode + pathPosition + "wpilib.json";
     }
 }
 

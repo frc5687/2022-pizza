@@ -3,11 +3,14 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frc5687.rapidreact.commands.Drive;
+import org.frc5687.rapidreact.commands.DriveTrajectory;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
+import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -19,6 +22,7 @@ import java.nio.file.Path;
 public class RobotContainer extends OutliersContainer {
 
     private OI _oi;
+    private AutoChooser _autoChooser;
     private AHRS _imu;
 
     private Robot _robot;
@@ -31,6 +35,7 @@ public class RobotContainer extends OutliersContainer {
 
     public void init() {
         _oi = new OI();
+        _autoChooser = new AutoChooser();
         //Config the NavX
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200);
         _driveTrain = new DriveTrain(this, _oi, _imu);
@@ -89,6 +94,32 @@ public class RobotContainer extends OutliersContainer {
             error("Unable to open trajectory: " + trajectoryJSON + ex.getMessage());
         }
         return trajectory;
+    }
+
+    public Command getAutonomousCommand() {
+        AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
+        AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
+        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
+        return new DriveTrajectory(_driveTrain, trajectory);
+        // switch (autoMode) {
+        //     case ZeroBall:
+        //         switch (autoPosition) {
+        //             case LeftOneBall:
+        //                 return new DriveTrajectory(
+        //                     _driveTrain,
+        //                     getTrajectory(
+        //                         _autoChooser.getPath(AutoChooser.Mode.ZeroBall,
+        //                          AutoChooser.Position.LeftOneBall))
+        //                     );
+        //             case RightOneBall:
+        //                 return new DriveTrajectory(
+        //                     _driveTrain,
+        //                     getTrajectory(
+        //                         _autoChooser.getPath(AutoChooser.Mode.ZeroBall,
+        //                          AutoChooser.Position.RightOneBall))
+        //                 );
+        //         }
+        // }
     }
 
     @Override
