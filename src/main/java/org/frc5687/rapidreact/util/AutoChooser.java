@@ -11,8 +11,8 @@ public class AutoChooser extends OutliersProxy {
     private static MetricTracker _metric;
 
     public AutoChooser() {
-        _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.077, 0.154, 0.231, 0.308, 0.385, 0.462,
-                0.538, 0.615, 0.693, 0.770, 0.847, 0.925);        
+        _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+                0.7, 0.8, 0.9, 1, 1.1, 1.2);        
         _positionSwitch = new RotarySwitch(RobotMap.Analog.POSITION_SWITCH, TOLERANCE, 0.25, 0.5, 0.75, 1);
 
 

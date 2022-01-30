@@ -37,16 +37,16 @@ public class RobotContainer extends OutliersContainer {
         _oi = new OI();
         _autoChooser = new AutoChooser();
         //Config the NavX
-        _imu = new AHRS(SPI.Port.kMXP, (byte) 200);
-        _driveTrain = new DriveTrain(this, _oi, _imu);
+        //_imu = new AHRS(SPI.Port.kMXP, (byte) 200);
+        //_driveTrain = new DriveTrain(this, _oi, _imu);
 
         Trajectory zeroBall = getTrajectory("output/ZeroBall/bottom1ballT.wpilib.json");
 
-        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
-        _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
-        _driveTrain.resetOdometry(zeroBall.getInitialPose());
-        _oi.initializeButtons(_driveTrain, zeroBall);
-        _imu.reset();
+        //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
+        //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
+        //_driveTrain.resetOdometry(zeroBall.getInitialPose());
+        //_oi.initializeButtons(_driveTrain, zeroBall);
+        //_imu.reset();
 
     }
 
@@ -74,13 +74,13 @@ public class RobotContainer extends OutliersContainer {
         //Runs once during auto
     }
 
-    private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
+    /*private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
         if (subSystem == null || command == null) {
             return;
         }
         CommandScheduler s = CommandScheduler.getInstance();
         s.setDefaultCommand(subSystem, command);
-    }
+    }*/
 
     private Trajectory getTrajectory(String trajectoryJSON) {
         Trajectory trajectory = null;
@@ -96,11 +96,11 @@ public class RobotContainer extends OutliersContainer {
         return trajectory;
     }
 
-    public Command getAutonomousCommand() {
+    /*public Command getAutonomousCommand() {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
-        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
-        return new DriveTrajectory(_driveTrain, trajectory);
+        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));*/
+        //return new DriveTrajectory(_driveTrain, trajectory);
         // switch (autoMode) {
         //     case ZeroBall:
         //         switch (autoPosition) {
@@ -120,17 +120,18 @@ public class RobotContainer extends OutliersContainer {
         //                 );
         //         }
         // }
-    }
+    //}
 
     @Override
     public void updateDashboard() {
         //Updates the driver station
-        _driveTrain.updateDashboard();
+        //_driveTrain.updateDashboard();
+        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
     }
 
-    public void controllerPeriodic() {
+    /*public void controllerPeriodic() {
         if (_driveTrain != null) {
             _driveTrain.controllerPeriodic();
         }
-    }
+    }*/
 }
