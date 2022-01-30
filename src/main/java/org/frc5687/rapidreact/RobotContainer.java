@@ -40,7 +40,9 @@ public class RobotContainer extends OutliersContainer {
         //_imu = new AHRS(SPI.Port.kMXP, (byte) 200);
         //_driveTrain = new DriveTrain(this, _oi, _imu);
 
+        metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
         Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
+//        Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         metric("initial", zeroBall.getInitialPose().toString());
 
         //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
@@ -127,7 +129,8 @@ public class RobotContainer extends OutliersContainer {
     public void updateDashboard() {
         //Updates the driver station
         //_driveTrain.updateDashboard();
-        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
+//        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
+        _autoChooser.updateDashboard();
     }
 
     /*public void controllerPeriodic() {

@@ -8,7 +8,6 @@ public class AutoChooser extends OutliersProxy {
     private RotarySwitch _autoSwitch;
     private RotarySwitch _positionSwitch;
     private final double TOLERANCE = 0.05;
-    private static MetricTracker _metric;
 
     public AutoChooser() {
         _autoSwitch = new RotarySwitch(RobotMap.Analog.MODE_SWITCH, TOLERANCE, 0.07, 0.14, 0.23, 0.3, 0.38, 0.46,
@@ -65,7 +64,7 @@ public class AutoChooser extends OutliersProxy {
         Position(int value, String label) {
             _value = value;
             _label = label;
-            _metric.put("Position", label);
+//            _metric.put("Position", label);
         }
 
         public int getValue() {
@@ -85,7 +84,7 @@ public class AutoChooser extends OutliersProxy {
         Mode(int value, String label) {
             _value = value;
             _label = label;
-            _metric.put("Auto Mode", label);
+//            _metric.put("Auto Mode", label);
         }
 
         public int getValue() {
@@ -100,7 +99,7 @@ public class AutoChooser extends OutliersProxy {
     public String getPath(Mode mode, Position position) {
         String pathMode = mode.getLabel();
         String pathPosition = position.getLabel();
-        return pathMode + pathPosition + "wpilib.json";
+        return "output/" + pathMode + pathPosition + ".wpilib.json";
     }
 }
 
