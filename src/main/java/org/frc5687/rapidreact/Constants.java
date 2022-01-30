@@ -1,6 +1,12 @@
 /* Team 5687 (C)2020-2022 */
 package org.frc5687.rapidreact;
 
+
+import java.util.Arrays;
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -88,11 +94,34 @@ public class Constants {
         public static final double SENSOR_WHEEL_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double CONTROL_EFFORT = VOLTAGE;
     }
-
-    //Here's the framework for an auto in waypoints. Do we need this?
-   /* public static class ZeroBallAuto {
-        public static final List<Pose2d> waypoints =
-                Arrays.asList(
-                    )
-   }*/
+    public static class AutoPath {
+        public static class ZBLeft1ballT {
+                public static final List<Pose2d> waypoints =
+                     Arrays.asList(
+                             new Pose2d (9.9, 2.48, Rotation2d.fromDegrees(-43)),
+                             new Pose2d (10.8, 1.65, Rotation2d.fromDegrees(-46)));
+                        
+        }
+        public static class ZBRight1ballT {
+                public static final List<Pose2d> waypoints =
+                     Arrays.asList(
+                             new Pose2d (10.5, 4.1, Rotation2d.fromDegrees(0)),
+                             new Pose2d (12.2, 4.1, Rotation2d.fromDegrees(-46)));
+                        
+        }
+        public static class ZBLeft2ballT {
+                public static final List<Pose2d> waypoints =
+                     Arrays.asList(
+                             new Pose2d (9.6, 5.9, Rotation2d.fromDegrees(44.3)),
+                             new Pose2d (10.6, 6.9, Rotation2d.fromDegrees(46.7)));
+                        
+        }
+        public static class ZBRight2ballT {
+                public static final List<Pose2d> waypoints =
+                     Arrays.asList(
+                             new Pose2d (8.3, 6, Rotation2d.fromDegrees(90)),
+                             new Pose2d (8.3, 7.4, Rotation2d.fromDegrees(90)));
+                        
+        }
+    }
 }

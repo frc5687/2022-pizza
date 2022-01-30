@@ -100,7 +100,7 @@ public class AutoChooser extends OutliersProxy {
     public String getPath(Mode mode, Position position) {
         String pathMode = mode.getLabel();
         String pathPosition = position.getLabel();
-        return pathMode + pathPosition + "wpilib.json";
+        return pathMode + pathPosition + ".wpilib.json";
     }
 }
 
