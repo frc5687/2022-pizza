@@ -15,11 +15,39 @@ import org.frc5687.rapidreact.util.*;
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
+ * 
+ * Note about overriding methods and annotations (e.g., @Override):
+ * 
+ * An instance method in a subclass with the same signature (name, plus the number and the type
+ * of its parameters) and return type as an instance method in the superclass overrides the
+ * superclass's method.
+ * 
+ * The ability of a subclass to override a method allows a class to inherit from a superclass whose
+ * behavior is"close enough" and then to modify behavior as needed. The overriding method has the
+ * same name, number and type of parameters, and return type as the method that it overrides.
+ * An overriding method can also return a subtype of the type returned by the overridden method.
+ * 
+ * When overriding a method, you might want to use the @Override annotation that instructs the
+ * compiler that you intend to override a method in the superclass. If, for some reason, the compiler
+ * detects that the method does not exist in one of the superclasses, then it will generate an error.
+ * 
+ * Annotations, a form of metadata, provide data about a program that is not part of the program
+ * itself.  Annotations have no direct effect on the operation of the code they annotate.
+ * 
+ * Annotations have a number of uses, among them:
+ *  - Information for the compiler — Annotations can be used by the compiler to detect errors
+ *    or suppress warnings.
+ *  - Compile-time and deployment-time processing — Software tools can process annotation information
+ *    to generate code, XML files, and so forth.
+ *  - Runtime processing — Some annotations are available to be examined at runtime.
+ * 
  */
 public class Robot extends OutliersRobot implements ILoggingSource {
 
+    // TODO: identityMode should be set in Constants file
     public static OutliersContainer.IdentityMode _identityMode =
             OutliersContainer.IdentityMode.competition;
+    // TODO: log levels should be set in Constants file
     private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.warn;
     private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
     private int _updateTick = 0;
@@ -32,8 +60,13 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     private double _time;
 
     /**
-     * This function is setRollerSpeed when the robot is first started up and should be used for any
-     * initialization code.
+     * TODO: fix robotInit comment
+     * 
+     * [This comment appears to be referencing a different version of this code]
+     * 
+     * This function is setRollerSpeed [what does this mean?] when the robot is first started up
+     * and should be used for any initialization code.
+     * 
      */
     @Override
     public void robotInit() {
@@ -53,31 +86,23 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         _timer = new Timer();
         _robotContainer.init();
 
-        // Periodically flushes metrics (might be good to configure enable/disable via USB config
-        // file)
+        // Periodically flushes metrics
+        // TODO: configure enable/disable via USB config file
         _time = _timer.get();
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
     /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-     * SmartDashboard integrated updating.
-     */
-    @Override
-    public void robotPeriodic() {
-        ourPeriodic();
-    }
-
-    /**
+     * TODO: fix autonomous mode init comment
+     * 
+     * [The comment below appears to be referencing a different version of this method.]
+     * 
      * This autonomous (along with the chooser code above) shows how to select between different
      * autonomous modes using the dashboard. The sendable chooser code works with the Java
      * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
      * uncomment the getString line to get the auto name from the text box below the Gyro
      *
-     * <p>You can add additional auto modes by adding additional comparisons to the switch structure
+     * You can add additional auto modes by adding additional comparisons to the switch structure
      * below with additional strings. If using the SendableChooser make sure to add them to the
      * chooser code above as well.
      */
@@ -90,6 +115,11 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         }
     }
 
+    /** Autonomous mode periodic */
+    @Override
+    public void autonomousPeriodic() {}
+
+    /** Teleoperator control mode initialization */
     public void teleopInit() {
         _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.teleopInit();
@@ -97,14 +127,16 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         // _limelight.disableLEDs();
     }
 
-    /** This function is called periodically during autonomous. */
-    @Override
-    public void autonomousPeriodic() {}
-
-    /** This function is called periodically during operator control. */
+    /** Teleoperator control mode periodic */
     @Override
     public void teleopPeriodic() {}
 
+    /** Our own method called periodically
+     * 
+     * TODO: when is Robot.ourPeriodic() called?
+     * TODO: why does ourPeriodic() call update()?
+     * 
+     */
     private void ourPeriodic() {
 
         // Example of starting a new row of metrics for all instrumented objects.
@@ -116,12 +148,15 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         updateDashboard();
     }
 
-    /** This function is called periodically during test mode. */
+    /** TODO: What about test mode initialization? */
+
+    /** Test mode periodic */
     @Override
     public void testPeriodic() {
         CommandScheduler.getInstance().run();
     }
 
+    /** Disabled mode initialization */
     @Override
     public void disabledInit() {
         // _limelight.disableLEDs();
@@ -131,12 +166,35 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         //        MetricTracker.flushAll();
     }
 
+    /** Disabled mode periodic */
     @Override
     public void disabledPeriodic() {
         super.disabledPeriodic();
         _robotContainer.disabledPeriodic();
     }
 
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for items like
+     * diagnostics that you want to run during disabled, autonomous, teleoperated and test.
+     *
+     * This runs after the mode-specific periodic functions, but before LiveWindow and
+     * SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        ourPeriodic();
+    }
+
+    /** TODO: why does ourPeriodic() call update()? 
+     * 
+     * This looks like a place to put code that should run during ourPeriodic(),
+     * but why not just put that code in ourPeriodic()?
+     * 
+    */
+    private void update() {}
+
+    // Updating dashboard is expensive. Increase TICKS_PER_UPDATE
+    // to throttle back how often this is done.
     public void updateDashboard() {
         _updateTick++;
         if (_updateTick >= Constants.TICKS_PER_UPDATE) {
@@ -145,6 +203,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         }
     }
 
+    // TODO: loadConfigFromUSB() should probably go in util
     private void loadConfigFromUSB() {
         String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
         try {
@@ -166,6 +225,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         }
     }
 
+    // TODO: processConfigLine() should probably go in util
     private void processConfigLine(String line) {
         try {
             if (line.startsWith("#")) {
@@ -194,6 +254,4 @@ public class Robot extends OutliersRobot implements ILoggingSource {
 
         }
     }
-
-    private void update() {}
 }
