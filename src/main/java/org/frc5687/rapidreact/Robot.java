@@ -11,10 +11,7 @@ import java.io.FileReader;
 import org.frc5687.rapidreact.util.*;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * See edu.wpi.first.wpilibj.IterativeRobotBase for the base class and methods documentation.
  * 
  * Note about overriding methods and annotations (e.g., @Override):
  * 
@@ -41,8 +38,24 @@ import org.frc5687.rapidreact.util.*;
  *    to generate code, XML files, and so forth.
  *  - Runtime processing — Some annotations are available to be examined at runtime.
  * 
+ * Note: unused variables in the class and methods below have been commented out
+ * 
  */
-public class Robot extends OutliersRobot implements ILoggingSource {
+
+/**
+ * Robot is responsible for control flow.
+ * 
+ * <p>Command-based is an declarative paradigm designed to minimize the amount of attention the user
+ * has to pay to explicit program control flow, so the Robot class of a command-based project should
+ * be mostly empty.
+ * 
+ * <p>The VM is configured to automatically run this class, and to call the methods corresponding to
+ * each mode, as described in the IterativeRobotBase documentation. If you change the name of this
+ * class or the package after creating this project, you must also update the build.gradle file in
+ * the project.
+ * 
+ */
+public class Robot extends OutliersRobot {
 
     // TODO: identityMode should be set in Constants file
     public static OutliersContainer.IdentityMode _identityMode =
@@ -53,20 +66,22 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     private int _updateTick = 0;
     private String _name;
     private RobotContainer _robotContainer;
-    private boolean _fmsConnected;
+    // private boolean _fmsConnected;
     private Command _autoCommand;
-    private Timer _timer;
-    private double _prevTime;
-    private double _time;
+    // private Timer _timer;
+    // private double _prevTime;
+    // private double _time;
+
+    /* ---- Init methods are called when the mode is entered --- */
 
     /**
-     * TODO: fix robotInit comment
-     * 
-     * [This comment appears to be referencing a different version of this code]
-     * 
-     * This function is setRollerSpeed [what does this mean?] when the robot is first started up
-     * and should be used for any initialization code.
-     * 
+     * Robot-wide initialization code
+     *
+     * <p>Called when the robot is first powered on. It will be called exactly one time.
+     *
+     * <p>Warning: the Driver Station "Robot Code" light and FMS "Robot Ready" indicators will be off
+     * until RobotInit() exits. Code in RobotInit() that waits for enable will cause the robot to
+     * never indicate that the code is ready, causing the robot to be bypassed in a match.
      */
     @Override
     public void robotInit() {
@@ -83,80 +98,21 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         info("Running commit " + Version.REVISION + " of branch " + Version.BRANCH);
 
         _robotContainer = new RobotContainer(this, _identityMode);
-        _timer = new Timer();
+        // _timer = new Timer();
         _robotContainer.init();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
-        _time = _timer.get();
+        // _time = _timer.get();
+        // TODO: fix resource leak on next line (Closeable value never closed)
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
     /**
-     * TODO: fix autonomous mode init comment
-     * 
-     * [The comment below appears to be referencing a different version of this method.]
-     * 
-     * This autonomous (along with the chooser code above) shows how to select between different
-     * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-     * uncomment the getString line to get the auto name from the text box below the Gyro
-     *
-     * You can add additional auto modes by adding additional comparisons to the switch structure
-     * below with additional strings. If using the SendableChooser make sure to add them to the
-     * chooser code above as well.
+    * Initialization code for disabled mode
+    *
+    * <p>Called each time the robot enters disabled mode.
      */
-    @Override
-    public void autonomousInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
-        _robotContainer.autonomousInit();
-        if (_autoCommand != null) {
-            _autoCommand.schedule();
-        }
-    }
-
-    /** Autonomous mode periodic */
-    @Override
-    public void autonomousPeriodic() {}
-
-    /** Teleoperator control mode initialization */
-    public void teleopInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
-        _robotContainer.teleopInit();
-
-        // _limelight.disableLEDs();
-    }
-
-    /** Teleoperator control mode periodic */
-    @Override
-    public void teleopPeriodic() {}
-
-    /** Our own method called periodically
-     * 
-     * TODO: when is Robot.ourPeriodic() called?
-     * TODO: why does ourPeriodic() call update()?
-     * 
-     */
-    private void ourPeriodic() {
-
-        // Example of starting a new row of metrics for all instrumented objects.
-        // MetricTracker.newMetricRowAll();
-        MetricTracker.newMetricRowAll();
-        //        _robotContainer.periodic();
-        CommandScheduler.getInstance().run();
-        update();
-        updateDashboard();
-    }
-
-    /** TODO: What about test mode initialization? */
-
-    /** Test mode periodic */
-    @Override
-    public void testPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
-
-    /** Disabled mode initialization */
     @Override
     public void disabledInit() {
         // _limelight.disableLEDs();
@@ -166,6 +122,48 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         //        MetricTracker.flushAll();
     }
 
+    /**
+     * Initialization code for autonomous mode
+     *
+     * <p>Called each time the robot enters autonomous mode.
+     */
+    @Override
+    public void autonomousInit() {
+        // _fmsConnected = DriverStation.isFMSAttached();
+        _robotContainer.autonomousInit();
+        if (_autoCommand != null) {
+            _autoCommand.schedule();
+        }
+    }
+
+    /** 
+     * Initialization code for teleop mode
+     *
+     * <p>Called each time the robot enters teleop mode.
+     */
+    public void teleopInit() {
+        // _fmsConnected = DriverStation.isFMSAttached();
+        _robotContainer.teleopInit();
+
+        // _limelight.disableLEDs();
+    }
+
+    /* ----------- Periodic code called on an interval --------------- */
+
+    /** Autonomous mode periodic */
+    @Override
+    public void autonomousPeriodic() {}
+
+    /** Teleoperator control mode periodic */
+    @Override
+    public void teleopPeriodic() {}
+
+    /** Test mode periodic */
+    @Override
+    public void testPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
+
     /** Disabled mode periodic */
     @Override
     public void disabledPeriodic() {
@@ -173,11 +171,30 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         _robotContainer.disabledPeriodic();
     }
 
+    /** Our own periodic method
+     * 
+     * <p>This is currently being called all the time by robotPeriodic().
+     * 
+     * <p>TODO: why create an ourPeriodic() method?
+     * TODO: why does ourPeriodic() call update()?
+     * 
+     */
+    private void ourPeriodic() {
+
+        // Example of starting a new row of metrics for all instrumented objects.
+        // MetricTracker.newMetricRowAll();
+        MetricTracker.newMetricRowAll();
+        // _robotContainer.periodic();
+        CommandScheduler.getInstance().run();
+        update();
+        updateDashboard();
+    }
+
     /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
+     * robotPeriodic is called every interval, no matter the mode. Use this for items like
      * diagnostics that you want to run during disabled, autonomous, teleoperated and test.
      *
-     * This runs after the mode-specific periodic functions, but before LiveWindow and
+     * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
     @Override
@@ -185,16 +202,28 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         ourPeriodic();
     }
 
-    /** TODO: why does ourPeriodic() call update()? 
+    /* ---- Exit methods are called when the mode is exited --- */
+
+    /* ----- Other methods ----- */
+
+    /**
+     * Looks like a placeholder method for periodic updates.
      * 
-     * This looks like a place to put code that should run during ourPeriodic(),
+     * TODO: why does ourPeriodic() call update()? 
+     * 
+     * <p>This looks like a place to put code that should run during ourPeriodic(),
      * but why not just put that code in ourPeriodic()?
      * 
     */
     private void update() {}
 
-    // Updating dashboard is expensive. Increase TICKS_PER_UPDATE
-    // to throttle back how often this is done.
+    /** 
+     * Update dashboard updates values on drive station and does logging.
+     * 
+     * Updating dashboard is expensive. Increase TICKS_PER_UPDATE to throttle back
+     * how often this is done.
+     * 
+     */
     public void updateDashboard() {
         _updateTick++;
         if (_updateTick >= Constants.TICKS_PER_UPDATE) {
@@ -205,7 +234,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
 
     // TODO: loadConfigFromUSB() should probably go in util
     private void loadConfigFromUSB() {
-        String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
+        // String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
         try {
             String usbDir = "/U/"; // USB drive is mounted to /U on roboRIO
             String configFileName = usbDir + "frc5687.cfg";
