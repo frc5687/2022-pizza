@@ -139,10 +139,41 @@ public class DriveTrain extends OutliersSubsystem {
         metric("SW/Encoder Wheel Vel", _southWest.getWheelVelocity());
         metric("SW/Predicted Wheel Vel", _southWest.getPredictedWheelVelocity());
         Pose2d odometry=getOdometryPose();
-        metric("Odometry/x",odometry.getX());
-        metric("Odometry/y",odometry.getY());
-        metric("Odometry/angle",odometry.getRotation().getDegrees());
+        metric("Odometry/x", odometry.getX());
+        metric("Odometry/y", odometry.getY());
+        metric("Odometry/angle", odometry.getRotation().getDegrees());
         metric("Odometry/Pose", getOdometryPose().toString());
+    }
+
+    public void snap(Rotation2d theta){
+        poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
+    }
+
+    public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
+        ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, heading);
+        SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DriveTrain.MAX_MPS);
+        setFrontLeftModuleState(moduleStates[0]);
+        setFrontRightModuleState(moduleStates[1]);
+        setBackLeftModuleState(moduleStates[2]);
+        setBackRightModuleState(moduleStates[3]);
+    }
+
+    public boolean isAtRotation(Rotation2d theta){
+        Rotation2d rotation = new Rotation2d(_imu.getYaw());
+        if(rotation == theta){
+            //Robot is at the correct position
+            return true;
+        }else{
+            //Robot is not at the correct position
+            return false;
+        }
+    }
+
+    public boolean isAtPose(Pose2d pose) {
+        double diffX = getOdometryPose().getX() - pose.getX();
+        double diffY = getOdometryPose().getY() - pose.getY();
+        return Math.abs(diffX) <= 0.01 && Math.abs(diffY) < 0.01;
     }
 
     public void setFrontRightModuleState(SwerveModuleState state) {

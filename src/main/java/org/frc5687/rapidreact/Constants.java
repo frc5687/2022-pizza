@@ -91,4 +91,8 @@ public class Constants {
         public static final double SENSOR_WHEEL_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double CONTROL_EFFORT = VOLTAGE;
     }
+
+    public static class SnapPose{
+        public static final double SNAP_LRF = 3.5;
+    }
 }

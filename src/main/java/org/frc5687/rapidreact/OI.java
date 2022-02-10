@@ -6,6 +6,11 @@
 package org.frc5687.rapidreact;
 
 import static org.frc5687.rapidreact.util.Helpers.*;
+
+import org.frc5687.rapidreact.commands.SnapTo;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
@@ -18,7 +23,9 @@ public class OI extends OutliersProxy {
     protected Joystick _rotation;
     protected Joystick _translation;
 
-    private JoystickButton resetNavX;
+    private Rotation2d theta;
+    private JoystickButton _resetNavX;
+    private JoystickButton _snapBTN;
     // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
@@ -28,10 +35,12 @@ public class OI extends OutliersProxy {
 
         _translation = new Joystick(0);
         _rotation = new Joystick(1);
-        resetNavX = new JoystickButton(_translation, 5);
+        _resetNavX = new JoystickButton(_translation, 5);
+        _snapBTN = new JoystickButton(_translation, 4);
     }
 
     public void initializeButtons(DriveTrain driveTrain) {
+        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
 
     public double getDriveY() {
@@ -60,6 +69,8 @@ public class OI extends OutliersProxy {
     public double getRotationX() {
         double speed = getSpeedFromAxis(_rotation, _rotation.getXChannel());
         speed = applyDeadband(speed, 0.2);
+        theta = new Rotation2d(speed);
+        DriverStation.reportError("Rotation: " + theta, false);
         return speed;
     }
 
