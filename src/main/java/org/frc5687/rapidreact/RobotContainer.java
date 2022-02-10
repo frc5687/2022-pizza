@@ -10,6 +10,17 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
+/** 
+ * RobotContainer is where most of the setup for your command-based robot will take place.
+ * Define your robot subsystems and commands, bind those commands to triggering events
+ * (such as buttons), and specify which command you will run in your autonomous routine.
+ * 
+ * <p>Subsystems are declared as private fields, aligned with object-oriented best-practices.
+ * This makes the control flow of the program easier to keep track of as it is immediately
+ * obvious which parts of the code can change or be changed by which other parts of the code.
+ * This also allows the resource-management system to do its job, as users are unable to
+ * make conflicting calls to subsystem methods outside of the resource-managed commands.
+*/
 public class RobotContainer extends OutliersContainer {
 
     private OI _oi;
