@@ -17,6 +17,12 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 
+/** 
+ * OI is the operator input class
+ * 
+ * <p>Define the types of devices that can provide operator input
+ * (joysticks, gamepads, drive wheels, keyboards, etc.)
+ */
 public class OI extends OutliersProxy {
     // Joysticks and XBox controller
     protected Gamepad _gamepad;
