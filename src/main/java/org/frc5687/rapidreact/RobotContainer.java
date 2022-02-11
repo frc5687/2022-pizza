@@ -59,8 +59,8 @@ public class RobotContainer extends OutliersContainer {
 
         // The robot's default command will run so long as another command isn't activated
         setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
-        private static final double PERIOD_SECONDS = 0.005;
-        private static final double OFFSET_SECONDS = 0.005;
+        final double PERIOD_SECONDS = 0.005;
+        final double OFFSET_SECONDS = 0.005;
         _robot.addPeriodic(this::controllerPeriodic, PERIOD_SECONDS, OFFSET_SECONDS);
     }
 
