@@ -3,6 +3,7 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frc5687.rapidreact.commands.Drive;
 import org.frc5687.rapidreact.commands.OutliersCommand;
@@ -28,48 +29,104 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
     private DriveTrain _driveTrain;
+    private Command _autoCommand;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
         _robot = robot;
     }
 
+    /* ---- Init methods called when a mode is entered --- */
+
+    /** 
+     * Initialize RobotContainer
+     * 
+     * <p>Called by Robot.robotInit() when robot is first powered on.
+     * 
+     * <p>Allocate subsystems and set default commands.
+     */
     public void init() {
+         // 2020 code says OI must be first...
         _oi = new OI();
-        //Config the NavX
+        // Config the NavX
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200);
+        _imu.reset(); // 2020 code calls zeroYaw()
+
         _driveTrain = new DriveTrain(this, _oi, _imu);
-        //The robots default command will run so long as another command isn't activated
-        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
-        _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
-        _imu.reset();
+
+        // Initialize buttons AFTER subsystems allocated
         _oi.initializeButtons(_driveTrain);
+
+        // The robot's default command will run so long as another command isn't activated
+        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
+        private static final double PERIOD_SECONDS = 0.005;
+        private static final double OFFSET_SECONDS = 0.005;
+        _robot.addPeriodic(this::controllerPeriodic, PERIOD_SECONDS, OFFSET_SECONDS);
     }
+
+    @Override
+    public void autonomousInit() {}
+
+    @Override
+    public void disabledInit() {}
+
+    @Override
+    public void teleopInit() {}
+
+    /* ---- Periodic methods ---- */
 
     public void periodic() {
-        //Runs every 20ms
+        // Code from 2020 robot polls for KillAll
+        /*
+        _oi.poll();
+        if (_oi.isKillAllPressed()) {
+            new KillAll(_driveTrain, _shooter, _indexer, _intake, _turret, _hood).schedule();
+            _indexer.stopAgitator();
+        }
+        */
     }
 
-    public void disabledPeriodic() {
-        //Runs every 20ms during disabled
+    public void disabledPeriodic() {}
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return _autoCommand;
+
+        // Code from 2020 robot for autochooser
+        /*
+        AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
+
+        switch (autoMode) {
+            case ShootAndGo:
+                return wrapCommand(new AutoShootAndGo(_turret, _shooter, _hood, _limelight, _driveTrain, _intake, _poseTracker, _indexer, _lights));
+            case ShootAndNearTrench:
+                return wrapCommand(new AutoShootAndNearTrench(_turret, _shooter, _hood, _limelight, _driveTrain, _poseTracker, _indexer, _intake, _lights));
+            case ShootAndFarTrench:
+                return wrapCommand(new AutoShootAndFarTrench(_turret, _shooter, _hood, _limelight, _driveTrain, _poseTracker, _indexer, _intake, _lights));
+            case Generator2NearTrench:
+                return wrapCommand(new EightBallAuto(_driveTrain, _turret, _shooter,_hood,_intake, _imu, _indexer,_lights, _limelight, _poseTracker));
+            default:
+                return new SequentialCommandGroup(
+                        new ZeroSensors(_hood, _turret),
+                        new AutoShootAndGo(_turret, _shooter, _hood, _limelight, _driveTrain, _intake, _poseTracker, _indexer, _lights)
+                //      new EightBallAuto(_driveTrain, _turret, _shooter,_hood,_intake, _imu, _indexer,_lights, _limelight, _poseTracker)
+                );
+        }
+          
+        */
     }
 
-    @Override
-    public void disabledInit() {
-        //Runs once during disabled
-    }
-
-    @Override
-    public void teleopInit() {
-        //Runs at the start of teleop
-    }
-
-    @Override
-    public void autonomousInit() {
-        //This is where autos go
-        //Runs once during auto
-    }
-
+    /**
+     * Helper function to wrap CommandScheduler.setDefaultCommand.
+     * Allows us to pass nulls during initial development without breaking.
+     * 
+     * @param subSystem
+     * @param command
+     */
     private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
         if (subSystem == null || command == null) {
             return;
@@ -78,15 +135,21 @@ public class RobotContainer extends OutliersContainer {
         s.setDefaultCommand(subSystem, command);
     }
 
-    @Override
-    public void updateDashboard() {
-        //Updates the driver station
-        _driveTrain.updateDashboard();
-    }
-
+    /**
+     * Helper function to wrap Drivetrain.controllerPeriodic.
+     * 
+     */
     public void controllerPeriodic() {
         if (_driveTrain != null) {
             _driveTrain.controllerPeriodic();
         }
     }
+
+    @Override
+    public void updateDashboard() {
+        //Updates the driver station
+        super.updateDashboard();
+        _driveTrain.updateDashboard();
+    }
+
 }

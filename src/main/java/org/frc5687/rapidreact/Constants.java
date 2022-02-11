@@ -4,11 +4,23 @@ package org.frc5687.rapidreact;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+/**
+ * Define globally-accessible robot constants (such as speeds, unit conversion factors,
+ * PID gains, and sensor/motor ports).
+ * 
+ */
 public class Constants {
-    public static final int TICKS_PER_UPDATE = 1;
+
+    // Declare constants as public static final so that they are globally accessible
+    // and cannot be changed.
+
+    public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
     public static final double METRIC_FLUSH_PERIOD = 1.0;
-    public static final double UPDATE_PERIOD = 0.02;
+    public static final double UPDATE_PERIOD = 0.02; // seconds
     public static final double EPSILON = 0.00001;
+
+    // Separate constants into individual inner classes corresponding
+    // to subsystems or robot modes, to keep variable names shorter.
 
     public static class DriveTrain {
 

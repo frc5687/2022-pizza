@@ -11,7 +11,7 @@ import java.io.FileReader;
 import org.frc5687.rapidreact.util.*;
 
 /**
- * See edu.wpi.first.wpilibj.IterativeRobotBase for the base class and methods documentation.
+ * See IterativeRobotBase for the base class and methods documentation.
  * 
  * Note about overriding methods and annotations (e.g., @Override):
  * 
@@ -45,15 +45,14 @@ import org.frc5687.rapidreact.util.*;
 /**
  * Robot is responsible for control flow.
  * 
- * <p>Command-based is an declarative paradigm designed to minimize the amount of attention the user
- * has to pay to explicit program control flow, so the Robot class of a command-based project should
+ * <p>Command-based is a declarative paradigm designed to minimize the need to pay attention
+ * to explicit program control flow, so the Robot class of a command-based project should
  * be mostly empty.
  * 
  * <p>The VM is configured to automatically run this class, and to call the methods corresponding to
  * each mode, as described in the IterativeRobotBase documentation. If you change the name of this
  * class or the package after creating this project, you must also update the build.gradle file in
  * the project.
- * 
  */
 public class Robot extends OutliersRobot {
 
@@ -72,7 +71,7 @@ public class Robot extends OutliersRobot {
     // private double _prevTime;
     // private double _time;
 
-    /* ---- Init methods are called when the mode is entered --- */
+    /* ---- Init methods called when a mode is entered --- */
 
     /**
      * Robot-wide initialization code
@@ -88,7 +87,7 @@ public class Robot extends OutliersRobot {
         loadConfigFromUSB();
         RioLogger.getInstance().init(_fileLogLevel, _dsLogLevel);
         LiveWindow.disableAllTelemetry();
-        DriverStation.silenceJoystickConnectionWarning(true);
+        // DriverStation.silenceJoystickConnectionWarning(true);
 
         metric("Identity", _identityMode.toString());
         metric("Commit", Version.REVISION);
@@ -99,7 +98,7 @@ public class Robot extends OutliersRobot {
 
         _robotContainer = new RobotContainer(this, _identityMode);
         // _timer = new Timer();
-        _robotContainer.init();
+        _robotContainer.init(); // allocate subsystems and set default commands
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
@@ -119,7 +118,7 @@ public class Robot extends OutliersRobot {
         RioLogger.getInstance().forceSync();
         RioLogger.getInstance().close();
         _robotContainer.disabledInit();
-        //        MetricTracker.flushAll();
+        // MetricTracker.flushAll();
     }
 
     /**
@@ -130,6 +129,7 @@ public class Robot extends OutliersRobot {
     @Override
     public void autonomousInit() {
         // _fmsConnected = DriverStation.isFMSAttached();
+        _autoCommand = _robotContainer.getAutonomousCommand();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();
@@ -140,36 +140,21 @@ public class Robot extends OutliersRobot {
      * Initialization code for teleop mode
      *
      * <p>Called each time the robot enters teleop mode.
+     * 
+     * <p>It is generally good practice to have the teleopInit() method cancel
+     * any still-running autonomous commands.
      */
     public void teleopInit() {
         // _fmsConnected = DriverStation.isFMSAttached();
+        // Stop autonomous when teleop starts running.
+        // If you want the autonomous to continue until
+        // interrupted by another command, remove
+        // this line or comment it out.
+        if (_autoCommand != null) { _autoCommand.cancel(); }
         _robotContainer.teleopInit();
-
-        // _limelight.disableLEDs();
     }
 
     /* ----------- Periodic code called on an interval --------------- */
-
-    /** Autonomous mode periodic */
-    @Override
-    public void autonomousPeriodic() {}
-
-    /** Teleoperator control mode periodic */
-    @Override
-    public void teleopPeriodic() {}
-
-    /** Test mode periodic */
-    @Override
-    public void testPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
-
-    /** Disabled mode periodic */
-    @Override
-    public void disabledPeriodic() {
-        super.disabledPeriodic();
-        _robotContainer.disabledPeriodic();
-    }
 
     /** Our own periodic method
      * 
@@ -184,10 +169,33 @@ public class Robot extends OutliersRobot {
         // Example of starting a new row of metrics for all instrumented objects.
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
-        // _robotContainer.periodic();
+        _robotContainer.periodic();
+        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+        // commands, running already-scheduled commands, removing finished or interrupted commands,
+        // and running subsystem periodic() methods.  This must be called from the robot's periodic
+        // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
         update();
         updateDashboard();
+    }
+
+    /** Autonomous mode periodic */
+    @Override
+    public void autonomousPeriodic() {}
+
+    /** Teleoperator control mode periodic */
+    @Override
+    public void teleopPeriodic() {}
+
+    /** Test mode periodic */
+    @Override
+    public void testPeriodic() {}
+
+    /** Disabled mode periodic */
+    @Override
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+        _robotContainer.disabledPeriodic();
     }
 
     /**
@@ -199,7 +207,7 @@ public class Robot extends OutliersRobot {
      */
     @Override
     public void robotPeriodic() {
-        ourPeriodic();
+        ourPeriodic(); // runs the Scheduler
     }
 
     /* ---- Exit methods are called when the mode is exited --- */
