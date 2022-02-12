@@ -49,7 +49,7 @@ public class RobotContainer extends OutliersContainer {
         //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
-        //_imu.reset();
+        _imu.reset();
         
     }
 
@@ -77,13 +77,13 @@ public class RobotContainer extends OutliersContainer {
         //Runs once during auto
     }
 
-    /*private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
+    private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
         if (subSystem == null || command == null) {
             return;
         }
         CommandScheduler s = CommandScheduler.getInstance();
         s.setDefaultCommand(subSystem, command);
-    }*/
+    }
 
     private Trajectory getTrajectory(String trajectoryJSON) {
         Trajectory trajectory = null;
@@ -99,43 +99,25 @@ public class RobotContainer extends OutliersContainer {
         return trajectory;
     }
 
-    /*public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
-        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));*/
-        //return new DriveTrajectory(_driveTrain, trajectory);
-        // switch (autoMode) {
-        //     case ZeroBall:
-        //         switch (autoPosition) {
-        //             case LeftOneBall:
-        //                 return new DriveTrajectory(
-        //                     _driveTrain,
-        //                     getTrajectory(
-        //                         _autoChooser.getPath(AutoChooser.Mode.ZeroBall,
-        //                          AutoChooser.Position.LeftOneBall))
-        //                     );
-        //             case RightOneBall:
-        //                 return new DriveTrajectory(
-        //                     _driveTrain,
-        //                     getTrajectory(
-        //                         _autoChooser.getPath(AutoChooser.Mode.ZeroBall,
-        //                          AutoChooser.Position.RightOneBall))
-        //                 );
-        //         }
-        // }
-    //}
+        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
+        return new DriveTrajectory(_driveTrain, trajectory);
+
+    }
 
     @Override
     public void updateDashboard() {
         //Updates the driver station
-        //_driveTrain.updateDashboard();
-//        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
+        _driveTrain.updateDashboard();
+        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
         _autoChooser.updateDashboard();
     }
 
-    /*public void controllerPeriodic() {
+    public void controllerPeriodic() {
         if (_driveTrain != null) {
             _driveTrain.controllerPeriodic();
         }
-    }*/
+    }
 }

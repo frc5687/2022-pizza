@@ -123,5 +123,11 @@ public class Constants {
                              new Pose2d (8.3, 7.4, Rotation2d.fromDegrees(90)));
                         
         }
-    }
+        /*public static class 2BLeft1ballT {
+                public static final List<Pose2d> waypoints =
+                     Arrays.asList(
+                             new Pose2d (9.9, 2.6, Rotation2d.fromDegrees(-22.9)),
+                             new Pose2d (11.6, -15.3, Rotation2d.fromDegrees(90)));
+        }*/
+     }
 }
