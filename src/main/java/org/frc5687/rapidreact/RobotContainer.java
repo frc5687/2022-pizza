@@ -2,6 +2,8 @@
 package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -10,7 +12,7 @@ import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.util.OutliersContainer;
-
+import org.frc5687.rapidreact.Lights;
 /** 
  * RobotContainer is where most of the setup for your command-based robot will take place.
  * Define your robot subsystems and commands, bind those commands to triggering events
@@ -29,6 +31,7 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
     private DriveTrain _driveTrain;
+    private Lights _lights;
     private Command _autoCommand;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
@@ -53,7 +56,7 @@ public class RobotContainer extends OutliersContainer {
         _imu.reset(); // 2020 code calls zeroYaw()
 
         _driveTrain = new DriveTrain(this, _oi, _imu);
-
+        _lights = new Lights(RobotMap.PWM.BLINKIN, Constants.Blinkins.BLINKIN_LENGTH);
         // Initialize buttons AFTER subsystems allocated
         _oi.initializeButtons(_driveTrain);
 
@@ -84,6 +87,7 @@ public class RobotContainer extends OutliersContainer {
             _indexer.stopAgitator();
         }
         */
+        _lights.setRed();
     }
 
     public void disabledPeriodic() {}

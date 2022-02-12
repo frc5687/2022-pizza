@@ -107,4 +107,8 @@ public class Constants {
     public static class SnapPose{
         public static final double SNAP_LRF = 3.5;
     }
+
+    public static class Blinkins{
+        public static final int BLINKIN_LENGTH = 60;
+    }
 }
