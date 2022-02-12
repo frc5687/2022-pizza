@@ -110,7 +110,7 @@ public class DriveTrain extends OutliersSubsystem {
     public void controllerPeriodic() {
         _northEast.periodic();
         _northWest.periodic();
-≈       _northEast.periodic();
+        _northEast.periodic();
         _southEast.periodic();
     }
 
