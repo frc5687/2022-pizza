@@ -21,10 +21,10 @@ import org.frc5687.rapidreact.OI;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 public class DriveTrain extends OutliersSubsystem {
-    private DiffSwerveModule _northWest;
     private DiffSwerveModule _northEast;
-    private DiffSwerveModule _southWest;
+    private DiffSwerveModule _northWest;
     private DiffSwerveModule _southEast;
+    private DiffSwerveModule _southWest;
 
     private SwerveDriveKinematics _kinematics;
     private SwerveDriveOdometry _odometry;
@@ -108,9 +108,9 @@ public class DriveTrain extends OutliersSubsystem {
 
     // use for modules as controller is running at 200Hz.
     public void controllerPeriodic() {
-        _northWest.periodic();
         _northEast.periodic();
-        _southWest.periodic();
+        _northWest.periodic();
+≈       _northEast.periodic();
         _southEast.periodic();
     }
 
@@ -153,10 +153,10 @@ public class DriveTrain extends OutliersSubsystem {
         ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, heading);
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DriveTrain.MAX_MPS);
-        setFrontLeftModuleState(moduleStates[0]);
-        setFrontRightModuleState(moduleStates[1]);
-        setBackLeftModuleState(moduleStates[2]);
-        setBackRightModuleState(moduleStates[3]);
+        setNorthEastModuleState(moduleStates[0]);
+        setNorthWestModuleState(moduleStates[1]);
+        setSouthEastModuleState(moduleStates[2]);
+        setSouthWestModuleState(moduleStates[3]);
     }
 
     public boolean isAtRotation(Rotation2d theta){
@@ -176,19 +176,19 @@ public class DriveTrain extends OutliersSubsystem {
         return Math.abs(diffX) <= 0.01 && Math.abs(diffY) < 0.01;
     }
 
-    public void setFrontRightModuleState(SwerveModuleState state) {
-        _northWest.setIdealState(state);
-    }
-
-    public void setFrontLeftModuleState(SwerveModuleState state) {
+    public void setNorthEastModuleState(SwerveModuleState state) {
         _northEast.setIdealState(state);
     }
 
-    public void setBackLeftModuleState(SwerveModuleState state) {
+    public void setNorthWestModuleState(SwerveModuleState state) {
+        _northWest.setIdealState(state);
+    }
+
+    public void setSouthEastModuleState(SwerveModuleState state) {
         _southEast.setIdealState(state);
     }
 
-    public void setBackRightModuleState(SwerveModuleState state) {
+    public void setSouthWestModuleState(SwerveModuleState state) {
         _southWest.setIdealState(state);
     }
 
@@ -215,13 +215,13 @@ public class DriveTrain extends OutliersSubsystem {
      */
     public void drive(double vx, double vy, double omega, boolean fieldRelative) {
         if (Math.abs(vx) < Constants.DriveTrain.DEADBAND && Math.abs(vy) < Constants.DriveTrain.DEADBAND && Math.abs(omega) < Constants.DriveTrain.DEADBAND) {
-            setFrontRightModuleState(
+            setNorthEastModuleState(
                     new SwerveModuleState(0, new Rotation2d(_northWest.getModuleAngle())));
-            setFrontLeftModuleState(
+            setNorthWestModuleState(
                     new SwerveModuleState(0, new Rotation2d(_northEast.getModuleAngle())));
-            setBackRightModuleState(
+            setSouthEastModuleState(
                     new SwerveModuleState(0, new Rotation2d(_southWest.getModuleAngle())));
-            setBackLeftModuleState(
+            setSouthWestModuleState(
                     new SwerveModuleState(0, new Rotation2d(_southEast.getModuleAngle())));
             _PIDAngle = getHeading().getRadians();
             _angleController.reset(_PIDAngle);
@@ -233,10 +233,10 @@ public class DriveTrain extends OutliersSubsystem {
                                             vx, vy, omega, getHeading())
                                     : new ChassisSpeeds(vx, vy, omega));
             SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-            setFrontLeftModuleState(swerveModuleStates[0]);
-            setFrontRightModuleState(swerveModuleStates[1]);
-            setBackLeftModuleState(swerveModuleStates[2]);
-            setBackRightModuleState(swerveModuleStates[3]);
+            setNorthEastModuleState(swerveModuleStates[0]);
+            setNorthWestModuleState(swerveModuleStates[1]);
+            setSouthEastModuleState(swerveModuleStates[2]);
+            setSouthWestModuleState(swerveModuleStates[3]);
             _PIDAngle = getHeading().getRadians();
             _angleController.reset(_PIDAngle);
         } else {
@@ -249,10 +249,10 @@ public class DriveTrain extends OutliersSubsystem {
                                             getHeading().getRadians(), _PIDAngle),
                                     new Rotation2d(_PIDAngle)));
             SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-            setFrontLeftModuleState(swerveModuleStates[0]);
-            setFrontRightModuleState(swerveModuleStates[1]);
-            setBackLeftModuleState(swerveModuleStates[2]);
-            setBackRightModuleState(swerveModuleStates[3]);
+            setNorthEastModuleState(swerveModuleStates[0]);
+            setNorthWestModuleState(swerveModuleStates[1]);
+            setSouthEastModuleState(swerveModuleStates[2]);
+            setSouthWestModuleState(swerveModuleStates[3]);
         }
     }
 
@@ -271,10 +271,10 @@ public class DriveTrain extends OutliersSubsystem {
                 _controller.calculate(_odometry.getPoseMeters(), goal, heading);
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-        setFrontLeftModuleState(moduleStates[0]);
-        setFrontRightModuleState(moduleStates[1]);
-        setBackLeftModuleState(moduleStates[2]);
-        setBackRightModuleState(moduleStates[3]);
+        setNorthEastModuleState(moduleStates[0]);
+        setNorthWestModuleState(moduleStates[1]);
+        setSouthEastModuleState(moduleStates[2]);
+        setSouthWestModuleState(moduleStates[3]);
     }
 
     public Pose2d getOdometryPose() {
