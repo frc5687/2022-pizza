@@ -21,8 +21,8 @@ public class RobotMap {
              *          |
              *          S
              */
-            public static final int BL_RIGHT_FALCON = 4;
-            public static final int BL_LEFT_FALCON = 3;
+            public static final int BL_RIGHT_FALCON = 3;
+            public static final int BL_LEFT_FALCON = 4;
             public static final int BR_RIGHT_FALCON = 6;
             public static final int BR_LEFT_FALCON = 5;
             public static final int FL_RIGHT_FALCON = 1;
