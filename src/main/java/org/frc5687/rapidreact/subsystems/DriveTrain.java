@@ -160,7 +160,8 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     public void snap(Rotation2d theta){
-        poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
+        metric("Pose snap", getOdometryPose().toString());
+        poseFollower(getOdometryPose(), theta, 3.5);
     }
 
     public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
@@ -177,9 +178,12 @@ public class DriveTrain extends OutliersSubsystem {
         Rotation2d rotation = new Rotation2d(_imu.getYaw());
         if (rotation == theta) {
             //Robot is at the correct position
+            metric("Snap stop", true);
+            metric("Snap rotation", theta.toString());
             return true;
         } else {
             //Robot is not at the correct position
+            metric("Snap rotation", theta.toString());
             return false;
         }
     }
