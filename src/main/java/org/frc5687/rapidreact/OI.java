@@ -13,16 +13,33 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import org.frc5687.rapidreact.commands.SnapTo;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 
+/** 
+ * OI is the operator input class
+ * 
+ * <p>Define the types of devices that can provide operator input
+ * (joysticks, gamepads, drive wheels, keyboards, etc.)
+ */
 public class OI extends OutliersProxy {
+    // Joysticks and XBox controller
     protected Gamepad _gamepad;
     protected Joystick _rotation;
     protected Joystick _translation;
 
     private JoystickButton _autoButton;
+    private Rotation2d theta;
+    private JoystickButton _resetNavX;
+    private JoystickButton _snapBTN;
+    // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
 
@@ -37,6 +54,12 @@ public class OI extends OutliersProxy {
 
     public void initializeButtons(DriveTrain driveTrain, Trajectory trajectory) {
         _autoButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
+        _resetNavX = new JoystickButton(_translation, 5);
+        _snapBTN = new JoystickButton(_translation, 4);
+    }
+
+    public void initializeButtons(DriveTrain driveTrain) {
+        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
 
     public double getDriveY() {
@@ -65,6 +88,8 @@ public class OI extends OutliersProxy {
     public double getRotationX() {
         double speed = getSpeedFromAxis(_rotation, _rotation.getXChannel());
         speed = applyDeadband(speed, 0.2);
+        theta = new Rotation2d(speed);
+        DriverStation.reportError("Rotation: " + theta, false);
         return speed;
     }
 
