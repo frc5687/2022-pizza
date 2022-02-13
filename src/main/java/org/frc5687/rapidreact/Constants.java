@@ -4,8 +4,20 @@ package org.frc5687.rapidreact;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+// Separate constants into individual inner classes corresponding
+// to subsystems or robot modes, to keep variable names shorter.
+
+/**
+ * Define globally-accessible robot constants (such as speeds, unit conversion factors,
+ * PID gains, and sensor/motor ports).
+ * 
+ */
 public class Constants {
-    public static final int TICKS_PER_UPDATE = 1;
+
+    // Declare constants as public static final so that they are globally accessible
+    // and cannot be changed.
+
+    public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
     public static final double METRIC_FLUSH_PERIOD = 1.0;
     public static final double UPDATE_PERIOD = 0.02; // seconds?
     public static final double EPSILON = 0.00001;
@@ -24,6 +36,52 @@ public class Constants {
         // Control
         public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
 
+        // Size of the robot chassis in meters
+        public static final double WIDTH = 0.6223; // meters
+        public static final double LENGTH = 0.6223; // meters
+
+        // Distance of swerve module from center of robot
+        public static final double SWERVE_NS_POS = LENGTH / 2.0;
+        public static final double SWERVE_WE_POS = WIDTH / 2.0;
+
+        /**
+         * 
+         * Coordinate system is wacky:
+         * 
+         * (X, Y):
+         *   X is N or S, N is +
+         *   Y is W or E, W is +
+         * 
+         *   NW (+,+)  NE (+,-)
+         * 
+         *   SW (-,+)  SE (-,-)
+         * 
+         * Position vectors for the swerve module kinematics.
+         * 
+         * We go counter-counter clockwise starting at NW of chassis:
+         * 
+         *  NW, SW, SE, NE
+         * 
+         * Note: when robot is flipped over, this is clockwise.
+         * 
+         */
+        public static final Translation2d NORTH_WEST = new Translation2d( SWERVE_NS_POS, SWERVE_WE_POS ); // +,+
+        public static final Translation2d SOUTH_WEST = new Translation2d( -SWERVE_NS_POS, SWERVE_WE_POS ); // -,+
+        public static final Translation2d SOUTH_EAST = new Translation2d( -SWERVE_NS_POS, -SWERVE_WE_POS ); // -,-
+        public static final Translation2d NORTH_EAST = new Translation2d( SWERVE_NS_POS, -SWERVE_WE_POS ); // +,-
+
+        // Should be 0, but can correct for hardware error in swerve module headings here.
+        public static final double NORTH_WEST_OFFSET = 0; // radians
+        public static final double SOUTH_WEST_OFFSET = 0; // radians
+        public static final double SOUTH_EAST_OFFSET = 0; // radians
+        public static final double NORTH_EAST_OFFSET = 0; // radians
+
+        // In case encoder is measuring rotation in the opposite direction we expect.
+        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
+        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
+        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
+        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
+
         public static final double MAX_MPS = 1.5; // Max speed of robot (m/s) .
 
         public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
@@ -38,27 +96,6 @@ public class Constants {
         public static final double kD = 0.5;
         public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
         public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
-
-
-        // Hardware
-        public static final double WIDTH = 0.6223; // meters?
-        public static final double LENGTH = 0.6223; // meters?
-
-        public static final Translation2d NORTH_EAST = new Translation2d(WIDTH / 2.0, LENGTH / 2.0);
-        public static final double NORTH_EAST_OFFSET = 0; // radians
-        public static final boolean NORTH_EAST_ENCODER_INVERTED = true;
-
-        public static final Translation2d NORTH_WEST = new Translation2d(WIDTH / 2.0, -LENGTH / 2.0);
-        public static final double NORTH_WEST_OFFSET = 0; // radians
-        public static final boolean NORTH_WEST_ENCODER_INVERTED = true;
-
-        public static final Translation2d SOUTH_EAST = new Translation2d(-WIDTH / 2.0, LENGTH / 2.0);
-        public static final double SOUTH_EAST_OFFSET = 0; // radians
-        public static final boolean SOUTH_EAST_ENCODER_INVERTED = true;
-
-        public static final Translation2d SOUTH_WEST = new Translation2d(-WIDTH / 2.0, -LENGTH / 2.0);
-        public static final double SOUTH_WEST_OFFSET = 0; // radians
-        public static final boolean SOUTH_WEST_ENCODER_INVERTED = true;
 
     }
 
@@ -104,5 +141,9 @@ public class Constants {
         public static final double SENSOR_AZIMUTH_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double SENSOR_WHEEL_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double CONTROL_EFFORT = VOLTAGE;
+    }
+
+    public static class SnapPose{
+        public static final double SNAP_LRF = 3.5;
     }
 }

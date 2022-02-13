@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 
+/** RobotContainer extends this class.  Why do we create this abstract class? */
 public abstract class OutliersContainer implements ILoggingSource {
     private List<OutliersSubsystem> _subsystems = new LinkedList<OutliersSubsystem>();
     private IdentityMode _identityMode;

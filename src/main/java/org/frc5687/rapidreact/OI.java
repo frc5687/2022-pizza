@@ -8,6 +8,10 @@ package org.frc5687.rapidreact;
 
 import static org.frc5687.rapidreact.util.Helpers.*;
 
+import org.frc5687.rapidreact.commands.SnapTo;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
@@ -43,11 +47,17 @@ import org.frc5687.rapidreact.util.OutliersProxy;
  * 6) Add the subsystem to the RobotContainer.init() call to _oi.inializeButtons:
  * 
  *        _oi.initializeButtons(_driveTrain, _shooter);
+ */
+
+ /**
+ * OI is the operator input class
  * 
+ * <p>Define the types of devices that can provide operator input
+ * (joysticks, gamepads, drive wheels, keyboards, etc.)
  */
 public class OI extends OutliersProxy {
 
-    private JoystickButton resetNavX;
+    private Rotation2d theta;
     // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
@@ -58,6 +68,7 @@ public class OI extends OutliersProxy {
 
     // private JoystickButton _shootButton;
     private JoystickButton _resetNavX;
+    private JoystickButton _snapBTN;
 
     public OI() {
         addJoystick(ButtonMap.Controllers.DRIVER_JOYSTICK);
@@ -73,7 +84,11 @@ public class OI extends OutliersProxy {
 
         // example of creating shoot button.
         // _shootButton.whenHeld(new Shoot(shooter));
+        _resetNavX = new JoystickButton(_joysticks[0], 5);
+        _snapBTN = new JoystickButton(_joysticks[1], 4);
+        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
+
 
     public double getDriveY() {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
@@ -107,6 +122,8 @@ public class OI extends OutliersProxy {
 
         double speed = getSpeedFromAxis(rotation, ButtonMap.Axes.Rotation.Twist);
         speed = applyDeadband(speed, 0.2);
+        theta = new Rotation2d(speed);
+        DriverStation.reportError("Rotation: " + theta, false);
         return speed;
     }
 
@@ -160,6 +177,5 @@ public class OI extends OutliersProxy {
         Joystick joystick = getJoystick(port);
         return new AxisButton(joystick, buttonNumber, threshold);
     }
-
 
 }
