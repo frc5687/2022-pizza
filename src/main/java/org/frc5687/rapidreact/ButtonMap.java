@@ -24,8 +24,8 @@ public class ButtonMap {
          * -1 means not in use.
         */
         public static final int DRIVER_JOYSTICK = 0;
-        public static final int OPERATOR_JOYSTICK = 1;
-        public static final int OPERATOR_GAMEPAD = -1;
+        public static final int OPERATOR_JOYSTICK = -1;
+        public static final int OPERATOR_GAMEPAD = 1;
     }
 
 
@@ -44,12 +44,12 @@ public class ButtonMap {
          */
         public static class Rotation {
             // Joystick control of rotation
-            public static int Controller = Controllers.OPERATOR_JOYSTICK;
-            public static int Twist = AxisType.kX.value;
+            //public static int Controller = Controllers.OPERATOR_JOYSTICK;
+            //public static int Twist = AxisType.kX.value;
 
             // Gamepad control of rotation
-            // public static int Controller = Controllers.OPERATOR_GAMEPAD;
-            // public static int Twist = AxisType.kY.value;
+            public static int Controller = Controllers.OPERATOR_GAMEPAD;
+            public static int Twist = AxisType.kY.value;
         }
     }
 
