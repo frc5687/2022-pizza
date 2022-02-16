@@ -23,44 +23,51 @@ public class ButtonMap {
          * USB ports of joysticks or gamepads.
          * -1 means not in use.
         */
-        public static final int DRIVER_JOYSTICK = 0;
-        public static final int OPERATOR_JOYSTICK = -1;
-        public static final int OPERATOR_GAMEPAD = 1;
+        public static final int TRANSLATOR_JOYSTICK = 0;
+        public static final int ROTATOR_JOYSTICK = -1;
+        public static final int ROTATOR_GAMEPAD = 1;
     }
 
-
+    /** Define axes of control */
     public static class Axes {
+        /** Translation is movement in X and Y directions. */
         public static class Translation {
-            public static int Controller = Controllers.DRIVER_JOYSTICK;
+            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
             public static int X = AxisType.kX.value;
             public static int Y = AxisType.kY.value;
         }
 
-        /*  To move the Rotation control from the operator joystick to a gamepad, you'd need to change the
-         *  OPERATOR_GAMEPAD constant above to a valid port and change Rotation.Controller to reference Controllers.OPERATOR_GAMEPAD.
-         *  You could also change Rotation.Twist to a different axis number if needed.
-         * 
-         *  See commented code below.
-         */
+        /** Rotation is angular movement around center of robot. */
         public static class Rotation {
+
+            /**
+             * To move the Rotation control from joystick to a gamepad:
+             * 
+             * 1. Change the ROTATOR_GAMEPAD constant above to a valid USB port
+             * 2. Change Rotation.Controller to Controllers.ROTATOR_GAMEPAD.
+             * 3. Optional: You could also change Rotation.Twist to a different axis number if needed.
+             *
+             *  See commented code below.
+             */
+
             // Joystick control of rotation
-            //public static int Controller = Controllers.OPERATOR_JOYSTICK;
+            //public static int Controller = Controllers.ROTATOR_JOYSTICK;
             //public static int Twist = AxisType.kX.value;
 
             // Gamepad control of rotation
-            public static int Controller = Controllers.OPERATOR_GAMEPAD;
+            public static int Controller = Controllers.ROTATOR_GAMEPAD;
             public static int Twist = AxisType.kX.value;
         }
     }
 
     public static class Buttons {
         public static class SHOOT {
-            public static int Controller = Controllers.DRIVER_JOYSTICK;
+            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
             public static int Button = 0;
         }
 
         public static class RESET_NAVX {
-            public static int Controller = Controllers.DRIVER_JOYSTICK;
+            public static int Controller = Controllers.ROTATOR_GAMEPAD;
             public static int Button = 5;
         }
 

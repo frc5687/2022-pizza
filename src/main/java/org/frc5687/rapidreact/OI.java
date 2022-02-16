@@ -71,9 +71,9 @@ public class OI extends OutliersProxy {
     private JoystickButton _snapBTN;
 
     public OI() {
-        addJoystick(ButtonMap.Controllers.DRIVER_JOYSTICK);
-        addJoystick(ButtonMap.Controllers.OPERATOR_JOYSTICK);
-        addGamepad(ButtonMap.Controllers.OPERATOR_GAMEPAD);
+        addJoystick(ButtonMap.Controllers.TRANSLATOR_JOYSTICK);
+        addJoystick(ButtonMap.Controllers.ROTATOR_JOYSTICK);
+        addGamepad(ButtonMap.Controllers.ROTATOR_GAMEPAD);
 
         // _shootButton = addJoystickButton(ButtonMap.Buttons.SHOOT.Controller, ButtonMap.Buttons.SHOOT.Button);
         _resetNavX = addJoystickButton(ButtonMap.Buttons.RESET_NAVX.Controller, ButtonMap.Buttons.RESET_NAVX.Button);
@@ -106,7 +106,7 @@ public class OI extends OutliersProxy {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
 
         // TODO: explain the negative sign here
-        xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
+        xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.X);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
 
         // TODO: explain the following magic
