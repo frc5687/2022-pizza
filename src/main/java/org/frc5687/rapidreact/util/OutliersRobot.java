@@ -2,10 +2,15 @@
 package org.frc5687.rapidreact.util;
 
 import org.frc5687.rapidreact.Constants;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Robot extends this abstract class.
+ * 
+ * TODO: why do we create this abstract class?
+ * 
+ */
 public abstract class OutliersRobot extends TimedRobot implements ILoggingSource {
 
     public OutliersRobot() {
