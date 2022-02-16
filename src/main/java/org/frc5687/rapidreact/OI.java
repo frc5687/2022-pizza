@@ -62,9 +62,9 @@ public class OI extends OutliersProxy {
     private double yIn = 0;
     private double xIn = 0;
 
-    private static final int MAX_NUMBER_JOYSTICKS = 10;
+    private static final int MAX_USB_PORTS = 10;
 
-    private Joystick[] _joysticks = new Joystick[MAX_NUMBER_JOYSTICKS];
+    private Joystick[] _joysticks = new Joystick[MAX_USB_PORTS];
 
     // private JoystickButton _shootButton;
     private JoystickButton _resetNavX;
@@ -93,21 +93,10 @@ public class OI extends OutliersProxy {
     public double getDriveY() {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
 
-        if (ButtonMap.Controllers.OPERATOR_GAMEPAD == -1) {
-
-            // Joystick control for Translator
-            yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
-
-        } else {
-
-            // Gamepad control for Translator
-            yIn = getSpeedFromAxis(Gamepad, Gamepad.getYChannel());
-
-        }
-        
-        //Uncomment for gamepad control
+        yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
 
+        // TODO: explain the following magic
         double yOut = yIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
         yOut = (yOut + (yIn * 2)) / 3.0;
         return yOut;
@@ -115,11 +104,12 @@ public class OI extends OutliersProxy {
 
     public double getDriveX() {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
-        //Comment for gamepad control
+
+        // TODO: explain the negative sign here
         xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
-        //Uncomment for gamepad control
-        //xIn = -getSpeedFromAxis(Gamepad, Gamepad.getXChannel());
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
+
+        // TODO: explain the following magic
         double xOut = xIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
         xOut = (xOut + (xIn * 2)) / 3.0;
         return xOut;
@@ -130,8 +120,7 @@ public class OI extends OutliersProxy {
 
         double speed = getSpeedFromAxis(rotation, ButtonMap.Axes.Rotation.Twist);
         speed = applyDeadband(speed, 0.2);
-        theta = new Rotation2d(speed);
-        DriverStation.reportError("Rotation: " + theta, false);
+
         return speed;
     }
 

@@ -40,7 +40,7 @@ public class ButtonMap {
          *  OPERATOR_GAMEPAD constant above to a valid port and change Rotation.Controller to reference Controllers.OPERATOR_GAMEPAD.
          *  You could also change Rotation.Twist to a different axis number if needed.
          * 
-         *  See commented code below. NOTE: Twist for gamepad is using Y axis instead of X axis.
+         *  See commented code below.
          */
         public static class Rotation {
             // Joystick control of rotation
@@ -49,7 +49,7 @@ public class ButtonMap {
 
             // Gamepad control of rotation
             public static int Controller = Controllers.OPERATOR_GAMEPAD;
-            public static int Twist = AxisType.kY.value;
+            public static int Twist = AxisType.kX.value;
         }
     }
 
