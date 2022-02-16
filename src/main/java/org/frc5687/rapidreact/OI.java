@@ -93,11 +93,19 @@ public class OI extends OutliersProxy {
     public double getDriveY() {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
 
-        //Comment for gamepad control
-        yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
+        if (ButtonMap.Controllers.OPERATOR_GAMEPAD == -1) {
+
+            // Joystick control for Translator
+            yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
+
+        } else {
+
+            // Gamepad control for Translator
+            yIn = getSpeedFromAxis(Gamepad, Gamepad.getYChannel());
+
+        }
         
         //Uncomment for gamepad control
-        // yIn = getSpeedFromAxis(Gamepad, Gamepad.getYChannel());
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
 
         double yOut = yIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
