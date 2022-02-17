@@ -18,11 +18,11 @@ import org.frc5687.rapidreact.commands.SnapTo;
 import org.frc5687.rapidreact.commands.ResetNavX;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+// import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.util.AxisButton;
+// import org.frc5687.rapidreact.util.AxisButton;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 
@@ -181,9 +181,11 @@ public class OI extends OutliersProxy {
         return _joysticks[port];
     }
 
+    /*
     private AxisButton addAxisButton(int port, int buttonNumber, double threshold) {
         Joystick joystick = getJoystick(port);
         return new AxisButton(joystick, buttonNumber, threshold);
     }
+    */
 
 }

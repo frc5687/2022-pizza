@@ -14,7 +14,7 @@ import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+// import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
     private DriveTrain _driveTrain;
-    private Command _autoCommand;
+    // private Command _autoCommand;
     private Trajectory _zeroBall;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
@@ -66,7 +66,7 @@ public class RobotContainer extends OutliersContainer {
         metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
         _zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
         // Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
-        metric("initial", zeroBall.getInitialPose().toString());
+        metric("initial", _zeroBall.getInitialPose().toString());
 
         //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
         //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);

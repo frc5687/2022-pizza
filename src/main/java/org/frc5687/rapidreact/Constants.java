@@ -23,7 +23,7 @@ public class Constants {
     // and cannot be changed.
 
     public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
-    public static final double METRIC_FLUSH_PERIOD = 1.0;
+    public static final double METRIC_FLUSH_PERIOD = 1.0; // seconds
     public static final double UPDATE_PERIOD = 0.02; // seconds?
     public static final double EPSILON = 0.00001;
 

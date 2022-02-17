@@ -43,7 +43,7 @@ public class DriveTrain extends OutliersSubsystem {
     private double _PIDAngle;
 
     private AHRS _imu;
-    private OI _oi;
+    // private OI _oi;
 
     private HolonomicDriveController _controller;
     private ProfiledPIDController _angleController;
@@ -51,7 +51,7 @@ public class DriveTrain extends OutliersSubsystem {
     public DriveTrain(OutliersContainer container, OI oi, AHRS imu) {
         super(container);
         try {
-            _oi = oi;
+            // _oi = oi;
             _imu = imu;
 
             _northWest =
