@@ -33,8 +33,7 @@ public class RobotMap {
      * SparkMax with Id 0 and a TalonSRX with Id 0.
      */
     public static class CAN {
-
-        public static class TALONFX {
+            public static class TALONFX {
             public static final int NORTH_WEST_INNER = 1;
             public static final int NORTH_WEST_OUTER = 2;
             public static final int SOUTH_WEST_OUTER = 4;
