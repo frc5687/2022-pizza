@@ -39,6 +39,7 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
     private DriveTrain _driveTrain;
     private Command _autoCommand;
+    private Trajectory _zeroBall;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
@@ -63,14 +64,13 @@ public class RobotContainer extends OutliersContainer {
         //_driveTrain = new DriveTrain(this, _oi, _imu);
 
         metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
-        Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
-//        Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
+        _zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
+        // Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         metric("initial", zeroBall.getInitialPose().toString());
 
         //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
         //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
-        //_oi.initializeButtons(_driveTrain, zeroBall);
         _imu.reset();
         
         // Config the NavX
@@ -80,7 +80,7 @@ public class RobotContainer extends OutliersContainer {
         _driveTrain = new DriveTrain(this, _oi, _imu);
 
         // Initialize buttons AFTER subsystems allocated
-        _oi.initializeButtons(_driveTrain);
+        _oi.initializeButtons(_driveTrain, _zeroBall);
 
         // The robot's default command will run so long as another command isn't activated
         setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));

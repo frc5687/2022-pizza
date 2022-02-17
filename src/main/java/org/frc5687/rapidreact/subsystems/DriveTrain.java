@@ -296,7 +296,7 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     public void resetOdometry(Pose2d position) {
-        _odomerty.resetPosition(position, getHeading());
+        _odometry.resetPosition(position, getHeading());
     }
 
     public void startModules() {

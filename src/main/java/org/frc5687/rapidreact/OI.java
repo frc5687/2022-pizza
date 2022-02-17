@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.frc5687.rapidreact.commands.SnapTo;
+import org.frc5687.rapidreact.commands.ResetNavX;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -73,8 +74,7 @@ public class OI extends OutliersProxy {
 
     private Joystick[] _joysticks = new Joystick[MAX_USB_PORTS];
 
-    // Button commands
-    // private JoystickButton _shootButton;
+    // Allocate buttons
     private JoystickButton _autoButton;
     private JoystickButton _resetNavX;
     private JoystickButton _snapBTN;
@@ -83,19 +83,23 @@ public class OI extends OutliersProxy {
         addJoystick(ButtonMap.Controllers.TRANSLATOR_JOYSTICK);
         addJoystick(ButtonMap.Controllers.ROTATOR_JOYSTICK);
         addGamepad(ButtonMap.Controllers.ROTATOR_GAMEPAD);
-    }
 
-    public void initializeButtons(DriveTrain driveTrain/*, Shooter shooter*/) {
-        _autoButton = new JoystickButton(_translation, 5);
-        _autoButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
-
-        // example of creating shoot button.
-        // _shootButton = addJoystickButton(ButtonMap.Buttons.SHOOT.Controller, ButtonMap.Buttons.SHOOT.Button);
+        // Create buttons
+        _autoButton = addJoystickButton(ButtonMap.Buttons.RUN_AUTO.Controller, ButtonMap.Buttons.RUN_AUTO.Button);
         _resetNavX = addJoystickButton(ButtonMap.Buttons.RESET_NAVX.Controller, ButtonMap.Buttons.RESET_NAVX.Button);
         _snapBTN = new JoystickButton(_joysticks[1], 4);
-        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
+
     }
 
+    /** Define how buttons work:
+     *  - when button calls command (when pressed, released, held, etc.)
+     *  - which command gets called
+     */
+    public void initializeButtons(DriveTrain driveTrain, Trajectory trajectory/*, Shooter shooter*/) {
+        _autoButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
+        _resetNavX.whenReleased(new ResetNavX(driveTrain));
+        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
+    }
 
     public double getDriveY() {
         Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);

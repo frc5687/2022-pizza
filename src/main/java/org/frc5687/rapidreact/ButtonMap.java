@@ -71,5 +71,9 @@ public class ButtonMap {
             public static int Button = 5;
         }
 
+        public static class RUN_AUTO {
+            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
+            public static int Button = 1;
+        }
     }
 }
