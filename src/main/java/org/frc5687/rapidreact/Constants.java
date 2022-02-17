@@ -4,13 +4,12 @@ package org.frc5687.rapidreact;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
-// Separate constants into individual inner classes corresponding
-// to subsystems or robot modes, to keep variable names shorter.
-
 /**
- * Define globally-accessible robot constants (such as speeds, unit conversion factors,
- * PID gains, and sensor/motor ports).
+ * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
+ * <p>Robot port mappings are in RobotMap.
+ * 
+ * <p>Joystick and Gamepad settings, including button mappings, are in ButtonMap.
  */
 public class Constants {
 
@@ -22,15 +21,39 @@ public class Constants {
     public static final double UPDATE_PERIOD = 0.02; // seconds?
     public static final double EPSILON = 0.00001;
 
+    // Separate constants into individual inner classes corresponding
+    // to subsystems or robot modes, to keep variable names shorter.
+
     /**
-     *  Swerve modules are referenced by compass heading.
+     * We use compass headings to reference swerve modules.
+     * 
+     * When looking down at top of robot:
      * 
      *          N
      *          |
      *      W -- -- E
      *          |
      *          S
-    */
+     * 
+     * When robot is flipped over on its back:
+     * 
+     *          N
+     *          |
+     *      E -- -- W
+     *          |
+     *          S
+     */
+
+
+    /** Constants for driving robot
+     * 
+     * <p>These constants control how entire drivetrain works, including
+     * 
+     * - what angle the wheels point,
+     * - which direction the wheels turn,
+     * - how sensitive the joystick is,
+     * - maximum speed and acceleration
+     */
     public static class DriveTrain {
 
         // Control
@@ -40,7 +63,19 @@ public class Constants {
         public static final double WIDTH = 0.6223; // meters
         public static final double LENGTH = 0.6223; // meters
 
-        // Distance of swerve module from center of robot
+        /**
+         * Swerve modules are on four corners of robot:
+         * 
+         * NW  <- Width of robot ->  NE
+         *             / \
+         *              |
+         *        Length of robot
+         *              |
+         *             \ /
+         *  SW                       SE
+         */
+
+        // Distance of swerve modules from center of robot
         public static final double SWERVE_NS_POS = LENGTH / 2.0;
         public static final double SWERVE_WE_POS = WIDTH / 2.0;
 
@@ -56,8 +91,6 @@ public class Constants {
          * 
          *   SW (-,+)  SE (-,-)
          * 
-         * Position vectors for the swerve module kinematics.
-         * 
          * We go counter-counter clockwise starting at NW of chassis:
          * 
          *  NW, SW, SE, NE
@@ -65,6 +98,10 @@ public class Constants {
          * Note: when robot is flipped over, this is clockwise.
          * 
          */
+
+        // Position vectors for the swerve module kinematics
+        // i.e. location of each swerve module from center of robot
+        // see coordinate system above to understand signs of vector coordinates
         public static final Translation2d NORTH_WEST = new Translation2d( SWERVE_NS_POS, SWERVE_WE_POS ); // +,+
         public static final Translation2d SOUTH_WEST = new Translation2d( -SWERVE_NS_POS, SWERVE_WE_POS ); // -,+
         public static final Translation2d SOUTH_EAST = new Translation2d( -SWERVE_NS_POS, -SWERVE_WE_POS ); // -,-
@@ -82,11 +119,12 @@ public class Constants {
         public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
         public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
 
-        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s) .
-
+        // Maximum rates of motion
+        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
         public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
         public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
 
+        // PID controller settings
         public static final double ANGLE_kP = 3.5;
         public static final double ANGLE_kI = 0.0;
         public static final double ANGLE_kD = 0.0;
@@ -99,6 +137,10 @@ public class Constants {
 
     }
 
+    /** Constants for swerve module hardware.
+     * 
+     * <p>These constants relate to the physical characteristics of the swerve module design.
+     */
     public static class DifferentialSwerveModule {
 
         // update rate of our modules 5ms.
