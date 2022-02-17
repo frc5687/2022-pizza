@@ -7,6 +7,8 @@ package org.frc5687.rapidreact;
 
 import static org.frc5687.rapidreact.util.Helpers.*;
 
+import org.frc5687.rapidreact.Constants.Lime;
+import org.frc5687.rapidreact.commands.Aim;
 import org.frc5687.rapidreact.commands.SnapTo;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.util.Gamepad;
+import org.frc5687.rapidreact.util.Limelight;
 import org.frc5687.rapidreact.util.OutliersProxy;
 
 /** 
@@ -32,7 +35,7 @@ public class OI extends OutliersProxy {
     private Rotation2d theta;
     private JoystickButton _resetNavX;
     private JoystickButton _snapBTN;
-    private Rotation2d _test;
+    private JoystickButton _aim;
     // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
@@ -43,11 +46,11 @@ public class OI extends OutliersProxy {
         _rotation = new Joystick(1);
         _resetNavX = new JoystickButton(_translation, 5);
         _snapBTN = new JoystickButton(_gamepad, Gamepad.Buttons.A.getNumber());
-        _test = new Rotation2d(5.0);
+        _aim = new JoystickButton(_gamepad, Gamepad.Buttons.X.getNumber());
     }
 
-    public void initializeButtons(DriveTrain driveTrain) {
-        _snapBTN.whenPressed(new SnapTo(driveTrain, _test));
+    public void initializeButtons(DriveTrain driveTrain, Limelight limelight) {
+        _aim.whenHeld(new Aim(driveTrain, limelight));
     }
 
     public double getDriveY() {

@@ -59,7 +59,7 @@ public class RobotContainer extends OutliersContainer {
         setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
         _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         _imu.reset();
-        _oi.initializeButtons(_driveTrain);
+        _oi.initializeButtons(_driveTrain, _limelight);
 
         // The robot's default command will run so long as another command isn't activated
         setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));

@@ -34,8 +34,15 @@ public class Drive extends OutliersCommand {
         //  driveX and driveY are swapped due to coordinate system that WPILib uses.
         double vx = _vxFilter.calculate(-_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
         double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
-        double rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
-
+        //double rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
+        double rot = 0.0;
+        if(_driveTrain.hasVisionTarget()){
+            rot = _driveTrain.getYaw();
+            error("Targeting");
+        }else{
+            rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
+            error("Joystick");
+        }
         _driveTrain.drive(vx, vy, rot, true);
     }
 

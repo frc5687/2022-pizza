@@ -19,7 +19,6 @@ public class SnapTo extends OutliersCommand{
     @Override
     public void execute(){
         super.execute();
-        DriverStation.reportError("Rotation: " + _theta, false);
         _driveTrain.snap(_theta);
     }
 

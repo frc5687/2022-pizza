@@ -43,6 +43,7 @@ public class DriveTrain extends OutliersSubsystem {
     private SwerveDriveOdometry _odometry;
 
     private double _PIDAngle;
+    private boolean _autoAim = false;
 
     private AHRS _imu;
     private OI _oi;
@@ -53,6 +54,7 @@ public class DriveTrain extends OutliersSubsystem {
     public DriveTrain(OutliersContainer container, OI oi, AHRS imu, Limelight limelight) {
         super(container);
         try {
+            _autoAim = false;
             _oi = oi;
             _imu = imu;
             _limelight = limelight;
@@ -190,6 +192,24 @@ public class DriveTrain extends OutliersSubsystem {
             metric("Snap rotation", theta.toString());
             return false;
         }
+    }
+
+    public void useAutoAim(boolean mode){
+        _autoAim = mode;
+    }
+
+    public boolean getAutoMode(){
+        return _autoAim;
+    }
+
+    public boolean hasVisionTarget(){
+        //Checks to see if the limelight has a target
+        return _limelight.hasTarget();
+    }
+
+    public double getTargetYaw(){
+        //Gets the targets yaw
+        return _limelight.getYaw();
     }
 
     public boolean isAtPose(Pose2d pose) {
