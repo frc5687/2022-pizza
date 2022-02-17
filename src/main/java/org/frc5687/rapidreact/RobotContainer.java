@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frc5687.rapidreact.commands.Drive;
 import org.frc5687.rapidreact.commands.DriveTrajectory;
 import org.frc5687.rapidreact.commands.OutliersCommand;
+import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.util.AutoChooser;
@@ -37,20 +38,17 @@ public class RobotContainer extends OutliersContainer {
         _oi = new OI();
         _autoChooser = new AutoChooser();
         //Config the NavX
-        //_imu = new AHRS(SPI.Port.kMXP, (byte) 200);
-        //_driveTrain = new DriveTrain(this, _oi, _imu);
-
+        _imu = new AHRS(SPI.Port.kMXP, (byte) 200);
+        _driveTrain = new DriveTrain(this, _oi, _imu);
         metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
         Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
-//        Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
+        //Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         metric("initial", zeroBall.getInitialPose().toString());
 
-        //setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
-        //_robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
-        //_driveTrain.resetOdometry(zeroBall.getInitialPose());
+        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
+        _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
+        _driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
-        _imu.reset();
-        
     }
 
     public void periodic() {
@@ -103,7 +101,10 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
-        return new DriveTrajectory(_driveTrain, trajectory);
+        //if(autoMode.label == "ZB") {
+            return new ZeroBallAuto(_driveTrain, trajectory);
+        //}
+
 
     }
 

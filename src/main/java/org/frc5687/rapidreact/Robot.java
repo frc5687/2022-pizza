@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
+import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.util.*;
 
 /**
@@ -58,6 +60,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         _robotContainer = new RobotContainer(this, _identityMode);
         _timer = new Timer();
         _robotContainer.init();
+        _autoCommand = _robotContainer.getAutonomousCommand();
 
         // Periodically flushes metrics (might be good to configure enable/disable via USB config
         // file)
