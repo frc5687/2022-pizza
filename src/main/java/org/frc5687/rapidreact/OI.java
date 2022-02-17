@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.frc5687.rapidreact.commands.SnapTo;
-import org.frc5687.rapidreact.commands.ResetNavX;
+// import org.frc5687.rapidreact.commands.ResetNavX;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.wpilibj.DriverStation;
@@ -97,7 +98,8 @@ public class OI extends OutliersProxy {
      */
     public void initializeButtons(DriveTrain driveTrain, Trajectory trajectory/*, Shooter shooter*/) {
         _autoButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
-        _resetNavX.whenReleased(new ResetNavX(driveTrain));
+        _resetNavX.whenPressed(new InstantCommand(driveTrain::resetYaw, driveTrain));
+        // _resetNavX.whenReleased(new ResetNavX(driveTrain));
         _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
 
