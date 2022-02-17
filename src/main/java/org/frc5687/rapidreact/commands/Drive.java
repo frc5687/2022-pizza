@@ -36,12 +36,12 @@ public class Drive extends OutliersCommand {
         double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
         //double rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
         double rot = 0.0;
-        if(_driveTrain.hasVisionTarget()){
+        if(_driveTrain.hasVisionTarget() && _driveTrain.usingAutoMode()){
             rot = _driveTrain.getYaw();
-            error("Targeting");
+            metric("Using auto targeting", true);
         }else{
             rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
-            error("Joystick");
+            metric("Using auto targeting", false);
         }
         _driveTrain.drive(vx, vy, rot, true);
     }

@@ -198,7 +198,7 @@ public class DriveTrain extends OutliersSubsystem {
         _autoAim = mode;
     }
 
-    public boolean getAutoMode(){
+    public boolean usingAutoMode(){
         return _autoAim;
     }
 
