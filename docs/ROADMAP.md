@@ -1,4 +1,4 @@
-This season we will have a chassis bot to program while the team is building the competition bot.  We're asking the mechies to do a few things to the chassis bot:
+This season we will have a pizza bot to program while the team is building the competition bot.  We're asking the mechies to do a few things to the pizza bot:
 
 - Fasten everything down so we can drive it fast without breaking it.
 - Add ballast so its mass approximates the competition bot's.
