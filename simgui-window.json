@@ -1,7 +1,7 @@
 {
   "MainWindow": {
     "GLOBAL": {
-      "height": "1050",
+      "height": "986",
       "maximized": "1",
       "style": "0",
       "userScale": "2",
@@ -11,6 +11,11 @@
     }
   },
   "Window": {
+    "###/FMSInfo": {
+      "Collapsed": "0",
+      "Pos": "417,113",
+      "Size": "235,221"
+    },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "7,810",

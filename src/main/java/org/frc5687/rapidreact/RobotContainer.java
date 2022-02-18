@@ -41,13 +41,13 @@ public class RobotContainer extends OutliersContainer {
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200);
         _driveTrain = new DriveTrain(this, _oi, _imu);
         metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
-        Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
+        //Trajectory zeroBall = getTrajectory(_autoChooser.getPath(_autoChooser.getSelectedMode(), _autoChooser.getSelectedPosition()));
         //Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
-        metric("initial", zeroBall.getInitialPose().toString());
+        //metric("initial", zeroBall.getInitialPose().toString());
 
         setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
         _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
-        _driveTrain.resetOdometry(zeroBall.getInitialPose());
+        //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
     }
 
@@ -102,7 +102,7 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
         //if(autoMode.label == "ZB") {
-            return new ZeroBallAuto(_driveTrain, trajectory);
+        return new ZeroBallAuto(_driveTrain, trajectory);
         //}
 
 
