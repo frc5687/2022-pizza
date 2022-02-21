@@ -23,9 +23,9 @@ public class ButtonMap {
          * USB ports of joysticks or gamepads.
          * -1 means not in use.
         */
-        public static final int TRANSLATOR_JOYSTICK = 1;
+        public static final int TRANSLATOR_JOYSTICK = 0;
         public static final int ROTATOR_JOYSTICK = -1;
-        public static final int ROTATOR_GAMEPAD = 0;
+        public static final int ROTATOR_GAMEPAD = 1;
     }
 
     /** Define axes of control */
