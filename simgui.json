@@ -22,6 +22,18 @@
         "Label": {
           "open": true
         },
+        "Numeric": {
+          "open": true
+        },
+        "open": true
+      },
+      "DriveTrain": {
+        "open": true
+      },
+      "Robot": {
+        "open": true
+      },
+      "RobotContainer": {
         "open": true
       },
       "open": true

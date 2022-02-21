@@ -35,7 +35,6 @@ public class Drive extends OutliersCommand {
         double vx = _vxFilter.calculate(-_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
         double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
         double rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
-
         _driveTrain.drive(vx, vy, rot, true);
     }
 
@@ -43,6 +42,7 @@ public class Drive extends OutliersCommand {
     public boolean isFinished() {
         return super.isFinished();
     }
+
 
     @Override
     public void end(boolean interrupted) {
