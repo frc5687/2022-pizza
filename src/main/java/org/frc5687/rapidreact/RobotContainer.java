@@ -101,7 +101,7 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         //Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
-        Trajectory trajectory = getTrajectory("ZBLeft1ballT");
+        Trajectory trajectory = getTrajectory("output/ZBLeft1ballT");
         //if(autoMode.label == "ZB") {
         return new ZeroBallAuto(_driveTrain, trajectory);
         //}
