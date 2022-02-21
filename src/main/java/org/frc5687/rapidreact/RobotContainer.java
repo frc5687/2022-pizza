@@ -100,12 +100,12 @@ public class RobotContainer extends OutliersContainer {
     public Command getAutonomousCommand() {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
-        Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
+        //Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
+        Trajectory trajectory = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         //if(autoMode.label == "ZB") {
         return new ZeroBallAuto(_driveTrain, trajectory);
         //}
-
-
+        
     }
 
     @Override
