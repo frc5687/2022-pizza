@@ -8,6 +8,9 @@ import org.frc5687.rapidreact.OI;
 
 /**
  * Drive using OI control
+ * 
+ * <p>This is the default command for DriveTrain, so requires subsystem and
+ * never finishes.
  */
 public class DriveOI extends OutliersCommand {
 
@@ -22,7 +25,7 @@ public class DriveOI extends OutliersCommand {
         _oi = oi;
         _vxFilter = new SlewRateLimiter(3.0);
         _vyFilter = new SlewRateLimiter(3.0);
-        addRequirements(_driveTrain);
+        addRequirements(_driveTrain); // necessary to be DriveTrain's default command
     }
 
     @Override
@@ -43,9 +46,8 @@ public class DriveOI extends OutliersCommand {
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return false; // as a default command, never finish
     }
-
 
     @Override
     public void end(boolean interrupted) {
