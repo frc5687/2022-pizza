@@ -15,6 +15,7 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
+import org.frc5687.rapidreact.Constants;
 
 /**
  * TODO: explain RobotContainer class
@@ -53,7 +54,7 @@ public class RobotContainer extends OutliersContainer {
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
-        _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
+        _robot.addPeriodic(this::controllerPeriodic, Constants.DifferentialSwerveModule.kDt, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
     }
