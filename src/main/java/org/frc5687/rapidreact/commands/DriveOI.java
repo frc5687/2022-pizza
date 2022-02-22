@@ -6,7 +6,7 @@ import org.frc5687.rapidreact.Constants;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.OI;
 
-public class Drive extends OutliersCommand {
+public class DriveOI extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
     private final SlewRateLimiter _vxFilter;
@@ -14,7 +14,7 @@ public class Drive extends OutliersCommand {
 
     private final OI _oi;
 
-    public Drive(DriveTrain driveTrain, OI oi) {
+    public DriveOI(DriveTrain driveTrain, OI oi) {
         _driveTrain = driveTrain;
         _oi = oi;
         _vxFilter = new SlewRateLimiter(3.0);

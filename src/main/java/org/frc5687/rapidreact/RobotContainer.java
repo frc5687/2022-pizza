@@ -5,7 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.frc5687.rapidreact.commands.Drive;
+import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.DriveTrajectory;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
@@ -45,7 +45,7 @@ public class RobotContainer extends OutliersContainer {
         //Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         //metric("initial", zeroBall.getInitialPose().toString());
 
-        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
+        setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
         _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
