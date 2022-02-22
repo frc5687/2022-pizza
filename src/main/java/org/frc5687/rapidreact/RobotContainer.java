@@ -2,6 +2,9 @@
 package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -24,6 +27,9 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
     private DriveTrain _driveTrain;
+
+    private Pose2d _destination;
+    private Rotation2d _theta;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
@@ -107,10 +113,14 @@ public class RobotContainer extends OutliersContainer {
     }
 
     public Command getAutonomousCommand() {
+
+        _theta = new Rotation2d(0.0);
+        _destination = new Pose2d(-1.0, -1.0, _theta);
+
         // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         //if(autoMode.label == "ZB") {
-        return new ZeroBallAuto(_driveTrain);
+        return new ZeroBallAuto(_driveTrain, _destination);
         // }        
     }
 

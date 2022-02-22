@@ -7,7 +7,7 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+// import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /**
  * Drive in autonomous mode (i.e., no OI control)
@@ -32,7 +32,7 @@ public class DriveAuto extends OutliersCommand {
 
     @Override
     public void initialize() {
-        _heading = new Rotation2d(0.0);
+        _heading = new Rotation2d(Math.PI);
         _velocity = 0.1;
 
         super.initialize();

@@ -13,13 +13,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class ZeroBallAuto extends SequentialCommandGroup {
 
     private final Pose2d _destination;
-    private final Rotation2d _theta;
+    // private final Rotation2d _theta;
 
     public ZeroBallAuto(
-        DriveTrain driveTrain
+        DriveTrain driveTrain,
+        Pose2d destination
     ) {
-        _theta = new Rotation2d(0.0);
-        _destination = new Pose2d(1.0, 1.0, _theta);
+        // Was hardcoded for testing
+        // _theta = new Rotation2d(0.0);
+        //_destination = new Pose2d(1.0, 1.0, _theta);
+
+        // Now get destination from caller
+        _destination = destination;
 
         addCommands(
             new DriveAuto(driveTrain, _destination)
