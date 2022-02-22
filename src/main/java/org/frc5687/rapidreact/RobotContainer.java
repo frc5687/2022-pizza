@@ -40,6 +40,8 @@ public class RobotContainer extends OutliersContainer {
         _driveTrain = new DriveTrain(this, _oi, _imu);
         metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
 
+        info("Running RobotContainer.init()");
+
         // DriveTrain's default command is DriveOI
         setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
         // Run the control loop for each individual swerve drive unit every 5 ms.
@@ -58,6 +60,7 @@ public class RobotContainer extends OutliersContainer {
     @Override
     public void autonomousInit() {
         //Runs once during auto
+        info("Running RobotContainer.autonomousInit()");
     }
 
     @Override

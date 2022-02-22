@@ -25,7 +25,7 @@ public class Robot extends OutliersRobot {
 
     public static OutliersContainer.IdentityMode _identityMode =
             OutliersContainer.IdentityMode.programming;
-    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.warn;
+    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.info;
     private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
 
     private int _updateTick = 0;
@@ -88,6 +88,9 @@ public class Robot extends OutliersRobot {
      */
     @Override
     public void autonomousInit() {
+
+        info("Running Robot.autonomousInit()");
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
