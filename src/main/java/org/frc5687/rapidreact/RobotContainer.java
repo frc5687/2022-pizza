@@ -47,7 +47,11 @@ public class RobotContainer extends OutliersContainer {
         //Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         //metric("initial", zeroBall.getInitialPose().toString());
 
+        // DriveTrain's default command is DriveOI
         setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
+        // Run the control loop for each individual swerve drive unit every 5 ms.
+        // DriveTrain has four DiffSwerveModules.
+        // controllerPeriodic calls the periodic for each of them.
         _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
