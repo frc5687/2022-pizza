@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.util.*;
 
 /**
@@ -22,7 +21,7 @@ import org.frc5687.rapidreact.util.*;
  * 
  * <p>Robot can be in four modes: autonomous, teleop, test or disabled.
  */
-public class Robot extends OutliersRobot implements ILoggingSource {
+public class Robot extends OutliersRobot {
 
     public static OutliersContainer.IdentityMode _identityMode =
             OutliersContainer.IdentityMode.programming;
@@ -35,13 +34,13 @@ public class Robot extends OutliersRobot implements ILoggingSource {
 
     private RobotContainer _robotContainer;
 
-    private boolean _fmsConnected;
+    // private boolean _fmsConnected;
 
     private Command _autoCommand;
 
-    private Timer _timer;
-    private double _prevTime;
-    private double _time;
+    // private Timer _timer;
+    // private double _prevTime;
+    // private double _time;
 
     // Initialization methods
 
@@ -63,13 +62,13 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         info("Running commit " + Version.REVISION + " of branch " + Version.BRANCH);
 
         _robotContainer = new RobotContainer(this, _identityMode);
-        _timer = new Timer();
+        // _timer = new Timer();
         _robotContainer.init();
         _autoCommand = _robotContainer.getAutonomousCommand();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
-        _time = _timer.get();
+        // _time = _timer.get();
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
@@ -85,7 +84,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
      */
     @Override
     public void autonomousInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
+        // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();
@@ -93,7 +92,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     }
 
     public void teleopInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
+        // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.teleopInit();
 
         // _limelight.disableLEDs();
@@ -105,7 +104,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         RioLogger.getInstance().forceSync();
         RioLogger.getInstance().close();
         _robotContainer.disabledInit();
-        //        MetricTracker.flushAll();
+        // MetricTracker.flushAll();
     }
 
     // Periodic methods
@@ -147,7 +146,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         // Example of starting a new row of metrics for all instrumented objects.
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
-        //        _robotContainer.periodic();
+        // _robotContainer.periodic();
         CommandScheduler.getInstance().run();
         update();
         updateDashboard();
