@@ -19,7 +19,7 @@ import org.frc5687.rapidreact.util.*;
  * 
  * <p>RobotContainer has the actual commands.
  * 
- * <p>Robot can be in four modes: autonomous, teleop, test or disabled.
+ * <p>Robot can be in four modes: disabled, autonomous, teleop, or test.
  */
 public class Robot extends OutliersRobot {
 
@@ -72,15 +72,17 @@ public class Robot extends OutliersRobot {
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
+    @Override
+    public void disabledInit() {
+        // _limelight.disableLEDs();
+        RioLogger.getInstance().forceSync();
+        RioLogger.getInstance().close();
+        _robotContainer.disabledInit();
+        // MetricTracker.flushAll();
+    }
+
     /**
-     * This autonomous (along with the chooser code above) shows how to select between different
-     * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-     * uncomment the getString line to get the auto name from the text box below the Gyro
-     *
-     * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-     * below with additional strings. If using the SendableChooser make sure to add them to the
-     * chooser code above as well.
+     * TODO: Explain autonomousInit
      */
     @Override
     public void autonomousInit() {
@@ -98,16 +100,13 @@ public class Robot extends OutliersRobot {
         // _limelight.disableLEDs();
     }
 
-    @Override
-    public void disabledInit() {
-        // _limelight.disableLEDs();
-        RioLogger.getInstance().forceSync();
-        RioLogger.getInstance().close();
-        _robotContainer.disabledInit();
-        // MetricTracker.flushAll();
-    }
-
     // Periodic methods
+
+    @Override
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+        _robotContainer.disabledPeriodic();
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
@@ -121,12 +120,6 @@ public class Robot extends OutliersRobot {
     @Override
     public void testPeriodic() {
         CommandScheduler.getInstance().run();
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        super.disabledPeriodic();
-        _robotContainer.disabledPeriodic();
     }
 
     /**
