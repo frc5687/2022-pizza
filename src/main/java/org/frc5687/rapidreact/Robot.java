@@ -13,15 +13,18 @@ import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.util.*;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * The VM is configured to automatically run Robot, and to call the methods corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
+ * 
+ * <p>This class calls RobotContainer, which has the actual commands to be executed during
+ * each mode of robot operation.
  */
 public class Robot extends OutliersRobot implements ILoggingSource {
 
     public static OutliersContainer.IdentityMode _identityMode =
-            OutliersContainer.IdentityMode.competition;
+            OutliersContainer.IdentityMode.programming;
     private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.warn;
     private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
 
@@ -39,9 +42,10 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     private double _prevTime;
     private double _time;
 
+    // Initialization methods
+
     /**
-     * This function is setRollerSpeed when the robot is first started up and should be used for any
-     * initialization code.
+     * TODO: Explain robotInit
      */
     @Override
     public void robotInit() {
@@ -62,22 +66,10 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         _robotContainer.init();
         _autoCommand = _robotContainer.getAutonomousCommand();
 
-        // Periodically flushes metrics (might be good to configure enable/disable via USB config
-        // file)
+        // Periodically flushes metrics
+        // TODO: configure enable/disable via USB config file
         _time = _timer.get();
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
-    }
-
-    /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-     * SmartDashboard integrated updating.
-     */
-    @Override
-    public void robotPeriodic() {
-        ourPeriodic();
     }
 
     /**
@@ -106,6 +98,17 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         // _limelight.disableLEDs();
     }
 
+    @Override
+    public void disabledInit() {
+        // _limelight.disableLEDs();
+        RioLogger.getInstance().forceSync();
+        RioLogger.getInstance().close();
+        _robotContainer.disabledInit();
+        //        MetricTracker.flushAll();
+    }
+
+    // Periodic methods
+
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {}
@@ -113,6 +116,30 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {}
+
+    /** This function is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+        _robotContainer.disabledPeriodic();
+    }
+
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for items like
+     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+     *
+     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+     * SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        ourPeriodic();
+    }
 
     private void ourPeriodic() {
 
@@ -125,26 +152,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         updateDashboard();
     }
 
-    /** This function is called periodically during test mode. */
-    @Override
-    public void testPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
-
-    @Override
-    public void disabledInit() {
-        // _limelight.disableLEDs();
-        RioLogger.getInstance().forceSync();
-        RioLogger.getInstance().close();
-        _robotContainer.disabledInit();
-        //        MetricTracker.flushAll();
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        super.disabledPeriodic();
-        _robotContainer.disabledPeriodic();
-    }
+    // Helper methods
 
     public void updateDashboard() {
         _updateTick++;

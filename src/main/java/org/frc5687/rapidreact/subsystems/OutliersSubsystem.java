@@ -9,7 +9,9 @@ import org.frc5687.rapidreact.util.RioLogger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
+/** 
+ * TODO: Explain OutliersSubsystem class
+ */
 public abstract class OutliersSubsystem extends SubsystemBase implements ILoggingSource {
     private MetricTracker _metricTracker;
 

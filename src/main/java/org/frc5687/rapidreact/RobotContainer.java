@@ -5,8 +5,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.frc5687.rapidreact.commands.Drive;
-import org.frc5687.rapidreact.commands.DriveTrajectory;
+import org.frc5687.rapidreact.commands.DriveOI;
+// import org.frc5687.rapidreact.commands.DriveTrajectory;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
@@ -15,11 +15,15 @@ import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+// import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
+
+/**
+ * TODO: explain RobotContainer class
+ */
 public class RobotContainer extends OutliersContainer {
 
     private OI _oi;
@@ -45,7 +49,7 @@ public class RobotContainer extends OutliersContainer {
         //Trajectory zeroBall = getTrajectory("output/ZBLeft1ballT.wpilib.json");
         //metric("initial", zeroBall.getInitialPose().toString());
 
-        setDefaultCommand(_driveTrain, new Drive(_driveTrain, _oi));
+        setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
         _robot.addPeriodic(this::controllerPeriodic, 0.005, 0.005);
         //_driveTrain.resetOdometry(zeroBall.getInitialPose());
         //_oi.initializeButtons(_driveTrain, zeroBall);
@@ -100,11 +104,11 @@ public class RobotContainer extends OutliersContainer {
     public Command getAutonomousCommand() {
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
-        //Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
-        Trajectory trajectory = getTrajectory("output/ZBLeft1ballT.wpilib.json");
-        //if(autoMode.label == "ZB") {
+        // Trajectory trajectory = getTrajectory(_autoChooser.getPath(autoMode, autoPosition));
+        // Trajectory trajectory = getTrajectory("output/ZBLeft1ballT.wpilib.json");
+        // if (autoMode.label == "ZB") {
         return new ZeroBallAuto(_driveTrain, trajectory);
-        //}
+        // }
         
     }
 
