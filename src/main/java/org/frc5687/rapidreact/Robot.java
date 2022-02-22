@@ -12,7 +12,7 @@ import java.io.FileReader;
 import org.frc5687.rapidreact.util.*;
 
 /**
- * The VM is configured to automatically run Robot, and to call the functions corresponding to
+ * The VM is configured to automatically run Robot, and to call the methods corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
@@ -25,7 +25,7 @@ public class Robot extends OutliersRobot {
 
     public static OutliersContainer.IdentityMode _identityMode =
             OutliersContainer.IdentityMode.programming;
-    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.warn;
+    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.info;
     private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
 
     private int _updateTick = 0;
@@ -41,6 +41,8 @@ public class Robot extends OutliersRobot {
     // private Timer _timer;
     // private double _prevTime;
     // private double _time;
+
+    // Initialization methods
 
     // Initialization methods
 
@@ -86,6 +88,9 @@ public class Robot extends OutliersRobot {
      */
     @Override
     public void autonomousInit() {
+
+        info("Running Robot.autonomousInit()");
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
