@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.util.*;
 
 /**
@@ -18,10 +17,11 @@ import org.frc5687.rapidreact.util.*;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  * 
- * <p>This class calls RobotContainer, which has the actual commands to be executed during
- * each mode of robot operation.
+ * <p>RobotContainer has the actual commands.
+ * 
+ * <p>Robot can be in four modes: disabled, autonomous, teleop, or test.
  */
-public class Robot extends OutliersRobot implements ILoggingSource {
+public class Robot extends OutliersRobot {
 
     public static OutliersContainer.IdentityMode _identityMode =
             OutliersContainer.IdentityMode.programming;
@@ -34,13 +34,15 @@ public class Robot extends OutliersRobot implements ILoggingSource {
 
     private RobotContainer _robotContainer;
 
-    private boolean _fmsConnected;
+    // private boolean _fmsConnected;
 
     private Command _autoCommand;
 
-    private Timer _timer;
-    private double _prevTime;
-    private double _time;
+    // private Timer _timer;
+    // private double _prevTime;
+    // private double _time;
+
+    // Initialization methods
 
     // Initialization methods
 
@@ -62,40 +64,14 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         info("Running commit " + Version.REVISION + " of branch " + Version.BRANCH);
 
         _robotContainer = new RobotContainer(this, _identityMode);
-        _timer = new Timer();
+        // _timer = new Timer();
         _robotContainer.init();
         _autoCommand = _robotContainer.getAutonomousCommand();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
-        _time = _timer.get();
+        // _time = _timer.get();
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
-    }
-
-    /**
-     * This autonomous (along with the chooser code above) shows how to select between different
-     * autonomous modes using the dashboard. The sendable chooser code works with the Java
-     * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-     * uncomment the getString line to get the auto name from the text box below the Gyro
-     *
-     * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-     * below with additional strings. If using the SendableChooser make sure to add them to the
-     * chooser code above as well.
-     */
-    @Override
-    public void autonomousInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
-        _robotContainer.autonomousInit();
-        if (_autoCommand != null) {
-            _autoCommand.schedule();
-        }
-    }
-
-    public void teleopInit() {
-        _fmsConnected = DriverStation.isFMSAttached();
-        _robotContainer.teleopInit();
-
-        // _limelight.disableLEDs();
     }
 
     @Override
@@ -104,10 +80,35 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         RioLogger.getInstance().forceSync();
         RioLogger.getInstance().close();
         _robotContainer.disabledInit();
-        //        MetricTracker.flushAll();
+        // MetricTracker.flushAll();
+    }
+
+    /**
+     * TODO: Explain autonomousInit
+     */
+    @Override
+    public void autonomousInit() {
+        // _fmsConnected = DriverStation.isFMSAttached();
+        _robotContainer.autonomousInit();
+        if (_autoCommand != null) {
+            _autoCommand.schedule();
+        }
+    }
+
+    public void teleopInit() {
+        // _fmsConnected = DriverStation.isFMSAttached();
+        _robotContainer.teleopInit();
+
+        // _limelight.disableLEDs();
     }
 
     // Periodic methods
+
+    @Override
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+        _robotContainer.disabledPeriodic();
+    }
 
     /** This function is called periodically during autonomous. */
     @Override
@@ -121,12 +122,6 @@ public class Robot extends OutliersRobot implements ILoggingSource {
     @Override
     public void testPeriodic() {
         CommandScheduler.getInstance().run();
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        super.disabledPeriodic();
-        _robotContainer.disabledPeriodic();
     }
 
     /**
@@ -146,7 +141,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
         // Example of starting a new row of metrics for all instrumented objects.
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
-        //        _robotContainer.periodic();
+        // _robotContainer.periodic();
         CommandScheduler.getInstance().run();
         update();
         updateDashboard();
@@ -164,8 +159,9 @@ public class Robot extends OutliersRobot implements ILoggingSource {
 
     private void loadConfigFromUSB() {
         String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
+
         try {
-            String usbDir = "/U/"; // USB drive is mounted to /U on roboRIO
+            String usbDir = output_dir;
             String configFileName = usbDir + "frc5687.cfg";
             File configFile = new File(configFileName);
             FileReader reader = new FileReader(configFile);
@@ -179,7 +175,7 @@ public class Robot extends OutliersRobot implements ILoggingSource {
             bufferedReader.close();
             reader.close();
         } catch (Exception e) {
-            _identityMode = OutliersContainer.IdentityMode.competition;
+            _identityMode = OutliersContainer.IdentityMode.programming;
         }
     }
 
