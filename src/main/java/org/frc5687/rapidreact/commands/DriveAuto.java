@@ -22,9 +22,15 @@ public class DriveAuto extends OutliersCommand {
     private Rotation2d _heading;
     private Double _velocity;
 
-    public DriveAuto(DriveTrain driveTrain, Pose2d pose) {
+    public DriveAuto(
+        DriveTrain driveTrain,
+        Pose2d pose,
+        Rotation2d heading,
+        Double velocity) {
         _driveTrain = driveTrain;
         _destination = pose;
+        _heading = heading;
+        _velocity = velocity;
         // _vxFilter = new SlewRateLimiter(3.0);
         // _vyFilter = new SlewRateLimiter(3.0);
         addRequirements(_driveTrain);
@@ -32,9 +38,6 @@ public class DriveAuto extends OutliersCommand {
 
     @Override
     public void initialize() {
-        _heading = new Rotation2d(Math.PI);
-        _velocity = 0.1;
-
         super.initialize();
         _driveTrain.startModules();
     }
@@ -44,22 +47,15 @@ public class DriveAuto extends OutliersCommand {
         super.execute();
 
         //  driveX and driveY are swapped due to coordinate system that WPILib uses.
-        // TODO: verify this description of vx and vy is accurate
 
         /**
          * Based on observation, appears that
          * 
-         *             North = -Y
+         *             North = +Y
          *  West = +X              East = -X
-         *             South = +Y
+         *             South = -Y
          * 
          */
-
-        // Double vx = _vxFilter.calculate(0.0) * Constants.DriveTrain.MAX_MPS;
-        // Double vy = _vyFilter.calculate(0.0) * Constants.DriveTrain.MAX_MPS;
-        // Double rot = 0.0;
-
-        // _driveTrain.drive(vx, vy, rot, true);
 
         _driveTrain.poseFollower(_destination, _heading, _velocity);
     }

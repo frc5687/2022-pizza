@@ -5,18 +5,27 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.wpilibj.SPI;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.frc5687.rapidreact.commands.DriveOI;
-import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
+
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
+
+import org.frc5687.rapidreact.commands.DriveOI;
+import org.frc5687.rapidreact.commands.DriveAuto;
+import org.frc5687.rapidreact.commands.OutliersCommand;
+import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
+import org.frc5687.rapidreact.commands.auto.DeployIntake;
+import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
  * TODO: explain RobotContainer class
@@ -31,9 +40,6 @@ public class RobotContainer extends OutliersContainer {
     private DriveTrain _driveTrain;
     private Indexer _indexer;
     private Intake _intake;
-
-    private Pose2d _destination;
-    private Rotation2d _theta;
 
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
@@ -121,16 +127,51 @@ public class RobotContainer extends OutliersContainer {
         s.setDefaultCommand(subSystem, command);
     }
 
+    /** Return a SequentialCommandGroup to run during auto */
     public Command getAutonomousCommand() {
 
-        _theta = new Rotation2d(0.0);
-        _destination = new Pose2d(-1.0, -1.0, _theta);
+        Wait _waitOneSecond;
+        DeployIntake _deployIntake;
+        DriveAuto _driveToA;
+        DriveAuto _driveToB;
 
-        // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
-        // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
-        //if(autoMode.label == "ZB") {
-        return new ZeroBallAuto(_driveTrain, _destination);
-        // }        
+        Pose2d _waypoint;
+        Rotation2d _heading;
+        Double _velocity;
+        
+        _waitOneSecond = new Wait(1.0);
+        _deployIntake = new DeployIntake(_intake);
+
+        // destination A
+        _waypoint = new Pose2d(-1.0, -1.0, new Rotation2d(0.0));
+        _heading = new Rotation2d(0.0);
+        _velocity = 0.1;
+        _driveToA = getDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+
+        // destination B
+        _waypoint = new Pose2d(0.0, -1.0, new Rotation2d(Math.PI));
+        _heading = new Rotation2d(Math.PI);
+        _velocity = 0.2;
+        _driveToB = getDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+
+        return new SequentialCommandGroup(
+            _waitOneSecond,
+            _deployIntake,
+            _driveToA,
+            _waitOneSecond,
+            _driveToB
+        );
+
+    }
+
+    /** Return a drive to destination command */
+    public DriveAuto getDriveCommand(
+        DriveTrain driveTrain,
+        Pose2d wayPoint,
+        Rotation2d heading,
+        Double velocity
+        ) {
+        return new DriveAuto(driveTrain, wayPoint, heading, velocity);
     }
 
     @Override
