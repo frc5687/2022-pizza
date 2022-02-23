@@ -11,7 +11,11 @@ public class Wait extends OutliersCommand {
     private double _waiting; // Seconds to wait
     private Timer _timer;
 
-    /** constructor */
+    /**
+     * Create Wait command
+     * 
+     * @param delay seconds to wait
+     */
     public Wait(double delay) {
         _waiting = delay;
         _timer = new Timer();
