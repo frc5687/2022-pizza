@@ -138,8 +138,8 @@ public class RobotContainer extends OutliersContainer {
 
         double _xPos;
         double _yPos;
-        double _theta; // radians
-        double _omega; // radians
+        double _theta; // fractions of PI for radians
+        double _omega; // fractions of PI for radians
         Double _velocity;
         
         _waitOneSecondA = new Wait(1.0);
@@ -149,8 +149,8 @@ public class RobotContainer extends OutliersContainer {
         // destination A
         _xPos = -1.0;
         _yPos = -1.0;
-        _theta = 0.0 * Math.PI;
-        _omega = 0.5 * Math.PI;
+        _theta = 0.0;
+        _omega = 0.5;
         _velocity = 0.1;
 
         _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
@@ -159,7 +159,7 @@ public class RobotContainer extends OutliersContainer {
         _xPos = 0.0;
         _yPos = -1.0;
         _theta = 0.0;
-        _omega = 0.5 * Math.PI;
+        _omega = 0.5;
         _velocity = 0.2;
 
         _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
@@ -187,9 +187,14 @@ public class RobotContainer extends OutliersContainer {
 
         Pose2d _wayPoint; // contains xPos, yPos and theta
         Rotation2d _heading; // uses omega
+        double _theta;
+        double _omega;
 
-        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(theta));
-        _heading = new Rotation2d(omega);
+        _theta = theta * Math.PI;
+        _omega = omega * Math.PI;
+
+        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
+        _heading = new Rotation2d(_omega);
     
         return new DriveAuto(_driveTrain, _wayPoint, _heading, velocity);
     }
