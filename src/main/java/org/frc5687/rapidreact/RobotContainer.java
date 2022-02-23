@@ -147,17 +147,17 @@ public class RobotContainer extends OutliersContainer {
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
-        _xPos = -1.0;
-        _yPos = -1.0;
+        _xPos = 1.0;
+        _yPos = 0.0;
         _theta = 0.0;
-        _omega = 0.5;
+        _omega = 0.0;
         _velocity = 0.1;
 
         _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // destination B
-        _xPos = 0.0;
-        _yPos = -1.0;
+        _xPos = -1.0;
+        _yPos = 0.0;
         _theta = 0.0;
         _omega = 0.5;
         _velocity = 0.2;
@@ -167,11 +167,11 @@ public class RobotContainer extends OutliersContainer {
         // These all have to be unique commands.
         // Cannot execute same command twice.
         return new SequentialCommandGroup(
-            _waitOneSecondA,
+            //_waitOneSecondA,
             _deployIntake,
             _driveToA,
-            _waitOneSecondB,
-            _driveToB
+            _waitOneSecondB
+            //_driveToB
         );
 
     }
