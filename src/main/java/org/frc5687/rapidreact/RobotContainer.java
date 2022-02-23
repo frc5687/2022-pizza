@@ -25,7 +25,7 @@ import org.frc5687.rapidreact.commands.DriveAuto;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
-import org.frc5687.rapidreact.commands.auto.SomethingElse;
+import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
  * TODO: explain RobotContainer class
@@ -130,8 +130,8 @@ public class RobotContainer extends OutliersContainer {
     /** Return a SequentialCommandGroup to run during auto */
     public Command getAutonomousCommand() {
 
-        SomethingElse _waitOneSecondA;
-        SomethingElse _waitOneSecondB;
+        Wait _waitOneSecondA;
+        Wait _waitOneSecondB;
         DeployIntake _deployIntake;
         DriveAuto _driveToA;
         DriveAuto _driveToB;
@@ -140,8 +140,8 @@ public class RobotContainer extends OutliersContainer {
         Rotation2d _heading;
         Double _velocity;
         
-        _waitOneSecondA = new SomethingElse(1.0);
-        _waitOneSecondB = new SomethingElse(1.0);
+        _waitOneSecondA = new Wait(1.0);
+        _waitOneSecondB = new Wait(1.0);
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
