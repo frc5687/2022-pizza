@@ -146,13 +146,13 @@ public class RobotContainer extends OutliersContainer {
         _waypoint = new Pose2d(-1.0, -1.0, new Rotation2d(0.0));
         _heading = new Rotation2d(0.0);
         _velocity = 0.1;
-        _driveToA = getDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+        _driveToA = getAutoDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
 
         // destination B
         _waypoint = new Pose2d(0.0, -1.0, new Rotation2d(Math.PI));
         _heading = new Rotation2d(Math.PI);
         _velocity = 0.2;
-        _driveToB = getDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+        _driveToB = getAutoDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
 
         return new SequentialCommandGroup(
             _waitOneSecond,
@@ -165,7 +165,7 @@ public class RobotContainer extends OutliersContainer {
     }
 
     /** Return a drive to destination command */
-    public DriveAuto getDriveCommand(
+    public DriveAuto getAutoDriveCommand(
         DriveTrain driveTrain,
         Pose2d wayPoint,
         Rotation2d heading,

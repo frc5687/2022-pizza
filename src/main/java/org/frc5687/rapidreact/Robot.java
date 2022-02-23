@@ -44,10 +44,10 @@ public class Robot extends OutliersRobot {
 
     // Initialization methods
 
-    // Initialization methods
-
     /**
-     * TODO: Explain robotInit
+     * Run once when robot code starts.
+     * 
+     * <p>Set up logging and get autonomous command from RobotContainer.
      */
     @Override
     public void robotInit() {
@@ -84,7 +84,9 @@ public class Robot extends OutliersRobot {
     }
 
     /**
-     * TODO: Explain autonomousInit
+     * Run once when robot enters autonomous mode
+     * 
+     * <p>Schedule the auto command.
      */
     @Override
     public void autonomousInit() {
@@ -101,8 +103,6 @@ public class Robot extends OutliersRobot {
     public void teleopInit() {
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.teleopInit();
-
-        // _limelight.disableLEDs();
     }
 
     // Periodic methods
@@ -113,23 +113,18 @@ public class Robot extends OutliersRobot {
         _robotContainer.disabledPeriodic();
     }
 
-    /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {}
 
-    /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {}
 
-    /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+    public void testPeriodic() {}
 
     /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+     * This function is called every robot cycle, no matter the mode. Use this for items like
+     * diagnostics to run during disabled, autonomous, teleoperated and test.
      *
      * <p>This runs after the mode specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
@@ -139,6 +134,10 @@ public class Robot extends OutliersRobot {
         ourPeriodic();
     }
 
+    /** What we want to run every robot cycle in every mode.
+     * 
+     * <p>Write to log, schedule commands and update the dashboard.
+     */
     private void ourPeriodic() {
 
         // Example of starting a new row of metrics for all instrumented objects.
@@ -152,6 +151,11 @@ public class Robot extends OutliersRobot {
 
     // Helper methods
 
+    /** Update the dashboard.
+     * 
+     * <p>Frequency depends on TICKS_PER_UPDATE.  Updating every tick can slow
+     * down the robot.
+     */
     public void updateDashboard() {
         _updateTick++;
         if (_updateTick >= Constants.TICKS_PER_UPDATE) {
