@@ -147,7 +147,7 @@ public class RobotContainer extends OutliersContainer {
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
-        _xPos = -1.0;
+        _xPos = -0.2;
         _yPos = 0.0;
         _theta = 0.0;
         _omega = 0.0;
