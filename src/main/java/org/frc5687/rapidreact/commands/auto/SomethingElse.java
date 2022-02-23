@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj.Timer;
 /**
  * Wait (do nothing) for a number of seconds so we can pause during auto.
  */
-public class AutoWait extends OutliersCommand {
+public class SomethingElse extends OutliersCommand {
 
-    private double _delay; // Seconds to wait
+    private double _waiting; // Seconds to wait
     private Timer _timer;
 
     /** constructor */
-    public AutoWait(double delay) {
-        _delay = delay;
+    public SomethingElse(double delay) {
+        _waiting = delay;
         _timer = new Timer();
     }
    
@@ -32,7 +32,7 @@ public class AutoWait extends OutliersCommand {
 
     @Override
     public boolean isFinished() {
-        return (_timer.get() >= _delay);
+        return (_timer.get() >= _waiting);
     }
 
     @Override
