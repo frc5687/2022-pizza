@@ -158,6 +158,7 @@ public class DriveTrain extends OutliersSubsystem {
         metric("Odometry/x", odometry.getX());
         metric("Odometry/y", odometry.getY());
         metric("Odometry/angle", odometry.getRotation().getDegrees());
+        metric("Odometry/theta", odometry.getRotation().getRadians());
         metric("Odometry/Pose", getOdometryPose().toString());
     }
 
