@@ -19,15 +19,20 @@ public class ZeroBallAuto extends SequentialCommandGroup {
         DriveTrain driveTrain,
         Pose2d destination
     ) {
+        Rotation2d _heading;
+        Double _velocity;
+
         // Was hardcoded for testing
         // _theta = new Rotation2d(0.0);
         //_destination = new Pose2d(1.0, 1.0, _theta);
 
         // Now get destination from caller
         _destination = destination;
+        _heading = new Rotation2d(0.0);
+        _velocity = 0.1;
 
         addCommands(
-            new DriveAuto(driveTrain, _destination)
+            new DriveAuto(driveTrain, _destination, _heading, _velocity)
          );
     }
 
