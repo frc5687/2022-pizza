@@ -1,37 +1,52 @@
 package org.frc5687.rapidreact.subsystems;
 
-import edu.wpi.first.wpilibj.Servo;
+import org.frc5687.rapidreact.util.OutliersContainer;
 
 /**
  * Keep balls separated so can intake two, shoot just one.
  * 
  * <p>Note: 2022-robot repo calls this subsystem "ServoStop"
  */
-public class Indexer {
+public class Indexer extends OutliersSubsystem {
     
-    private Servo stopper;
-    private boolean feeding = false;
+    public enum IndexerState {
+        DEPLOYED, // stop balls
+        RETRACTED // allow balls to roll down
+    }
+    private IndexerState _state;
 
-    public Indexer() {
-        stopper = new Servo(9);
+    /** Indexer constructor */
+    public Indexer(OutliersContainer container) {
+        super(container);
+        _state = IndexerState.DEPLOYED;
     }
 
-    public void lower() {
-        //Lowers the blocking arm
-        //Lets balls enter the catapult
-        feeding = false;
-        stopper.setAngle(180);
+    // Query state of indexer
+
+    public IndexerState getState() {
+        return _state;
     }
 
-    public void raise() {
-        //Raises the blocking arm
-        //Stops balls from enter the catapult
-        feeding = true;
-        stopper.setAngle(60);
+    public void setState(IndexerState state) {
+        _state = state;
     }
 
-    public boolean getMode() {
-        //Check if the indexer arm is feeding the catapult
-        return feeding;
+    public void retract() {
+        //Retract the blocking arm
+        //Let balls enter the catapult
+        _state = IndexerState.RETRACTED;
     }
+
+    public void deploy() {
+        //Deploy the blocking arm
+        //Stop balls from entering the catapult
+        _state = IndexerState.DEPLOYED;
+    }
+
+    @Override
+    public void updateDashboard() {
+        // Indexer state
+        metric("Indexer State", getState().name());
+    }
+
 }

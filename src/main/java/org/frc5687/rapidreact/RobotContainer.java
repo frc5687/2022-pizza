@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
-import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
-import org.frc5687.rapidreact.Constants;
+import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
+import org.frc5687.rapidreact.subsystems.DriveTrain;
+import org.frc5687.rapidreact.subsystems.Indexer;
+import org.frc5687.rapidreact.subsystems.Intake;
 
 /**
  * TODO: explain RobotContainer class
@@ -28,6 +29,8 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
     private DriveTrain _driveTrain;
+    private Indexer _indexer;
+    private Intake _intake;
 
     private Pose2d _destination;
     private Rotation2d _theta;
@@ -45,7 +48,8 @@ public class RobotContainer extends OutliersContainer {
         
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
         _driveTrain = new DriveTrain(this, _oi, _imu);
-        metric("Selected Path", "Mode: " + _autoChooser.getSelectedMode().getLabel() + ", Position: " + _autoChooser.getSelectedPosition().getLabel());
+        _indexer = new Indexer(this);
+        _intake = new Intake(this);
 
         info("Running RobotContainer.init()");
 
@@ -68,6 +72,10 @@ public class RobotContainer extends OutliersContainer {
     public void autonomousInit() {
         //Runs once during auto
         info("Running RobotContainer.autonomousInit()");
+
+        // Set state of subsystems
+        _indexer.setState(Indexer.IndexerState.DEPLOYED);
+        _intake.setState(Intake.IntakeState.STOWED);
     }
 
     @Override
