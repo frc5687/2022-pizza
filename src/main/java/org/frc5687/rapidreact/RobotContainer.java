@@ -21,10 +21,9 @@ import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
 
 import org.frc5687.rapidreact.commands.DriveOI;
-import org.frc5687.rapidreact.commands.DriveAuto;
 import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
+import org.frc5687.rapidreact.commands.auto.DriveAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**

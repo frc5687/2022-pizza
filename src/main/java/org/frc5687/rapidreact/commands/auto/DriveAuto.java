@@ -1,8 +1,9 @@
 /* Team 5687 (C)2021-2022 */
-package org.frc5687.rapidreact.commands;
+package org.frc5687.rapidreact.commands.auto;
 
 
 import org.frc5687.rapidreact.Constants;
+import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 
 import edu.wpi.first.math.geometry.Pose2d;
