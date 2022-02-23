@@ -147,16 +147,16 @@ public class RobotContainer extends OutliersContainer {
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
-        _xPos = -0.2;
+        _xPos = 0.0;
         _yPos = 0.0;
         _theta = 0.0;
-        _omega = 0.0;
+        _omega = 1.5;
         _velocity = 0.1;
 
         _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // destination B
-        _xPos = -1.0;
+        _xPos = 0.0;
         _yPos = 0.0;
         _theta = 0.0;
         _omega = 0.5;
