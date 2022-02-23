@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class AutoWait extends OutliersCommand {
 
-    private Double _delay; // Seconds to wait
+    private double _delay; // Seconds to wait
     private Timer _timer;
 
     /** constructor */
-    public AutoWait(Double delay) {
+    public AutoWait(double delay) {
         _delay = delay;
         _timer = new Timer();
     }
