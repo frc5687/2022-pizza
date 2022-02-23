@@ -136,8 +136,10 @@ public class RobotContainer extends OutliersContainer {
         DriveAuto _driveToA;
         DriveAuto _driveToB;
 
-        Pose2d _waypoint;
-        Rotation2d _heading;
+        double _xPos;
+        double _yPos;
+        double _theta; // radians
+        double _omega; // radians
         Double _velocity;
         
         _waitOneSecondA = new Wait(1.0);
@@ -145,16 +147,22 @@ public class RobotContainer extends OutliersContainer {
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
-        _waypoint = new Pose2d(-1.0, -1.0, new Rotation2d(0.0));
-        _heading = new Rotation2d(0.0);
+        _xPos = -1.0;
+        _yPos = -1.0;
+        _theta = 0.0 * Math.PI;
+        _omega = 0.5 * Math.PI;
         _velocity = 0.1;
-        _driveToA = getAutoDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+
+        _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // destination B
-        _waypoint = new Pose2d(0.0, -1.0, new Rotation2d(Math.PI));
-        _heading = new Rotation2d(Math.PI);
+        _xPos = 0.0;
+        _yPos = -1.0;
+        _theta = 0.0;
+        _omega = 0.5 * Math.PI;
         _velocity = 0.2;
-        _driveToB = getAutoDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
+
+        _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // These all have to be unique commands.
         // Cannot execute same command twice.
@@ -170,12 +178,20 @@ public class RobotContainer extends OutliersContainer {
 
     /** Return a drive to destination command */
     public DriveAuto getAutoDriveCommand(
-        DriveTrain driveTrain,
-        Pose2d wayPoint,
-        Rotation2d heading,
-        Double velocity
+        double xPos,
+        double yPos,
+        double theta,
+        double omega,
+        double velocity
         ) {
-        return new DriveAuto(driveTrain, wayPoint, heading, velocity);
+
+        Pose2d _wayPoint; // contains xPos, yPos and theta
+        Rotation2d _heading; // uses omega
+
+        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(theta));
+        _heading = new Rotation2d(omega);
+    
+        return new DriveAuto(_driveTrain, _wayPoint, _heading, velocity);
     }
 
     @Override
