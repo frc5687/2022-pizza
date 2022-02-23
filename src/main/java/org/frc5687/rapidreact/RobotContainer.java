@@ -130,7 +130,8 @@ public class RobotContainer extends OutliersContainer {
     /** Return a SequentialCommandGroup to run during auto */
     public Command getAutonomousCommand() {
 
-        SomethingElse _waitOneSecond;
+        SomethingElse _waitOneSecondA;
+        SomethingElse _waitOneSecondB;
         DeployIntake _deployIntake;
         DriveAuto _driveToA;
         DriveAuto _driveToB;
@@ -139,7 +140,8 @@ public class RobotContainer extends OutliersContainer {
         Rotation2d _heading;
         Double _velocity;
         
-        _waitOneSecond = new SomethingElse(1.0);
+        _waitOneSecondA = new SomethingElse(1.0);
+        _waitOneSecondB = new SomethingElse(1.0);
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
@@ -154,11 +156,13 @@ public class RobotContainer extends OutliersContainer {
         _velocity = 0.2;
         _driveToB = getAutoDriveCommand(_driveTrain, _waypoint, _heading, _velocity);
 
+        // These all have to be unique commands.
+        // Cannot execute same command twice.
         return new SequentialCommandGroup(
-            _waitOneSecond,
+            _waitOneSecondA,
             _deployIntake,
             _driveToA,
-            _waitOneSecond,
+            _waitOneSecondB,
             _driveToB
         );
 
