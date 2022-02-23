@@ -33,7 +33,7 @@ public class RobotMap {
      * SparkMax with Id 0 and a TalonSRX with Id 0.
      */
     public static class CAN {
-            public static class TALONFX {
+        public static class TALONFX {
             public static final int NORTH_WEST_INNER = 1;
             public static final int NORTH_WEST_OUTER = 2;
             public static final int SOUTH_WEST_OUTER = 4;
@@ -43,6 +43,13 @@ public class RobotMap {
             public static final int NORHT_EAST_OUTER = 8;
             public static final int NORTH_EAST_INNER = 7;
         }
+
+        public static class SPARKMAX {
+            public static final int SPRING_BABY_NEO = 9;
+            public static final int WINCH_BABY_NEO = 10;
+            public static final int INTAKE_ROLLER = 13;
+        }
+  
     }
 
     /**
@@ -56,6 +63,15 @@ public class RobotMap {
      * for PCM only one device can connect to each port, so the numbers should be unique.
      */
     public static class PCM {}
+
+
+    public static class PCH {
+        public static int RELEASE_PIN_HIGH = 7;
+        public static int RELEASE_PIN_LOW = 8;
+
+        public static final int INTAKE_HIGH = 10;
+        public static final int INTAKE_LOW = 5;
+    }
 
     /**
      * There should be an entry here for each PDP breaker, preferrably in numerical order. Note that
@@ -89,5 +105,9 @@ public class RobotMap {
         public static final int SOUTH_WEST = 2;
         public static final int NORTH_WEST = 3;
         public static final int NORTH_EAST = 4;
+
+        public static final int SPRING_HALL_EFFECT = 5;
+        public static final int ARM_HALL_EFFECT = 6;
+        public static final int INTAKE_HALL_EFFECT = 7;
     }
 }
