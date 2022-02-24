@@ -167,13 +167,16 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     /**
-     * Check if robot is at theta rotation 
+     * Check if robot is at theta rotation
+     * 
+     * TODO: verify that rotation is CCW and yaw is CW
      * 
      * @param theta
      * @return true if rotation equals theta
      */
     public boolean isAtRotation(Rotation2d theta){
-        Rotation2d rotation = new Rotation2d(Math.toRadians(_imu.getYaw()));
+        // Rotation2d rotation = new Rotation2d(Math.toRadians(_imu.getYaw()));
+        Rotation2d rotation = Rotation2d.fromDegrees(-getYaw());
         return (rotation == theta);
     }
 
