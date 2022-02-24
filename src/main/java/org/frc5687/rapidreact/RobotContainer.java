@@ -27,7 +27,7 @@ import org.frc5687.rapidreact.commands.auto.DriveAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
- * TODO: explain RobotContainer class
+ * This is where the magic happens. Why don't we do all this in Robot?
  */
 public class RobotContainer extends OutliersContainer {
 
@@ -129,11 +129,11 @@ public class RobotContainer extends OutliersContainer {
     /** Return a SequentialCommandGroup to run during auto */
     public Command getAutonomousCommand() {
 
-        Wait _waitOneSecondA;
+        // Wait _waitOneSecondA;
         Wait _waitOneSecondB;
         DeployIntake _deployIntake;
         DriveAuto _driveToA;
-        DriveAuto _driveToB;
+        // DriveAuto _driveToB;
 
         double _xPos;
         double _yPos;
@@ -141,7 +141,7 @@ public class RobotContainer extends OutliersContainer {
         double _omega; // fractions of PI for radians
         Double _velocity;
         
-        _waitOneSecondA = new Wait(1.0);
+        // _waitOneSecondA = new Wait(1.0);
         _waitOneSecondB = new Wait(1.0);
         _deployIntake = new DeployIntake(_intake);
 
@@ -161,7 +161,7 @@ public class RobotContainer extends OutliersContainer {
         _omega = 0.5;
         _velocity = 0.2;
 
-        _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
+        // _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // These all have to be unique commands.
         // Cannot execute same command twice.

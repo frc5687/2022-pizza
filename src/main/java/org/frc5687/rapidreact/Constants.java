@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+import org.frc5687.rapidreact.util.*;
+
 /**
  * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
@@ -21,6 +23,12 @@ public class Constants {
 
     // Declare constants as public static final so that they are globally accessible
     // and cannot be changed.
+
+    public static final String ROBOT_NAME = "pizza bot";
+    public static final OutliersContainer.IdentityMode IDENTITY = 
+        OutliersContainer.IdentityMode.programming;
+    public static final RioLogger.LogLevel DS_LOG_LVL = RioLogger.LogLevel.info;
+    public static final RioLogger.LogLevel USB_LOG_LVL = RioLogger.LogLevel.warn;
 
     public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
     public static final double METRIC_FLUSH_PERIOD = 1.0; // seconds

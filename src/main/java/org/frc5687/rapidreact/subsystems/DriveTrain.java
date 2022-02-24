@@ -166,6 +166,13 @@ public class DriveTrain extends OutliersSubsystem {
         poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
     }
 
+    /**
+     * Set speed and direction of each swerve module to reach the desired pose.
+     * 
+     * @param pose xPos in meters, yPos in meters, theta in radians
+     * @param heading omega in radians
+     * @param vel in m/s
+     */
     public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
         ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, heading);
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
