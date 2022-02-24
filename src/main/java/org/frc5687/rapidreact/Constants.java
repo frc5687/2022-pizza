@@ -15,11 +15,26 @@ import org.frc5687.rapidreact.util.*;
 /**
  * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
- * <p>Robot port mappings are in RobotMap.
+ * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
  * 
- * <p>Joystick and Gamepad settings, including button mappings, are in ButtonMap.
+ * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
  */
 public class Constants {
+
+    /**
+     * Conventions for constants
+     * 
+     * - Field position and robot size measured in meters.
+     * - Time in seconds unless otherwise noted.
+     * - Angles in radians unless otherwise noted.
+     * - Localization position is field reference relative to robot starting position.
+     * - Field reference North is away from drive team, East is to drive team's right.
+     * - Robot reference North is direction catapult shoots, South is direction intake deploys.
+     * 
+     * Coordinate space needs to be decided and documented.
+     * Q: Are angles given clockwise (+ turns right) or counter-clockwise (+ turns left)?
+     * Q: Is X axis North-South or East-West?  Is North or South +?
+     */
 
     // Declare constants as public static final so that they are globally accessible
     // and cannot be changed.
@@ -237,7 +252,7 @@ public class Constants {
         }*/
      }
 
-    public static class SnapPose{
+    public static class SnapPose {
         public static final double SNAP_LRF = 3.5;
     }
     public static class UDPJetson {

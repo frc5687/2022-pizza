@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
@@ -24,7 +25,6 @@ import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
 import org.frc5687.rapidreact.commands.auto.DriveToPose;
-import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
  * Define subsystems and commands, bind commands to triggering events (such as buttons),
@@ -145,8 +145,8 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-        // Wait _waitOneSecondA;
-        Wait _waitOneSecondB;
+        // WaitCommand _waitOneSecondA;
+        WaitCommand _waitOneSecondB;
         DeployIntake _deployIntake;
         DriveToPose _driveToA;
         // DriveAuto _driveToB;
@@ -157,8 +157,8 @@ public class RobotContainer extends OutliersContainer {
         double _omega; // fractions of PI for radians
         Double _velocity; // m/s
         
-        // _waitOneSecondA = new Wait(1.0);
-        _waitOneSecondB = new Wait(1.0);
+        // _waitOneSecondA = new WaitCommand(1.0);
+        _waitOneSecondB = new WaitCommand(1.0);
         _deployIntake = new DeployIntake(_intake);
 
         // destination A
@@ -180,7 +180,9 @@ public class RobotContainer extends OutliersContainer {
         // _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // These all have to be unique commands.
-        // Cannot execute same command twice.
+        // Cannot execute same command twice
+        // (_wait, _act, _wait) will throw
+        // Unhandled exception: java.lang.IllegalArgumentException: duplicate element:
         return new SequentialCommandGroup(
             //_waitOneSecondA,
             _deployIntake,

@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Wait (do nothing) for a number of seconds so we can pause during auto.
+ * 
+ * DEPRECATED: Use WPI's WaitCommand instead.
+ * See https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
  */
 public class Wait extends OutliersCommand {
 

@@ -20,6 +20,14 @@ public class DriveOI extends OutliersCommand {
 
     private final OI _oi;
 
+    /**
+     * Create DriveOI command
+     * 
+     * <p>Default command for DriveTrain.  Drive under OI control.
+     * 
+     * @param driveTrain
+     * @param oi
+     */
     public DriveOI(DriveTrain driveTrain, OI oi) {
         _driveTrain = driveTrain;
         _oi = oi;
