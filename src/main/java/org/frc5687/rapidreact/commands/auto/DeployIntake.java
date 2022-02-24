@@ -10,7 +10,11 @@ public class DeployIntake extends OutliersCommand {
 
     private final Intake _intake;
 
-    /** constructor */
+    /**
+     * Create DeployIntake command
+     * 
+     * @param intake passed from RobotContainer
+     */
     public DeployIntake(Intake intake) {
         _intake = intake;
     }

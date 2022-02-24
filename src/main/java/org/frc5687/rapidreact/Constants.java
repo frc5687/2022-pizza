@@ -33,7 +33,7 @@ public class Constants {
     public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
     public static final double METRIC_FLUSH_PERIOD = 1.0; // seconds
     public static final double UPDATE_PERIOD = 0.02; // seconds?
-    public static final double EPSILON = 0.00001;
+    public static final double EPSILON = 0.00001; // for calculations to make math work
 
     // Separate constants into individual inner classes corresponding
     // to subsystems or robot modes, to keep variable names shorter.
