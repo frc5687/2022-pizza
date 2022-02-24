@@ -1,7 +1,6 @@
 /* Team 5687 (C)2021-2022 */
 package org.frc5687.rapidreact.commands.auto;
 
-
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 
@@ -9,9 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
- * Drive in autonomous mode (i.e., no OI control)
+ * Drive in autonomous mode (i.e., no OI control) to a field-relative pose.
  */
-public class DriveAuto extends OutliersCommand {
+public class DriveToPose extends OutliersCommand {
 
     private final Pose2d _destination;
     private final DriveTrain _driveTrain;
@@ -29,7 +28,7 @@ public class DriveAuto extends OutliersCommand {
      * @param heading omega in radians
      * @param velocity m/s
      */
-    public DriveAuto(
+    public DriveToPose(
         DriveTrain driveTrain,
         Pose2d pose,
         Rotation2d heading,

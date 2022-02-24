@@ -23,7 +23,7 @@ import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
-import org.frc5687.rapidreact.commands.auto.DriveAuto;
+import org.frc5687.rapidreact.commands.auto.DriveToPose;
 import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
@@ -148,7 +148,7 @@ public class RobotContainer extends OutliersContainer {
         // Wait _waitOneSecondA;
         Wait _waitOneSecondB;
         DeployIntake _deployIntake;
-        DriveAuto _driveToA;
+        DriveToPose _driveToA;
         // DriveAuto _driveToB;
 
         double _xPos; // meters
@@ -201,7 +201,7 @@ public class RobotContainer extends OutliersContainer {
      * @param velocity
      * @return new DriveAuto
      */
-    public DriveAuto getAutoDriveCommand(
+    public DriveToPose getAutoDriveCommand(
         double xPos,
         double yPos,
         double theta,
@@ -220,7 +220,7 @@ public class RobotContainer extends OutliersContainer {
         _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
         _heading = new Rotation2d(_omega);
     
-        return new DriveAuto(_driveTrain, _wayPoint, _heading, velocity);
+        return new DriveToPose(_driveTrain, _wayPoint, _heading, velocity);
     }
 
     @Override
