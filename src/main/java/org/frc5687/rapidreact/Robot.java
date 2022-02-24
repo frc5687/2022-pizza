@@ -43,10 +43,16 @@ public class Robot extends OutliersRobot {
     /**
      * Run once when robot code starts.
      * 
-     * <p>Set up logging and get autonomous command from RobotContainer.
+     * <p>Set up logging and whatever else needs to happen only once when the robot code starts.
+     * 
+     * <p>NB: Do NOT get autonomous command from RobotContainer in this method.  Do that in
+     * autonomousInit().  That allows us to have a rotary selector dial and choose different
+     * auto routines to run.
      */
     @Override
     public void robotInit() {
+        info("Running Robot.robotInit()");
+
         loadConfigFromUSB();
         RioLogger.getInstance().init(_fileLogLevel, _dsLogLevel);
         LiveWindow.disableAllTelemetry();
@@ -61,7 +67,6 @@ public class Robot extends OutliersRobot {
 
         _robotContainer = new RobotContainer(this, _identityMode);
         _robotContainer.init();
-        _autoCommand = _robotContainer.getAutonomousCommand();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
@@ -87,6 +92,11 @@ public class Robot extends OutliersRobot {
 
         info("Running Robot.autonomousInit()");
 
+        // Get auto command when we enter autonomous mode.
+        // Setting it here rather than in robotInit() allows us to turn on our robot,
+        // then use a manual rotary selector to choose which autocommand to run.
+        _autoCommand = _robotContainer.getAutonomousCommand();
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
@@ -95,6 +105,16 @@ public class Robot extends OutliersRobot {
     }
 
     public void teleopInit() {
+
+        info("Running Robot.autonomousInit()");
+
+        // Good practice to cancel the autonomous command that may still be running.
+        // If you want the autonomous to continue until interrupted by another command,
+        // comment the following out.
+        if (_autoCommand != null) {
+            _autoCommand.cancel();
+        }
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.teleopInit();
     }
@@ -120,7 +140,7 @@ public class Robot extends OutliersRobot {
      * This method is called every robot cycle, no matter the mode. Use this for items like
      * diagnostics to run during disabled, autonomous, teleoperated and test.
      *
-     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+     * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
     @Override
@@ -138,7 +158,10 @@ public class Robot extends OutliersRobot {
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
         // _robotContainer.periodic();
+
+        // NB: It is essential to run the scheduler each cycle!  Otherwise nothing happens.
         CommandScheduler.getInstance().run();
+
         update();
         updateDashboard();
     }
