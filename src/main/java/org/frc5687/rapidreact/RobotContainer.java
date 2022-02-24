@@ -27,19 +27,30 @@ import org.frc5687.rapidreact.commands.auto.DriveAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
 
 /**
- * This is where the magic happens. Why don't we do all this in Robot?
+ * Define subsystems and commands, bind commands to triggering events (such as buttons),
+ * and specify which command to run in autonomous mode.
+ * 
+ * <p>Why separate Robot and RobotContainer classes?
+ * See https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html
  */
 public class RobotContainer extends OutliersContainer {
+
+    private Robot _robot;
 
     private OI _oi;
     private AutoChooser _autoChooser;
     private AHRS _imu;
 
-    private Robot _robot;
     private DriveTrain _driveTrain;
     private Indexer _indexer;
     private Intake _intake;
 
+    /**
+     * Create RobotContainer 
+     * 
+     * @param robot
+     * @param identityMode
+     */
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
         _robot = robot;
@@ -48,15 +59,18 @@ public class RobotContainer extends OutliersContainer {
     // Initialization methods
 
     public void init() {
+        info("Running RobotContainer.init()");
+
         _oi = new OI();
         _autoChooser = new AutoChooser();
-        
+
+        // 
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
         _driveTrain = new DriveTrain(this, _oi, _imu);
         _indexer = new Indexer(this);
         _intake = new Intake(this);
 
-        info("Running RobotContainer.init()");
+        _oi.initializeButtons(_driveTrain, _indexer, _intake);
 
         // DriveTrain's default command is DriveOI
         setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
@@ -64,18 +78,18 @@ public class RobotContainer extends OutliersContainer {
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
         _robot.addPeriodic(this::controllerPeriodic, Constants.DifferentialSwerveModule.kDt, 0.005);
-        //_driveTrain.resetOdometry(zeroBall.getInitialPose());
-        //_oi.initializeButtons(_driveTrain, zeroBall);
+
+        _imu.reset();
     }
 
     @Override
     public void disabledInit() {
-        //Runs once during disabled
+        // Run once when entering disabled mode
     }
 
     @Override
     public void autonomousInit() {
-        //Runs once during auto
+        // Run once when entering auto mode
         info("Running RobotContainer.autonomousInit()");
 
         // Set state of subsystems
@@ -85,7 +99,7 @@ public class RobotContainer extends OutliersContainer {
 
     @Override
     public void teleopInit() {
-        //Runs at the start of teleop
+        // Run once when entering teleop mode
     }
 
     // Periodic methods
@@ -102,8 +116,7 @@ public class RobotContainer extends OutliersContainer {
 
     /** 
      * Helper function to wrap DriveTrain.controllerPeriodic.  
-     * This allows us to pass nulls during initial development
-     * without breaking.
+     * _driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
         if (_driveTrain != null) {
@@ -112,11 +125,10 @@ public class RobotContainer extends OutliersContainer {
     }
 
     /**
-     * Helper function to wrap CommandScheduler.setDefaultCommand.  This allows us to pass nulls during initial development
-     * without breaking.
+     * Helper function to wrap CommandScheduler.setDefaultCommand.
      * 
-     * @param subSystem
-     * @param command
+     * @param subSystem can be null
+     * @param command can be null
      */
     private void setDefaultCommand(OutliersSubsystem subSystem, OutliersCommand command) {
         if (subSystem == null || command == null) {
@@ -135,11 +147,11 @@ public class RobotContainer extends OutliersContainer {
         DriveAuto _driveToA;
         // DriveAuto _driveToB;
 
-        double _xPos;
-        double _yPos;
+        double _xPos; // meters
+        double _yPos; // meters
         double _theta; // fractions of PI for radians
         double _omega; // fractions of PI for radians
-        Double _velocity;
+        Double _velocity; // m/s
         
         // _waitOneSecondA = new Wait(1.0);
         _waitOneSecondB = new Wait(1.0);
@@ -175,7 +187,16 @@ public class RobotContainer extends OutliersContainer {
 
     }
 
-    /** Return a drive to destination command */
+    /**
+     * Return a drive to destination command
+     * 
+     * @param xPos
+     * @param yPos
+     * @param theta
+     * @param omega
+     * @param velocity
+     * @return new DriveAuto
+     */
     public DriveAuto getAutoDriveCommand(
         double xPos,
         double yPos,
