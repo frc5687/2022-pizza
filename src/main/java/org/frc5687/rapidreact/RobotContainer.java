@@ -105,11 +105,11 @@ public class RobotContainer extends OutliersContainer {
     // Periodic methods
 
     public void disabledPeriodic() {
-        //Runs every 20ms during disabled
+        // Run every 20ms during disabled
     }
 
     public void periodic() {
-        //Runs every 20ms
+        // Run every 20ms
     }
 
     // Helper methods
@@ -138,7 +138,11 @@ public class RobotContainer extends OutliersContainer {
         s.setDefaultCommand(subSystem, command);
     }
 
-    /** Return a SequentialCommandGroup to run during auto */
+    /**
+     * Return sequence of commands to run during auto
+     * 
+     * @return SequentialCommandGroup
+    */
     public Command getAutonomousCommand() {
 
         // Wait _waitOneSecondA;

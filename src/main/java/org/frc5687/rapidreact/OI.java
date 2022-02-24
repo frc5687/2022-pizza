@@ -6,26 +6,25 @@
 */
 package org.frc5687.rapidreact;
 
-import static org.frc5687.rapidreact.util.Helpers.*;
+import edu.wpi.first.math.geometry.Rotation2d;
 
-import org.frc5687.rapidreact.commands.DriveTrajectory;
-
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj.DriverStation;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import org.frc5687.rapidreact.subsystems.DriveTrain;
+import org.frc5687.rapidreact.subsystems.Indexer;
+import org.frc5687.rapidreact.subsystems.Intake;
 
 import org.frc5687.rapidreact.commands.SnapTo;
 // import org.frc5687.rapidreact.commands.ResetNavX;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import org.frc5687.rapidreact.subsystems.DriveTrain;
 // import org.frc5687.rapidreact.util.AxisButton;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
+import static org.frc5687.rapidreact.util.Helpers.*;
 
 /**
  * To add a button to control a subsystem there are a number of steps needed.  I'll use SHOOT as an example:
@@ -76,7 +75,6 @@ public class OI extends OutliersProxy {
     private Joystick[] _joysticks = new Joystick[MAX_USB_PORTS];
 
     // Allocate buttons
-    private JoystickButton _autoButton;
     private JoystickButton _resetNavX;
     private JoystickButton _snapBTN;
 
@@ -86,7 +84,6 @@ public class OI extends OutliersProxy {
         addGamepad(ButtonMap.Controllers.ROTATOR_GAMEPAD);
 
         // Create buttons
-        _autoButton = addJoystickButton(ButtonMap.Buttons.RUN_AUTO.Controller, ButtonMap.Buttons.RUN_AUTO.Button);
         _resetNavX = addJoystickButton(ButtonMap.Buttons.RESET_NAVX.Controller, ButtonMap.Buttons.RESET_NAVX.Button);
         _snapBTN = new JoystickButton(_joysticks[1], 4);
 
@@ -96,8 +93,11 @@ public class OI extends OutliersProxy {
      *  - when button calls command (when pressed, released, held, etc.)
      *  - which command gets called
      */
-    public void initializeButtons(DriveTrain driveTrain, Trajectory trajectory/*, Shooter shooter*/) {
-        _autoButton.whenPressed(new DriveTrajectory(driveTrain, trajectory));
+    public void initializeButtons(
+        DriveTrain driveTrain,
+        Indexer indexer,
+        Intake intake
+        ) {
         _resetNavX.whenPressed(new InstantCommand(driveTrain::resetYaw, driveTrain));
         // _resetNavX.whenReleased(new ResetNavX(driveTrain));
         _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
@@ -109,10 +109,7 @@ public class OI extends OutliersProxy {
         yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
 
-        // TODO: explain the following magic
-        double yOut = yIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
-        yOut = (yOut + (yIn * 2)) / 3.0;
-        return yOut;
+        return circularize(yIn, xIn);
     }
 
     public double getDriveX() {
@@ -122,10 +119,40 @@ public class OI extends OutliersProxy {
         xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.X);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
 
-        // TODO: explain the following magic
-        double xOut = xIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
-        xOut = (xOut + (xIn * 2)) / 3.0;
-        return xOut;
+        return circularize(xIn, yIn);
+    }
+
+    /**
+     * Change joystick output in corners to approximate movement around a circle
+     * I.e., have a constant velocity when moving in a straight line or diagonally
+     * 
+     * TODO: use some real math to circularize joystick input
+     * 
+     * @param a xIn or yIn
+     * @param b yIn or xIn
+     * @return xIn or yIn circularized
+     */
+    private double circularize(double a, double b) {
+
+        /**
+         * Problem is joystick moves in a square box but we want to emulate
+         * a circle so velocity stays constant whether you are moving
+         * along an axis (with 0 X or Y velocity component) or along a
+         * diagonal (with both X and Y velocity components).
+         * 
+         * For example, if joystick is at NE corner, X and Y velocity inputs
+         * are both 1, so total velocity is sqrt of 2 (Pythagorean theorem).
+         * But if joystick is at E side, velocity is only 1.
+         * 
+         * As joystick moves along edge of box, we want to recalculate both
+         * X and Y input to emulate moving along arc of circle.  At NE corner,
+         * X and Y input should both be sqrt of 0.5.  That would make total
+         * velocity 1.
+         */
+
+        double c = a / (Math.sqrt(a * a + (b * b)) + Constants.EPSILON);
+        c = (c + (a * 2)) / 3.0;
+        return c;
     }
 
     public double getRotationX() {
