@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class OutliersRobot extends TimedRobot implements ILoggingSource {
 
+    /** Create an OutliersRobot */
     public OutliersRobot() {
         super(Constants.UPDATE_PERIOD);
     }

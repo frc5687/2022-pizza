@@ -17,6 +17,7 @@ public class AutoZeroBall extends SequentialCommandGroup {
      */
     public AutoZeroBall(RobotContainer robot) {
 
+
         double xPos;
         double yPos;
         double theta;
@@ -24,6 +25,8 @@ public class AutoZeroBall extends SequentialCommandGroup {
         double velocity;
 
         // Choose destination depending on starting position
+        // For now, this is set in Constants
+        // TODO: change to get position from AutoChooser
         switch(Constants.Auto.AUTO_POSITION) {
             case TBT_RIGHT:
                 xPos = 0.5;

@@ -46,8 +46,8 @@ public class RobotContainer extends OutliersContainer {
     /**
      * Create RobotContainer 
      * 
-     * @param robot
-     * @param identityMode
+     * @param robot this robot
+     * @param identityMode TODO: document identityMode
      */
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
@@ -61,9 +61,9 @@ public class RobotContainer extends OutliersContainer {
 
         _oi = new OI();
         _autoChooser = new AutoChooser();
-
-        // 
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
+
+        // Create subsystems
         driveTrain = new DriveTrain(this, _oi, _imu);
         _indexer = new Indexer(this);
         intake = new Intake(this);
@@ -71,8 +71,9 @@ public class RobotContainer extends OutliersContainer {
 
         _oi.initializeButtons(driveTrain, _indexer, intake);
 
-        // DriveTrain's default command is DriveOI
+        // What command to run if nothing else is scheduled for driveTrain
         setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
+
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
