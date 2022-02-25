@@ -40,7 +40,7 @@ In zero-ball auto we do not shoot any balls. The most likely reason we would run
 
 ![Zero Ball Auto](zero-ball-auto-blue.jpg)
 
-For all starting positions we will line up the robot so the shooter is facing the hub, using the tarmac edge as a guideline. Starting positions:
+For all starting positions we will line up the robot so it is facing field reference north.  We can measure distance from tarmac lines to give us an exact starting position:
 
 1. *Right side of the two-ball tarmac.* Give robot in position two a clear path to our wall ball. Pin the opposition's wall ball against the wall.
 2. *Left side of the two-ball tarmac.* Give robot in position one a clear path to our field ball. Bump the opposition's field ball toward our hangar.
