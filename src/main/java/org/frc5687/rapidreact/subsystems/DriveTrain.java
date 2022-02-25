@@ -51,6 +51,14 @@ public class DriveTrain extends OutliersSubsystem {
     private HolonomicDriveController _controller;
     private ProfiledPIDController _angleController;
 
+    /**
+     * Create a DriveTrain
+     * 
+     * @param container
+     * @param oi
+     * @param imu
+     * @param limelight
+     */
     public DriveTrain(OutliersContainer container, OI oi, AHRS imu, Limelight limelight) {
         super(container);
         try {
@@ -142,34 +150,13 @@ public class DriveTrain extends OutliersSubsystem {
             );
     }
 
-    @Override
-    public void updateDashboard() {
-        metric("NW/Encoder Angle", _northWest.getModuleAngle());
-        metric("SW/Encoder Angle", _southWest.getModuleAngle());
-        metric("SE/Encoder Angle", _southEast.getModuleAngle());
-        metric("NE/Encoder Angle", _northEast.getModuleAngle());
-
-        metric("SW/Predicted Angle", _southWest.getPredictedAzimuthAngle());
-
-        metric("SW/Encoder Azimuth Vel", _southWest.getAzimuthAngularVelocity());
-        metric("SW/Predicted Azimuth Vel", _southWest.getPredictedAzimuthAngularVelocity());
-
-        metric("SW/Encoder Wheel Vel", _southWest.getWheelVelocity());
-        metric("SW/Predicted Wheel Vel", _southWest.getPredictedWheelVelocity());
-        Pose2d odometry=getOdometryPose();
-        metric("Odometry/x", odometry.getX());
-        metric("Odometry/y", odometry.getY());
-        metric("Odometry/angle", odometry.getRotation().getDegrees());
-        metric("Odometry/Pose", getOdometryPose().toString());
-
-        metric("Limelight Yaw", _limelight.getYaw());
-    }
-
-    public void snap(Rotation2d theta){
-        metric("Pose snap", getOdometryPose().toString());
-        poseFollower(getOdometryPose(), theta, 3.5);
-    }
-
+    /**
+     * Set speed and direction of each swerve module to reach the desired pose.
+     * 
+     * @param pose xPos in meters, yPos in meters, theta in radians
+     * @param heading omega in radians
+     * @param vel in m/s
+     */
     public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
         ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, heading);
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
@@ -180,8 +167,17 @@ public class DriveTrain extends OutliersSubsystem {
         setNorthEastModuleState(moduleStates[NORTH_EAST]);
     }
 
+    /**
+     * Check if robot is at theta rotation
+     * 
+     * TODO: verify that rotation is CCW and yaw is CW
+     * 
+     * @param theta
+     * @return true if rotation equals theta
+     */
     public boolean isAtRotation(Rotation2d theta){
-        Rotation2d rotation = new Rotation2d(_imu.getYaw());
+        // Rotation2d rotation = new Rotation2d(Math.toRadians(_imu.getYaw()));
+        Rotation2d rotation = Rotation2d.fromDegrees(-getYaw());
         if (rotation == theta) {
             //Robot is at the correct position
             metric("Snap stop", true);
@@ -215,7 +211,7 @@ public class DriveTrain extends OutliersSubsystem {
     public boolean isAtPose(Pose2d pose) {
         double diffX = getOdometryPose().getX() - pose.getX();
         double diffY = getOdometryPose().getY() - pose.getY();
-        return Math.abs(diffX) <= 0.01 && Math.abs(diffY) < 0.01;
+        return (Math.abs(diffX) <= 0.01) && (Math.abs(diffY) < 0.01);
     }
 
     public void setNorthEastModuleState(SwerveModuleState state) {
@@ -238,7 +234,15 @@ public class DriveTrain extends OutliersSubsystem {
         return _imu.getYaw();
     }
 
-    // yaw is negative to follow wpi coordinate system.
+    /**
+     * Get heading of robot according to IMU
+     * 
+     * Note: yaw is CW, but heading is CCW
+     * 
+     * TODO: confirm that CW and CCW is documented correctly for getHeading()
+     * 
+     * @return heading as a Rotation2d
+     */
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(-getYaw());
     }
@@ -253,7 +257,7 @@ public class DriveTrain extends OutliersSubsystem {
      * @param vx velocity in x direction
      * @param vy velocity in y direction
      * @param omega angular velocity (rotating speed)
-     * @param fieldRelative forward is always forward no mater orientation of robot.
+     * @param fieldRelative forward is always forward no matter orientation of robot.
      */
     public void drive(double vx, double vy, double omega, boolean fieldRelative) {
         if (Math.abs(vx) < Constants.DriveTrain.DEADBAND && Math.abs(vy) < Constants.DriveTrain.DEADBAND && Math.abs(omega) < Constants.DriveTrain.DEADBAND) {
@@ -323,10 +327,43 @@ public class DriveTrain extends OutliersSubsystem {
         return _odometry.getPoseMeters();
     }
 
+    public void resetOdometry(Pose2d position) {
+        _odometry.resetPosition(position, getHeading());
+    }
+
     public void startModules() {
         _northWest.start();
         _southWest.start();
         _southEast.start();
         _northEast.start();
     }
+
+    @Override
+    public void updateDashboard() {
+        metric("NW/Encoder Angle", _northWest.getModuleAngle());
+        metric("SW/Encoder Angle", _southWest.getModuleAngle());
+        metric("SE/Encoder Angle", _southEast.getModuleAngle());
+        metric("NE/Encoder Angle", _northEast.getModuleAngle());
+
+        metric("SW/Predicted Angle", _southWest.getPredictedAzimuthAngle());
+
+        metric("SW/Encoder Azimuth Vel", _southWest.getAzimuthAngularVelocity());
+        metric("SW/Predicted Azimuth Vel", _southWest.getPredictedAzimuthAngularVelocity());
+
+        metric("SW/Encoder Wheel Vel", _southWest.getWheelVelocity());
+        metric("SW/Predicted Wheel Vel", _southWest.getPredictedWheelVelocity());
+        Pose2d odometry=getOdometryPose();
+        metric("Odometry/x", odometry.getX());
+        metric("Odometry/y", odometry.getY());
+        metric("Odometry/angle", odometry.getRotation().getDegrees());
+        metric("Odometry/Pose", getOdometryPose().toString());
+
+        metric("Limelight Yaw", _limelight.getYaw());
+    }
+
+    public void snap(Rotation2d theta){
+        metric("Pose snap", getOdometryPose().toString());
+        poseFollower(getOdometryPose(), theta, 3.5);
+    }
+
 }

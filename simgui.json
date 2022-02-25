@@ -1,0 +1,42 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    },
+    "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "LiveWindow": {
+      ".status": {
+        "open": true
+      }
+    },
+    "SmartDashboard": {
+      "AutoChooser": {
+        "Label": {
+          "open": true
+        },
+        "Numeric": {
+          "open": true
+        },
+        "open": true
+      },
+      "DriveTrain": {
+        "open": true
+      },
+      "Robot": {
+        "open": true
+      },
+      "RobotContainer": {
+        "open": true
+      },
+      "open": true
+    }
+  }
+}
