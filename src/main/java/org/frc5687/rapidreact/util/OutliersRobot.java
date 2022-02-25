@@ -1,7 +1,8 @@
 /* (C)2021 */
 package org.frc5687.rapidreact.util;
 
-import org.frc5687.rapidreact.Constants;
+import org.frc5687.rapidreact.config.Constants;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

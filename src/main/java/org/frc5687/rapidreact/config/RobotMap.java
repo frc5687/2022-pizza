@@ -1,5 +1,5 @@
 /* Team 5687 (C)2020-2021 */
-package org.frc5687.rapidreact;
+package org.frc5687.rapidreact.config;
 
 /**
  * We use compass headings to reference positions on the chassis.
@@ -21,13 +21,12 @@ package org.frc5687.rapidreact;
  *          S
  */
 
-/** 
- * Constants for things plugged in to the roboRIO.
- */
+/** Constants for things plugged in to the roboRIO. */
 public class RobotMap {
 
-    /**
-     * Create an entry for each CAN device, preferrably grouped by device type and
+    /** Controller Area Network addresses.
+     * 
+     * <p>Create an entry for each CAN device, preferrably grouped by device type and
      * then in numerical order. Note that for CAN, ids must be unique per device type, but not
      * across types. Thus, you cannot have two SparkMax controllers with Id 0, but you can have a
      * SparkMax with Id 0 and a TalonSRX with Id 0.

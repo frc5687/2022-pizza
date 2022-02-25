@@ -2,9 +2,10 @@
 package org.frc5687.rapidreact.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import org.frc5687.rapidreact.Constants;
+
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.OI;
+import org.frc5687.rapidreact.config.Constants;
 
 /**
  * Drive using OI control

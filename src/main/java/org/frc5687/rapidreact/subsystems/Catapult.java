@@ -1,6 +1,8 @@
 package org.frc5687.rapidreact.subsystems;
 
 
+import static org.frc5687.rapidreact.config.Constants.Catapult.*;
+
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -11,12 +13,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import org.frc5687.rapidreact.Constants;
-import org.frc5687.rapidreact.RobotMap;
+
+import org.frc5687.rapidreact.config.Constants;
+import org.frc5687.rapidreact.config.RobotMap;
 import org.frc5687.rapidreact.util.HallEffect;
 import org.frc5687.rapidreact.util.OutliersContainer;
-
-import static org.frc5687.rapidreact.Constants.Catapult.*;
 
 public class Catapult extends OutliersSubsystem {
 

@@ -21,6 +21,7 @@ import org.frc5687.rapidreact.subsystems.Catapult;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.AutoZeroBall;
+import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 
 /**

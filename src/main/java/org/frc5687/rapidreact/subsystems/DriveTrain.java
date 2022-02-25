@@ -15,9 +15,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import org.frc5687.rapidreact.Constants;
-import org.frc5687.rapidreact.RobotMap;
+
 import org.frc5687.rapidreact.OI;
+import org.frc5687.rapidreact.config.Constants;
+import org.frc5687.rapidreact.config.RobotMap;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 /**

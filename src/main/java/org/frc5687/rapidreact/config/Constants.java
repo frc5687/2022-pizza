@@ -1,5 +1,5 @@
 /* Team 5687 (C)2020-2022 */
-package org.frc5687.rapidreact;
+package org.frc5687.rapidreact.config;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.frc5687.rapidreact.util.*;
  * 
  * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
  * 
- * <p>TuneDriving has drive train tuning values.
+ * <p>DriveTuning has drive train tuning values.
  */
 public class Constants {
 
@@ -32,7 +32,6 @@ public class Constants {
      * 
      * Coordinate space needs to be decided and documented.
      * Q: Are angles given clockwise (+ turns right) or counter-clockwise (+ turns left)?
-     * Q: Is X axis North-South or East-West?  Is North or South +?
      */
 
     // Declare constants as public static final so that they are globally accessible

@@ -25,6 +25,9 @@ import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 import static org.frc5687.rapidreact.util.Helpers.*;
 
+import org.frc5687.rapidreact.config.ButtonMap;
+import org.frc5687.rapidreact.config.Constants;
+
 /**
  * To add a button to control a subsystem there are a number of steps needed.  I'll use SHOOT as an example:
  * 

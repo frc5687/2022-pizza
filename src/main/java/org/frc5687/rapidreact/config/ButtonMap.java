@@ -1,4 +1,4 @@
-package org.frc5687.rapidreact;
+package org.frc5687.rapidreact.config;
 
 import edu.wpi.first.wpilibj.Joystick.AxisType;
 

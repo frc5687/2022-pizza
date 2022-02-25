@@ -3,7 +3,7 @@ package org.frc5687.rapidreact.commands.auto;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import org.frc5687.rapidreact.RobotContainer;
-import org.frc5687.rapidreact.Constants;
+import org.frc5687.rapidreact.config.Constants;
 
 /**
  * Taxi out of tarmac.
