@@ -3,15 +3,11 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
@@ -20,11 +16,12 @@ import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
+import org.frc5687.rapidreact.subsystems.Catapult;
 
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.DeployIntake;
-import org.frc5687.rapidreact.commands.auto.DriveToPose;
+import org.frc5687.rapidreact.commands.auto.AutoZeroBall;
+import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 
 /**
  * Define subsystems and commands, bind commands to triggering events (such as buttons),
@@ -41,9 +38,10 @@ public class RobotContainer extends OutliersContainer {
     private AutoChooser _autoChooser;
     private AHRS _imu;
 
-    private DriveTrain _driveTrain;
+    public DriveTrain driveTrain;
     private Indexer _indexer;
-    private Intake _intake;
+    public Intake intake;
+    public Catapult catapult;
 
     /**
      * Create RobotContainer 
@@ -66,14 +64,15 @@ public class RobotContainer extends OutliersContainer {
 
         // 
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
-        _driveTrain = new DriveTrain(this, _oi, _imu);
+        driveTrain = new DriveTrain(this, _oi, _imu);
         _indexer = new Indexer(this);
-        _intake = new Intake(this);
+        intake = new Intake(this);
+        catapult = new Catapult(this);
 
-        _oi.initializeButtons(_driveTrain, _indexer, _intake);
+        _oi.initializeButtons(driveTrain, _indexer, intake);
 
         // DriveTrain's default command is DriveOI
-        setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
+        setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
@@ -94,7 +93,7 @@ public class RobotContainer extends OutliersContainer {
 
         // Set state of subsystems
         _indexer.setState(Indexer.IndexerState.DEPLOYED);
-        _intake.setState(Intake.IntakeState.STOWED);
+        intake.setState(Intake.IntakeState.STOWED);
     }
 
     @Override
@@ -119,8 +118,8 @@ public class RobotContainer extends OutliersContainer {
      * _driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
-        if (_driveTrain != null) {
-            _driveTrain.controllerPeriodic();
+        if (driveTrain != null) {
+            driveTrain.controllerPeriodic();
         }
     }
 
@@ -145,90 +144,30 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-        // WaitCommand _waitOneSecondA;
-        WaitCommand _waitOneSecondB;
-        DeployIntake _deployIntake;
-        DriveToPose _driveToA;
-        // DriveAuto _driveToB;
-
-        double _xPos; // meters
-        double _yPos; // meters
-        double _theta; // fractions of PI for radians
-        double _omega; // fractions of PI for radians
-        Double _velocity; // m/s
+        SequentialCommandGroup _auto;
         
-        // _waitOneSecondA = new WaitCommand(1.0);
-        _waitOneSecondB = new WaitCommand(1.0);
-        _deployIntake = new DeployIntake(_intake);
+        // TODO: replace this with AutoChooser once we have a switch
 
-        // destination A
-        _xPos = -1.0;
-        _yPos = 0.0;
-        _theta = 0.0;
-        _omega = 1.5;
-        _velocity = 0.1;
+        // Choose which auto to run
+        switch(Constants.Auto.AUTO_MODE) {
+            case ZERO_BALL:
+                _auto = new AutoZeroBall(this);
+                break;
+            case ONE_BALL:
+                _auto = new AutoOneBall(this);
+                break;
+            default:
+                _auto = new AutoZeroBall(this);
+        }
 
-        _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
+        return _auto;
 
-        // destination B
-        _xPos = 0.0;
-        _yPos = 0.0;
-        _theta = 0.0;
-        _omega = 0.5;
-        _velocity = 0.2;
-
-        // _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-
-        // These all have to be unique commands.
-        // Cannot execute same command twice
-        // (_wait, _act, _wait) will throw
-        // Unhandled exception: java.lang.IllegalArgumentException: duplicate element:
-        return new SequentialCommandGroup(
-            //_waitOneSecondA,
-            _deployIntake,
-            _driveToA,
-            _waitOneSecondB
-            //_driveToB
-        );
-
-    }
-
-    /**
-     * Return a drive to destination command
-     * 
-     * @param xPos
-     * @param yPos
-     * @param theta
-     * @param omega
-     * @param velocity
-     * @return new DriveAuto
-     */
-    public DriveToPose getAutoDriveCommand(
-        double xPos,
-        double yPos,
-        double theta,
-        double omega,
-        double velocity
-        ) {
-
-        Pose2d _wayPoint; // contains xPos, yPos and theta
-        Rotation2d _heading; // uses omega
-        double _theta;
-        double _omega;
-
-        _theta = theta * Math.PI;
-        _omega = omega * Math.PI;
-
-        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
-        _heading = new Rotation2d(_omega);
-    
-        return new DriveToPose(_driveTrain, _wayPoint, _heading, velocity);
     }
 
     @Override
     public void updateDashboard() {
         //Updates the driver station
-        _driveTrain.updateDashboard();
+        driveTrain.updateDashboard();
         metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
         _autoChooser.updateDashboard();
     }

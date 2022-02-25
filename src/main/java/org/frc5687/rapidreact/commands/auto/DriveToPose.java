@@ -12,30 +12,35 @@ import edu.wpi.first.math.geometry.Rotation2d;
  */
 public class DriveToPose extends OutliersCommand {
 
-    private final Pose2d _destination;
     private final DriveTrain _driveTrain;
-    // private final SlewRateLimiter _vxFilter;
-    // private final SlewRateLimiter _vyFilter;
 
+    private final Pose2d _destination;
     private Rotation2d _heading;
     private Double _velocity;
 
     /**
-     * Create DriveAuto command
+     * Create DriveToPose command
      * 
      * @param driveTrain pass in from RobotContainer
-     * @param pose xPos in meters, yPos in meters, theta in radians
-     * @param heading omega in radians
+     * @param xPos meters
+     * @param yPos meters
+     * @param theta fraction of radians
+     * @param omega fraction of radians
      * @param velocity m/s
      */
     public DriveToPose(
         DriveTrain driveTrain,
-        Pose2d pose,
-        Rotation2d heading,
+        double xPos,
+        double yPos,
+        double theta,
+        double omega,
         double velocity) {
+
         _driveTrain = driveTrain;
-        _destination = pose;
-        _heading = heading;
+        double _theta = theta * Math.PI;
+        double _omega = omega * Math.PI;
+        _destination = new Pose2d(xPos, yPos, new Rotation2d(_theta));
+        _heading = new Rotation2d(_omega);
         _velocity = velocity;
         addRequirements(_driveTrain);
     }

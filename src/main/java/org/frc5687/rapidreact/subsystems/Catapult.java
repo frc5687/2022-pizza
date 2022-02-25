@@ -360,6 +360,11 @@ public class Catapult extends OutliersSubsystem {
         return angularVelocity * ARM_LENGTH;
     }
 
+    public boolean isReset() {
+        // TODO: determine when catapult.isReset()
+        return true;
+    }
+
     public boolean isReleasePinLocked() {
         return _releasePin.get() == PinPosition.LOCKED.getSolenoidValue();
     }
