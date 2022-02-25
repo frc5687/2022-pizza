@@ -11,8 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 import org.frc5687.rapidreact.util.*;
 
-/**
- * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
+/** Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
  * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
  * 
@@ -22,8 +21,7 @@ import org.frc5687.rapidreact.util.*;
  */
 public class Constants {
 
-    /**
-     * Conventions for constants
+    /** Conventions for constants
      * 
      * - Field position and robot size measured in meters.
      * - Time in seconds unless otherwise noted.
@@ -54,8 +52,7 @@ public class Constants {
     // Separate constants into individual inner classes corresponding
     // to subsystems or robot modes, to keep variable names shorter.
 
-    /**
-     * We use compass headings to reference swerve modules.
+    /** Use compass headings to reference swerve modules.
      * 
      * When looking down at top of robot:
      * 
@@ -330,23 +327,26 @@ public class Constants {
 
 
     }
-    public static class IntakeBlocker{
+    public static class IntakeBlocker {
         public static final double DOWN_POSITION = 180;
         public static final double UP_POSITION = 50;
     }
 
-    public static class Intake{
+    public static class Intake {
         public static final boolean INVERTED = false;
         public static final double ROLLER_IDLE_SPEED = 0.0;
         public static final double ROLLER_INTAKE_SPEED = 1.0;
     }
 
-    public static class Auto{
+    /** Constants for autonomous mode
+     * 
+     */
+    public static class Auto {
         public static final double DRIVETRAIN_POWER = 0.5;
 
         // TODO: replace this with AutoChooser once we have a switch
 
-        // Choose auto mode to run
+        /** Choose auto mode to run */ 
         public static enum Mode {
             ZERO_BALL, // just move out of tarmac
             ONE_BALL, // shoot one ball, then move out of tarmac
@@ -357,9 +357,13 @@ public class Constants {
         }
         public static final Mode AUTO_MODE = Mode.ZERO_BALL;
 
-        // Choose auto starting position
-        // two ball tarmac (right tarmac) has two of our balls next to it
-        // one ball tarmac (left tarmac) has one of our balls next to it
+        // 
+        /** Choose auto starting position
+         * 
+         * <p>two ball tarmac (right tarmac) has two of our balls next to it
+         * 
+         * <p>one ball tarmac (left tarmac) has one of our balls next to it
+         */
         public static enum Position {
             TBT_RIGHT, // two ball tarmac, right side
             TBT_LEFT, // two ball tarmac, left side
