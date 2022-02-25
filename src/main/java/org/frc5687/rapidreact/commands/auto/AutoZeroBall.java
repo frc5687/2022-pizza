@@ -25,15 +25,40 @@ public class AutoZeroBall extends SequentialCommandGroup {
 
         // Choose destination depending on starting position
         switch(Constants.Auto.AUTO_POSITION) {
-            case OBT_LEFT:
-            case OBT_RIGHT:
-            case TBT_LEFT:
             case TBT_RIGHT:
-            default:
-                xPos = -1.0;
+                xPos = 0.5;
                 yPos = -1.0;
                 theta = 0.0;
-                omega = -0.5;
+                omega = 0.0;
+                velocity = 1.0;
+                break;
+            case TBT_LEFT:
+                xPos = -1.5;
+                yPos = 0.5;
+                theta = 0.0;
+                omega = 0.0;
+                velocity = 1.0;
+                break;
+            case OBT_RIGHT:
+                xPos = -1.0;
+                yPos = 0.0;
+                theta = 0.0;
+                omega = 0.0;
+                velocity = 1.0;
+                break;
+            case OBT_LEFT:
+                xPos = -1.0;
+                yPos = 1.0;
+                theta = 0.0;
+                omega = 0.0;
+                velocity = 1.0;
+                break;
+            default:
+                // assume OBT_RIGHT
+                xPos = -1.0;
+                yPos = 0.0;
+                theta = 0.0;
+                omega = 0.0;
                 velocity = 1.0;    
         }
         
