@@ -105,72 +105,10 @@ public class Constants {
         public static final double SWERVE_NS_POS = LENGTH / 2.0;
         public static final double SWERVE_WE_POS = WIDTH / 2.0;
 
-        /** Figure out signs of compass headings
-         * 
-         * If we put robot on field with robot North facing field North,
-         * Bob's your uncle.
-         * 
-         * But put robot on field with robot North facing field East,
-         * this is what happens.
-         * 
-         * (X, Y):
-         *   X is N or S, N is +
-         *   Y is W or E, W is +
-         * 
-         *   NW (+,+)  NE (+,-)
-         * 
-         *   SW (-,+)  SE (-,-)
-         * 
-         */
-
-        // Position vectors for the swerve module kinematics
-        // i.e. location of each swerve module from center of robot
-        // NB: signs depend on orientation of robot when IMU inits
-
-        private final int NW_X =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
-            1 : -1;
-        private final int SW_X =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
-            1 : -1;
-        private final int SE_X =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
-            1 : -1;
-        private final int NE_X =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
-            1 : -1;
-
-        private final int NW_Y =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
-            1 : -1;
-        private final int SW_Y =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
-            1 : -1;
-        private final int SE_Y =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
-            1 : -1;
-        private final int NE_Y =
-            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
-            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
-            1 : -1;
-
-        public final Translation2d NORTH_WEST =
-            new Translation2d( NW_X * SWERVE_NS_POS, NW_Y * SWERVE_WE_POS );
-        public final Translation2d SOUTH_WEST =
-            new Translation2d( SW_X * SWERVE_NS_POS, SW_Y * SWERVE_WE_POS );
-        public final Translation2d SOUTH_EAST =
-            new Translation2d( SE_X * SWERVE_NS_POS, SE_Y * SWERVE_WE_POS );
-        public final Translation2d NORTH_EAST =
-            new Translation2d( NE_X * SWERVE_NS_POS, NE_Y * SWERVE_WE_POS );
-
         // Values set in DriveTuning
+
+        // Which way robot is facing when IMU inits
+        public static final DriveTuning.Direction ROBOT_FACING = DriveTuning.ROBOT_FACING;
 
         // Control
         public static final double DEADBAND = DriveTuning.DEADBAND;

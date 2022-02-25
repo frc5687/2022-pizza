@@ -2,15 +2,20 @@
 package org.frc5687.rapidreact.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -58,13 +63,114 @@ public class DriveTrain extends OutliersSubsystem {
      */
     public DriveTrain(OutliersContainer container, OI oi, AHRS imu) {
         super(container);
+
+        // Calculate position vectors for the swerve module kinematics
+        // i.e. location of each swerve module from center of robot
+        // NB: signs depend on orientation of robot when IMU inits
+
+        /** Figure out signs of compass headings
+         * 
+         * If we put robot on field with robot North facing field North,
+         * Bob's your uncle.
+         * 
+         * But put robot on field with robot North facing field East,
+         * this is what happens.
+         * 
+         * (X, Y):
+         *   X is N or S, N is +
+         *   Y is W or E, W is +
+         * 
+         *   NW (+,+)  NE (+,-)
+         * 
+         *   SW (-,+)  SE (-,-)
+         * 
+         */
+
+        int nw_x;
+        int sw_x;
+        int se_x;
+        int ne_x;
+        int nw_y;
+        int sw_y;
+        int se_y;
+        int ne_y;
+
+        switch(Constants.DriveTrain.ROBOT_FACING) {
+            case NORTH:
+                nw_x = -1;
+                sw_x = -1;
+                se_x = 1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = -1;
+                se_y = -1;
+                ne_y = 1;
+                break;
+            case EAST:
+                nw_x = 1;
+                sw_x = -1;
+                se_x = -1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = 1;
+                se_y = -1;
+                ne_y = -1;
+                break;
+            case SOUTH:
+                nw_x = 1;
+                sw_x = 1;
+                se_x = -1;
+                ne_x = -1;
+                nw_y = -1;
+                sw_y = 1;
+                se_y = 1;
+                ne_y = -1;
+                break;
+            case WEST:
+                nw_x = -1;
+                sw_x = 1;
+                se_x = 1;
+                ne_x = -1;
+                nw_y = -1;
+                sw_y = -1;
+                se_y = 1;
+                ne_y = 1;
+                break;
+            default: // robot North = field North
+                nw_x = -1;
+                sw_x = -1;
+                se_x = 1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = -1;
+                se_y = -1;
+                ne_y = 1;
+        }
+
+        final Translation2d NORTH_WEST =
+            new Translation2d(
+                nw_x * Constants.DriveTrain.SWERVE_NS_POS,
+                nw_y * Constants.DriveTrain.SWERVE_WE_POS );
+        final Translation2d SOUTH_WEST =
+            new Translation2d(
+                sw_x * Constants.DriveTrain.SWERVE_NS_POS,
+                sw_y * Constants.DriveTrain.SWERVE_WE_POS );
+        final Translation2d SOUTH_EAST =
+            new Translation2d(
+                se_x * Constants.DriveTrain.SWERVE_NS_POS,
+                se_y * Constants.DriveTrain.SWERVE_WE_POS );
+        final Translation2d NORTH_EAST =
+            new Translation2d(
+                ne_x * Constants.DriveTrain.SWERVE_NS_POS,
+                ne_y * Constants.DriveTrain.SWERVE_WE_POS );
+
         try {
             _oi = oi;
             _imu = imu;
 
             _northWest =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.NORTH_WEST,
+                            NORTH_WEST,
                             RobotMap.CAN.TALONFX.NORTH_WEST_OUTER,
                             RobotMap.CAN.TALONFX.NORTH_WEST_INNER,
                             RobotMap.DIO.NORTH_WEST,
@@ -72,7 +178,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.NORTH_WEST_ENCODER_INVERTED);
             _southWest =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.SOUTH_WEST,
+                            SOUTH_WEST,
                             RobotMap.CAN.TALONFX.SOUTH_WEST_OUTER,
                             RobotMap.CAN.TALONFX.SOUTH_WEST_INNER,
                             RobotMap.DIO.SOUTH_WEST,
@@ -80,7 +186,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.SOUTH_WEST_ENCODER_INVERTED);
             _southEast =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.SOUTH_EAST,
+                            SOUTH_EAST,
                             RobotMap.CAN.TALONFX.SOUTH_EAST_INNER,
                             RobotMap.CAN.TALONFX.SOUTH_EAST_OUTER,
                             RobotMap.DIO.SOUTH_EAST,
@@ -88,7 +194,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.SOUTH_EAST_ENCODER_INVERTED);
             _northEast =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.NORTH_EAST,
+                            NORTH_EAST,
                             RobotMap.CAN.TALONFX.NORTH_EAST_INNER,
                             RobotMap.CAN.TALONFX.NORHT_EAST_OUTER,
                             RobotMap.DIO.NORTH_EAST,
