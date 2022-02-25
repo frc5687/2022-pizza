@@ -18,7 +18,6 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
 
-import org.frc5687.rapidreact.commands.SnapTo;
 // import org.frc5687.rapidreact.commands.ResetNavX;
 
 // import org.frc5687.rapidreact.util.AxisButton;
@@ -100,7 +99,7 @@ public class OI extends OutliersProxy {
         ) {
         _resetNavX.whenPressed(new InstantCommand(driveTrain::resetYaw, driveTrain));
         // _resetNavX.whenReleased(new ResetNavX(driveTrain));
-        _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
+        // _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
 
     public double getDriveY() {

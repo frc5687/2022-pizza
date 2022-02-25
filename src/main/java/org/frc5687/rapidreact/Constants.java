@@ -1,7 +1,6 @@
 /* Team 5687 (C)2020-2022 */
 package org.frc5687.rapidreact;
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +17,8 @@ import org.frc5687.rapidreact.util.*;
  * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
  * 
  * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
+ * 
+ * <p>TuneDriving has drive train tuning values.
  */
 public class Constants {
 
@@ -88,6 +89,34 @@ public class Constants {
         // Control
         public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
 
+        // Maximum rates of motion
+        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
+        public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
+        public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
+
+        // PID controller settings
+        public static final double ANGLE_kP = 3.5;
+        public static final double ANGLE_kI = 0.0;
+        public static final double ANGLE_kD = 0.0;
+
+        public static final double kP = 10.5;
+        public static final double kI = 0.0;
+        public static final double kD = 0.5;
+        public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
+        public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
+
+        // Should be 0, but can correct for hardware error in swerve module headings here.
+        public static final double NORTH_WEST_OFFSET = 0; // radians
+        public static final double SOUTH_WEST_OFFSET = 0; // radians
+        public static final double SOUTH_EAST_OFFSET = 0; // radians
+        public static final double NORTH_EAST_OFFSET = 0; // radians
+
+        // In case encoder is measuring rotation in the opposite direction we expect.
+        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
+        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
+        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
+        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
+
         // Size of the robot chassis in meters
         public static final double WIDTH = 0.6223; // meters
         public static final double LENGTH = 0.6223; // meters
@@ -135,34 +164,6 @@ public class Constants {
         public static final Translation2d SOUTH_WEST = new Translation2d( -SWERVE_NS_POS, SWERVE_WE_POS ); // -,+
         public static final Translation2d SOUTH_EAST = new Translation2d( -SWERVE_NS_POS, -SWERVE_WE_POS ); // -,-
         public static final Translation2d NORTH_EAST = new Translation2d( SWERVE_NS_POS, -SWERVE_WE_POS ); // +,-
-
-        // Should be 0, but can correct for hardware error in swerve module headings here.
-        public static final double NORTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_EAST_OFFSET = 0; // radians
-        public static final double NORTH_EAST_OFFSET = 0; // radians
-
-        // In case encoder is measuring rotation in the opposite direction we expect.
-        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
-        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
-
-        // Maximum rates of motion
-        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
-        public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
-        public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
-
-        // PID controller settings
-        public static final double ANGLE_kP = 3.5;
-        public static final double ANGLE_kI = 0.0;
-        public static final double ANGLE_kD = 0.0;
-
-        public static final double kP = 10.5;
-        public static final double kI = 0.0;
-        public static final double kD = 0.5;
-        public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
-        public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
 
     }
 
