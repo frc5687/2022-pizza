@@ -1,28 +1,31 @@
 /* Team 5687 (C)2020-2021 */
 package org.frc5687.rapidreact.config;
 
-/**
- * We use compass headings to reference positions on the chassis.
+/** Constants for things plugged in to the roboRIO.
  * 
- * When looking down at top of robot:
- * 
- *          N
- *          |
- *      W -- -- E
- *          |
- *          S
- * 
- * When robot is flipped over on its back:
- * 
- *          N
- *          |
- *      E -- -- W
- *          |
- *          S
+ * @see Constants
  */
-
-/** Constants for things plugged in to the roboRIO. */
 public class RobotMap {
+
+    /**
+     * We use compass headings to reference positions on the chassis.
+     * 
+     * When looking down at top of robot:
+     * 
+     *          N
+     *          |
+     *      W -- -- E
+     *          |
+     *          S
+     * 
+     * When robot is flipped over on its back:
+     * 
+     *          N
+     *          |
+     *      E -- -- W
+     *          |
+     *          S
+     */
 
     /** Controller Area Network addresses.
      * 

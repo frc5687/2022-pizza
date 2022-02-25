@@ -13,11 +13,13 @@ import org.frc5687.rapidreact.util.*;
 
 /** Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
- * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
+ * @see RobotMap RobotMap for Robot port mappings (CAN IDs, etc.)
  * 
- * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
+ * @see ButtonMap ButtonMap for Joystick and Gamepad settings and button mappings
  * 
- * <p>DriveTuning has drive train tuning values.
+ * @see DriveTuning DriveTuning for drive train tuning values
+ * 
+ * @see AutoConfig AutoConfig for auto mode configurations
  */
 public class Constants {
 
@@ -30,9 +32,14 @@ public class Constants {
      * - Field reference North is away from drive team, East is to drive team's right.
      * - Robot reference North is direction catapult shoots, South is direction intake deploys.
      * 
-     * Coordinate space needs to be decided and documented.
      * Q: Are angles given clockwise (+ turns right) or counter-clockwise (+ turns left)?
      */
+
+    // NOTE: see DriveTuning for configuring direction robot drives.
+    // You must decide whether robot North = field North or another field direction.
+    // We have been placing robot on field with robot North = field East.
+    // Doing this makes our code a bit confusing.
+    // Field East is away from our drive team.
 
     // Declare constants as public static final so that they are globally accessible
     // and cannot be changed.
@@ -51,67 +58,32 @@ public class Constants {
     // Separate constants into individual inner classes corresponding
     // to subsystems or robot modes, to keep variable names shorter.
 
-    /** Use compass headings to reference swerve modules.
-     * 
-     * When looking down at top of robot:
-     * 
-     *          N
-     *          |
-     *      W -- -- E
-     *          |
-     *          S
-     * 
-     * When robot is flipped over on its back:
-     * 
-     *          N
-     *          |
-     *      E -- -- W
-     *          |
-     *          S
-     */
-
-
     /** Constants for driving robot
      * 
-     * <p>These constants control how entire drivetrain works, including
+     * <p>Set physical characteristics of drive train.
      * 
-     * - what angle the wheels point,
-     * - which direction the wheels turn,
-     * - how sensitive the joystick is,
-     * - maximum speed and acceleration
+     * @see DriveTuning DriveTuning for drive train tuning values
      */
     public static class DriveTrain {
 
-        // Control
-        public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
-
-        // Maximum rates of motion
-        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
-        public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
-        public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
-
-        // PID controller settings
-        public static final double ANGLE_kP = 3.5;
-        public static final double ANGLE_kI = 0.0;
-        public static final double ANGLE_kD = 0.0;
-
-        public static final double kP = 10.5;
-        public static final double kI = 0.0;
-        public static final double kD = 0.5;
-        public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
-        public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
-
-        // Should be 0, but can correct for hardware error in swerve module headings here.
-        public static final double NORTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_EAST_OFFSET = 0; // radians
-        public static final double NORTH_EAST_OFFSET = 0; // radians
-
-        // In case encoder is measuring rotation in the opposite direction we expect.
-        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
-        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
+        /** Use compass headings to reference swerve modules.
+         * 
+         * When looking down at top of robot:
+         * 
+         *          N
+         *          |
+         *      W -- -- E
+         *          |
+         *          S
+         * 
+         * When robot is flipped over on its back:
+         * 
+         *          N
+         *          |
+         *      E -- -- W
+         *          |
+         *          S
+         */
 
         // Size of the robot chassis in meters
         public static final double WIDTH = 0.6223; // meters
@@ -133,9 +105,13 @@ public class Constants {
         public static final double SWERVE_NS_POS = LENGTH / 2.0;
         public static final double SWERVE_WE_POS = WIDTH / 2.0;
 
-        /**
+        /** Figure out signs of compass headings
          * 
-         * Coordinate system is wacky:
+         * If we put robot on field with robot North facing field North,
+         * Bob's your uncle.
+         * 
+         * But put robot on field with robot North facing field East,
+         * this is what happens.
          * 
          * (X, Y):
          *   X is N or S, N is +
@@ -145,21 +121,87 @@ public class Constants {
          * 
          *   SW (-,+)  SE (-,-)
          * 
-         * We go counter-counter clockwise starting at NW of chassis:
-         * 
-         *  NW, SW, SE, NE
-         * 
-         * Note: when robot is flipped over, this is clockwise.
-         * 
          */
 
         // Position vectors for the swerve module kinematics
         // i.e. location of each swerve module from center of robot
-        // see coordinate system above to understand signs of vector coordinates
-        public static final Translation2d NORTH_WEST = new Translation2d( SWERVE_NS_POS, SWERVE_WE_POS ); // +,+
-        public static final Translation2d SOUTH_WEST = new Translation2d( -SWERVE_NS_POS, SWERVE_WE_POS ); // -,+
-        public static final Translation2d SOUTH_EAST = new Translation2d( -SWERVE_NS_POS, -SWERVE_WE_POS ); // -,-
-        public static final Translation2d NORTH_EAST = new Translation2d( SWERVE_NS_POS, -SWERVE_WE_POS ); // +,-
+        // NB: signs depend on orientation of robot when IMU inits
+
+        private final int NW_X =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
+            1 : -1;
+        private final int SW_X =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
+            1 : -1;
+        private final int SE_X =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
+            1 : -1;
+        private final int NE_X =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
+            1 : -1;
+
+        private final int NW_Y =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
+            1 : -1;
+        private final int SW_Y =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.EAST)) ?
+            1 : -1;
+        private final int SE_Y =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.SOUTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
+            1 : -1;
+        private final int NE_Y =
+            ((DriveTuning.ROBOT_FACING == DriveTuning.Direction.NORTH) ||
+            (DriveTuning.ROBOT_FACING == DriveTuning.Direction.WEST)) ?
+            1 : -1;
+
+        public final Translation2d NORTH_WEST =
+            new Translation2d( NW_X * SWERVE_NS_POS, NW_Y * SWERVE_WE_POS );
+        public final Translation2d SOUTH_WEST =
+            new Translation2d( SW_X * SWERVE_NS_POS, SW_Y * SWERVE_WE_POS );
+        public final Translation2d SOUTH_EAST =
+            new Translation2d( SE_X * SWERVE_NS_POS, SE_Y * SWERVE_WE_POS );
+        public final Translation2d NORTH_EAST =
+            new Translation2d( NE_X * SWERVE_NS_POS, NE_Y * SWERVE_WE_POS );
+
+        // Values set in DriveTuning
+
+        // Control
+        public static final double DEADBAND = DriveTuning.DEADBAND;
+
+        // Maximum rates of motion
+        public static final double MAX_MPS = DriveTuning.MAX_MPS;
+        public static final double MAX_ANG_VEL = DriveTuning.MAX_ANG_VEL;
+        public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
+
+        // PID controller settings
+        public static final double ANGLE_kP = DriveTuning.ANGLE_kP;
+        public static final double ANGLE_kI = DriveTuning.ANGLE_kI;
+        public static final double ANGLE_kD = DriveTuning.ANGLE_kD;
+
+        public static final double kP = DriveTuning.kP;
+        public static final double kI = DriveTuning.kI;
+        public static final double kD = DriveTuning.kD;
+        public static final double PROFILE_CONSTRAINT_VEL = DriveTuning.PROFILE_CONSTRAINT_VEL;
+        public static final double PROFILE_CONSTRAINT_ACCEL = DriveTuning.PROFILE_CONSTRAINT_ACCEL;
+
+        // Should be 0, but can correct for hardware error in swerve module headings here.
+        public static final double NORTH_WEST_OFFSET = DriveTuning.NORTH_WEST_OFFSET;
+        public static final double SOUTH_WEST_OFFSET = DriveTuning.SOUTH_WEST_OFFSET;
+        public static final double SOUTH_EAST_OFFSET = DriveTuning.SOUTH_EAST_OFFSET;
+        public static final double NORTH_EAST_OFFSET = DriveTuning.NORTH_EAST_OFFSET;
+
+        // In case encoder is measuring rotation in the opposite direction we expect.
+        public static final boolean NORTH_WEST_ENCODER_INVERTED = DriveTuning.NORTH_WEST_ENCODER_INVERTED;
+        public static final boolean SOUTH_WEST_ENCODER_INVERTED = DriveTuning.SOUTH_WEST_ENCODER_INVERTED;
+        public static final boolean SOUTH_EAST_ENCODER_INVERTED = DriveTuning.SOUTH_EAST_ENCODER_INVERTED;
+        public static final boolean NORTH_EAST_ENCODER_INVERTED = DriveTuning.NORTH_EAST_ENCODER_INVERTED;
 
     }
 
@@ -339,37 +381,11 @@ public class Constants {
 
     /** Constants for autonomous mode
      * 
+     * @see AutoConfig
      */
     public static class Auto {
-        public static final double DRIVETRAIN_POWER = 0.5;
-
-        // TODO: replace this with AutoChooser once we have a switch
-
-        /** Choose auto mode to run */ 
-        public static enum Mode {
-            ZERO_BALL, // just move out of tarmac
-            ONE_BALL, // shoot one ball, then move out of tarmac
-            TWO_BALL, // then get 2nd ball and shoot it
-            THREE_BALL, // then get 3rd ball and shoot it
-            FOUR_BALL, // then get 4th ball and shoot it
-            FIVE_BALL // then get 5th ball and shoot it
-        }
-        public static final Mode AUTO_MODE = Mode.ZERO_BALL;
-
-        // 
-        /** Choose auto starting position
-         * 
-         * <p>two ball tarmac (right tarmac) has two of our balls next to it
-         * 
-         * <p>one ball tarmac (left tarmac) has one of our balls next to it
-         */
-        public static enum Position {
-            TBT_RIGHT, // two ball tarmac, right side
-            TBT_LEFT, // two ball tarmac, left side
-            OBT_RIGHT, // one ball tarmac, right side
-            OBT_LEFT // one ball tarmac, left side
-        }
-        public static final Position AUTO_POSITION = Position.TBT_RIGHT;
-    
+        public static final double DRIVETRAIN_POWER = AutoConfig.DRIVETRAIN_POWER;
+        public static final AutoConfig.Mode AUTO_MODE = AutoConfig.AUTO_MODE;
+        public static final AutoConfig.Position AUTO_POSITION = AutoConfig.AUTO_POSITION;
     }
 }

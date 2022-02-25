@@ -2,22 +2,27 @@ package org.frc5687.rapidreact.config;
 
 import edu.wpi.first.wpilibj.Joystick.AxisType;
 
-/**
- * ButtonMap is used to abstract button and controller mapping out of the OI class, and make it easier to
+/** Joystick and gamepad USB and button mapping
+ * 
+ * <p>Take button and controller mapping out of the OI class, making it easier to
  * change button assignment without breaking the OI code.
  * 
- * The class is broken into three parts:
- * * The Controllers class holds the port assignments for each controller.  Note that if a controller is to be unplugged
- *   you should set the port to -1.  For the most part this will cause OI to ignore it.
+ * <p>The class is broken into three parts:
  * 
- * * The Axes class has a subclass for each axis (or group of axes) in use.  Each axis subclass should have a constant defining
+ * <ol>
+ *  <li> The Controllers class holds the USB port assignments for each controller.  Note that if a controller is to be unplugged
+ *  you should set the USB port to -1.  For the most part this will cause OI to ignore it.
+ * 
+ *  <li> The Axes class has a subclass for each axis (or group of axes) in use.  Each axis subclass should have a constant defining
  *   which controller it's mapped to and a constant for each axis in the group.
  * 
- * * The Buttons class has a subclass for each button in use.  Each button subclass should have a constant defining
+ *  <li> The Buttons class has a subclass for each button in use.  Each button subclass should have a constant defining
  *   which controller it's mapped to and a constant for the button number itself.
+ * </ol>
  */
 public class ButtonMap {
 
+    /** Joysticks and gamepads mapped to USB ports */
     public static class Controllers {
         /** 
          * USB ports of joysticks or gamepads.
