@@ -1,6 +1,10 @@
-Our goal for autos is to shoot four balls into the high goal during the first 15 seconds of the match. On the way to creating a successful 4-ball auto we will create a zero-ball, 1-ball, 2-ball and 3-ball autos.
+# Autonomous Routine
 
-We assume our robot will use swerve drive, which allows the robot to remain facing the hub as it moves to pick up each ball. A successful four-ball auto will require the following:
+Goal: shoot four balls into the high goal during the first 15 seconds of the match.
+
+On the way to creating a successful 4-ball auto we will create a zero-ball, 1-ball, 2-ball and 3-ball autos.
+
+Our robot uses swerve drive, which allows the robot to remain facing the hub as it moves to pick up each ball. A successful four-ball auto will require the following:
 
 - ability to shoot balls into the high goal
 - ability to move to and pick up stationary balls on our side of the arena
@@ -8,17 +12,17 @@ We assume our robot will use swerve drive, which allows the robot to remain faci
 - take one second or less to pick up a stationary ball from the ground
 - be able to shoot accurately from different places on the field while moving
 
-![Match Setup](frc-match-setup-labeled.jpg)
+![Coordinate System](coordinate-system.jpg)
 
-Assuming we are red alliance:
+Assuming we are blue alliance:
 
-- The top tarmac in the match setup diagram we call the "two-ball" tarmac because there are two red balls near it.
+- The bottom blue tarmac in the match setup diagram we call the "two-ball" tarmac because there are two blue balls near it.
 - The ball near the wall is the "wall ball."
 - The ball in the middle of the field is the "field ball."
 - The ball near the hangar is the "hangar ball."
 - The ball near the terminal is the "terminal ball."
 - The ball the human is holding at the beginning of the game is the "human ball."
-- The lower tarmac is the "one-ball" tarmac.
+- The upper tarmac is the "one-ball" tarmac.
 
 There are four possible starting positions for the robot:
 
@@ -34,7 +38,7 @@ In zero-ball auto we do not shoot any balls. The most likely reason we would run
 1. Score two points by moving our robot completely out of the tarmac.
 2. Stay out of the way of our alliance partners so they can score more points.
 
-![Zero Ball Auto](zero-ball-auto.jpg)
+![Zero Ball Auto](zero-ball-auto-blue.jpg)
 
 For all starting positions we will line up the robot so the shooter is facing the hub, using the tarmac edge as a guideline. Starting positions:
 
