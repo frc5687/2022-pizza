@@ -26,10 +26,10 @@ Assuming we are blue alliance:
 
 There are four possible starting positions for the robot:
 
-1. right side of 2-ball tarmac is on the right side of the two-ball tarmac as you're looking toward the hub,
-2. left side of 2-ball tarmac,
-3. right side of 1-ball tarmac,
-4. left side of 1-ball tarmac.
+1. left side of 1-ball tarmac.
+2. right side of 1-ball tarmac,
+3. left side of 2-ball tarmac,
+4. right side of 2-ball tarmac is on the right side of the two-ball tarmac as you're looking toward the hub,
 
 # Zero-Ball Auto
 
@@ -42,10 +42,10 @@ In zero-ball auto we do not shoot any balls. The most likely reason we would run
 
 For all starting positions we will line up the robot so it is facing field reference north.  We can measure distance from tarmac lines to give us an exact starting position:
 
-1. *Right side of the two-ball tarmac.* Give robot in position two a clear path to our wall ball. Pin the opposition's wall ball against the wall.
-2. *Left side of the two-ball tarmac.* Give robot in position one a clear path to our field ball. Bump the opposition's field ball toward our hangar.
-3. **Right side of the one-ball tarmac, our preferred starting position for a zero-ball auto.** Give robot in position four a clear path to our hangar ball. Bump the opposition's field ball toward our hangar, taking care not to bump it into our field ball or toward our terminal ball.
-4. *Left side of the one-ball tarmac.* Give robot in position three a clear path to our hangar ball. Pin the opposition's hangar ball against the wall.
+1. *Left side of the one-ball tarmac.* Give robot in position three a clear path to our hangar ball. Pin the opposition's hangar ball against the wall.
+2. **Right side of the one-ball tarmac, our preferred starting position for a zero-ball auto.** Give robot in position four a clear path to our hangar ball. Bump the opposition's field ball toward our hangar, taking care not to bump it into our field ball or toward our terminal ball.
+3. *Left side of the two-ball tarmac.* Give robot in position one a clear path to our field ball. Bump the opposition's field ball toward our hangar.
+4. *Right side of the two-ball tarmac.* Give robot in position two a clear path to our wall ball. Pin the opposition's wall ball against the wall.
 
 # One-Ball Auto
 
@@ -90,7 +90,7 @@ In four-ball auto, we start in position one (right side of two-ball tarmac) and 
 
 # Five-Ball Auto
 
-In five-ball auto, we have to count on our human player to score or add abilities to our robot.
+In five-ball auto, we have to count on our human player to roll the ball to our robot, score by shooting on the hub, or add abilities to our robot to pick up balls after they have been shot.
 
 To score the ball the human holds during auto:
 
