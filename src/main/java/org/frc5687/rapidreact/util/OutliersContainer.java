@@ -58,8 +58,8 @@ public abstract class OutliersContainer implements ILoggingSource {
         }
     }
 
-    /***
-     * Unregisters a subsystem for periodic actions.
+    /** Unregister a subsystem for periodic actions.
+     * 
      * @param subsystem
      */
     public void unregisterSubSystem(OutliersSubsystem subsystem) {
@@ -68,6 +68,7 @@ public abstract class OutliersContainer implements ILoggingSource {
         }
     }
 
+    /** Run each subsystem's updateDashboard() */
     public void updateDashboard() {
         _subsystems.forEach((ss) -> ss.updateDashboard());
     }

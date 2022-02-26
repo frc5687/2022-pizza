@@ -41,8 +41,7 @@ public class Robot extends OutliersRobot {
 
     // Initialization methods
 
-    /**
-     * Run once when robot code starts.
+    /** Run once when robot code starts.
      * 
      * <p>Set up logging and whatever else needs to happen only once when the robot code starts.
      * 
@@ -85,8 +84,7 @@ public class Robot extends OutliersRobot {
         // MetricTracker.flushAll();
     }
 
-    /**
-     * Run once when robot enters autonomous mode
+    /** Run once when robot enters autonomous mode
      * 
      * <p>Schedule the auto command.
      */

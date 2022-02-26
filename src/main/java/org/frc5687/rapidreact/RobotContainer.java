@@ -44,8 +44,7 @@ public class RobotContainer extends OutliersContainer {
     public Intake intake;
     public Catapult catapult;
 
-    /**
-     * Create RobotContainer 
+    /** Create RobotContainer 
      * 
      * @param robot this robot
      * @param identityMode TODO: document identityMode
@@ -57,6 +56,7 @@ public class RobotContainer extends OutliersContainer {
 
     // Initialization methods
 
+    /** Run once when robot code starts. */
     public void init() {
         info("Running RobotContainer.init()");
 
@@ -115,9 +115,9 @@ public class RobotContainer extends OutliersContainer {
 
     // Helper methods
 
-    /** 
-     * Helper function to wrap DriveTrain.controllerPeriodic.  
-     * _driveTrain can be null during initial development
+    /** Wrap DriveTrain.controllerPeriodic.
+     * 
+     * <p> _driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
         if (driveTrain != null) {
@@ -125,8 +125,9 @@ public class RobotContainer extends OutliersContainer {
         }
     }
 
-    /**
-     * Helper function to wrap CommandScheduler.setDefaultCommand.
+    /** Wrap CommandScheduler.setDefaultCommand.
+     * 
+     * <p> Allow nulls during initial development.
      * 
      * @param subSystem can be null
      * @param command can be null
@@ -139,8 +140,7 @@ public class RobotContainer extends OutliersContainer {
         s.setDefaultCommand(subSystem, command);
     }
 
-    /**
-     * Return sequence of commands to run during auto
+    /** Return sequence of commands to run during auto
      * 
      * @return SequentialCommandGroup
     */
@@ -168,8 +168,9 @@ public class RobotContainer extends OutliersContainer {
 
     @Override
     public void updateDashboard() {
-        //Updates the driver station
+        // Update driver station to show what driveTrain is doing
         driveTrain.updateDashboard();
+        // TODO: is this right place to AutoChooser.updateDashboard()?
         metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
         _autoChooser.updateDashboard();
     }

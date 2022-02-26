@@ -59,8 +59,7 @@ import org.frc5687.rapidreact.config.Constants;
  *        _oi.initializeButtons(_driveTrain, _shooter);
  */
 
- /**
- * OI is the operator input class
+ /** Operator input
  * 
  * <p>Define the types of devices that can provide operator input
  * (joysticks, gamepads, drive wheels, keyboards, etc.)
@@ -91,9 +90,12 @@ public class OI extends OutliersProxy {
 
     }
 
-    /** Define how buttons work:
-     *  - when button calls command (when pressed, released, held, etc.)
-     *  - which command gets called
+    /** Define how buttons work
+     * 
+     * <ul>
+     *  <li> when button calls command (when pressed, released, held, etc.)
+     *  <li> which command gets called
+     * </ul>
      */
     public void initializeButtons(
         DriveTrain driveTrain,
@@ -173,8 +175,7 @@ public class OI extends OutliersProxy {
     @Override
     public void updateDashboard() {}
 
-    /**
-     * Instantiates a Joystick on the specified port and adds it to the _joysticks array.
+    /** Instantiate a Joystick on the specified port and add it to the _joysticks array.
      * 
      * @param port Pass -1 to skip this joystick.
      */
@@ -183,8 +184,7 @@ public class OI extends OutliersProxy {
         _joysticks[port] = new Joystick(port);
     }
 
-    /**
-     * Instantiates Gamepad on the specified port and adds it to the _joysticks array.
+    /** Instantiate Gamepad on the specified port and add it to the _joysticks array.
      * 
      * @param port Pass -1 to skip this gamepad.
      */
@@ -193,19 +193,22 @@ public class OI extends OutliersProxy {
         _joysticks[port] = new Gamepad(port);
     }
 
-    /**
-     * Instantiates Button on the specific controller and adds it to the _buttons array.
-     * first "number of buttons" is for the first controller, seconds "number of buttons" is for the 2nd controller, etc.
-     * @param button
+    /** Instantiate Button on the specific controller and add it to the _buttons array.
+     * 
+     * <p> Joysticks are indexed by USB port.
+     * 
+     * @param controller
+     * @param buttonNumber
+     * @return new JoystickButton
      */
     private JoystickButton addJoystickButton(int controller, int buttonNumber) {
         Joystick joystick = getJoystick(controller);
         return new JoystickButton(joystick, buttonNumber);
     }
-    /**
-     * Returns the joystick assigned to a specific port.  Returns null is no joystick assigned or port is -1.
-     * @param port
-     * @return
+    /** Return the joystick assigned to a specific USB port.
+     * 
+     * @param port USB
+     * @return Joystick or null if no joystick assigned to port or port is -1
      */
     private Joystick getJoystick(int port) {
         if (port < 0) { return null; }
