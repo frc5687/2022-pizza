@@ -6,7 +6,6 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 import org.frc5687.rapidreact.util.*;
@@ -15,7 +14,7 @@ import org.frc5687.rapidreact.util.*;
  * 
  * @see RobotMap RobotMap for Robot port mappings (CAN IDs, etc.)
  * 
- * @see ButtonMap ButtonMap for Joystick and Gamepad settings and button mappings
+ * @see JoystickMap ButtonMap for Joystick and Gamepad settings and button mappings
  * 
  * @see DriveTuning DriveTuning for drive train tuning values
  * 

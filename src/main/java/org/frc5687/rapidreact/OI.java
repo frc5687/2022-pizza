@@ -25,7 +25,7 @@ import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 import static org.frc5687.rapidreact.util.Helpers.*;
 
-import org.frc5687.rapidreact.config.ButtonMap;
+import org.frc5687.rapidreact.config.JoystickMap;
 import org.frc5687.rapidreact.config.Constants;
 
 /**
@@ -80,12 +80,12 @@ public class OI extends OutliersProxy {
     private JoystickButton _snapBTN;
 
     public OI() {
-        addJoystick(ButtonMap.Controllers.TRANSLATOR_JOYSTICK);
-        addJoystick(ButtonMap.Controllers.ROTATOR_JOYSTICK);
-        addGamepad(ButtonMap.Controllers.ROTATOR_GAMEPAD);
+        addJoystick(JoystickMap.Controllers.TRANSLATOR_JOYSTICK);
+        addJoystick(JoystickMap.Controllers.ROTATOR_JOYSTICK);
+        addGamepad(JoystickMap.Controllers.ROTATOR_GAMEPAD);
 
         // Create buttons
-        _resetNavX = addJoystickButton(ButtonMap.Buttons.RESET_NAVX.Controller, ButtonMap.Buttons.RESET_NAVX.Button);
+        _resetNavX = addJoystickButton(JoystickMap.Buttons.RESET_NAVX.Controller, JoystickMap.Buttons.RESET_NAVX.Button);
         _snapBTN = new JoystickButton(_joysticks[1], 4);
 
     }
@@ -108,19 +108,19 @@ public class OI extends OutliersProxy {
     }
 
     public double getDriveY() {
-        Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
+        Joystick translation = getJoystick(JoystickMap.Axes.Translation.Controller);
 
-        yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
+        yIn = getSpeedFromAxis(translation, JoystickMap.Axes.Translation.Y);
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
 
         return circularize(yIn, xIn);
     }
 
     public double getDriveX() {
-        Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
+        Joystick translation = getJoystick(JoystickMap.Axes.Translation.Controller);
 
         // TODO: explain the negative sign here
-        xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.X);
+        xIn = -getSpeedFromAxis(translation, JoystickMap.Axes.Translation.X);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
 
         return circularize(xIn, yIn);
@@ -160,9 +160,9 @@ public class OI extends OutliersProxy {
     }
 
     public double getRotationX() {
-        Joystick rotation = getJoystick(ButtonMap.Axes.Rotation.Controller);
+        Joystick rotation = getJoystick(JoystickMap.Axes.Rotation.Controller);
 
-        double speed = getSpeedFromAxis(rotation, ButtonMap.Axes.Rotation.Twist);
+        double speed = getSpeedFromAxis(rotation, JoystickMap.Axes.Rotation.Twist);
         speed = applyDeadband(speed, 0.2);
 
         return speed;

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.Joystick.AxisType;
  *   which controller it's mapped to and a constant for the button number itself.
  * </ol>
  */
-public class ButtonMap {
+public class JoystickMap {
 
     /** Joysticks and gamepads mapped to USB ports */
     public static class Controllers {
