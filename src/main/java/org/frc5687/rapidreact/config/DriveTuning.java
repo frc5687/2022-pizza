@@ -4,10 +4,10 @@ package org.frc5687.rapidreact.config;
 /** Drive train tuning values (such as speeds, PID gains, etc.).
  * 
  * <ul>
- *  <li>what angle the wheels point,
- *  <li>which direction the wheels turn,
- *  <li>how sensitive the joystick is,
- *  <li>maximum speed and acceleration
+ *  <li> what angle the wheels point,
+ *  <li> which direction the wheels turn,
+ *  <li> how sensitive the joystick is,
+ *  <li> maximum speed and acceleration
  * </ul>
  * 
  * @see Constants
