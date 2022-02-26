@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import org.frc5687.rapidreact.util.AutoChooser;
+// import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
@@ -36,7 +36,7 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
 
     private OI _oi;
-    private AutoChooser _autoChooser;
+    // private AutoChooser _autoChooser;
     private AHRS _imu;
 
     public DriveTrain driveTrain;
@@ -61,7 +61,7 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.init()");
 
         _oi = new OI();
-        _autoChooser = new AutoChooser();
+        // _autoChooser = new AutoChooser();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
 
         // Create subsystems
@@ -171,7 +171,7 @@ public class RobotContainer extends OutliersContainer {
         // Update driver station to show what driveTrain is doing
         driveTrain.updateDashboard();
         // TODO: is this right place to AutoChooser.updateDashboard()?
-        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
-        _autoChooser.updateDashboard();
+        // metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
+        // _autoChooser.updateDashboard();
     }
 }
