@@ -9,6 +9,7 @@ import org.frc5687.rapidreact.OI;
  * <p>Take button and controller mapping out of the OI class, making it easier to
  * change button assignment without breaking the OI code.
  * 
+ * @see OI
  */
 public class JoystickMap {
 

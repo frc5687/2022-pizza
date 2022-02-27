@@ -33,6 +33,8 @@ import org.frc5687.rapidreact.config.Constants;
  * 
  * <p> Define the types of devices that can provide operator input
  * (joysticks, gamepads, drive wheels, keyboards, etc.)
+ * 
+ * @see JoystickMap
  */
 public class OI extends OutliersProxy {
 
