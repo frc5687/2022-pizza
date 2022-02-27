@@ -14,7 +14,7 @@ import org.frc5687.rapidreact.util.*;
  * 
  * @see RobotMap RobotMap for Robot port mappings (CAN IDs, etc.)
  * 
- * @see JoystickMap ButtonMap for Joystick and Gamepad settings and button mappings
+ * @see JoystickMap JoystickMap for Joystick and Gamepad settings and button mappings
  * 
  * @see DriveTuning DriveTuning for drive train tuning values
  * 

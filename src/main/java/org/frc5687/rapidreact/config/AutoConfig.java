@@ -22,15 +22,15 @@ public class AutoConfig {
 
     /** Choose auto starting position
      * 
-     * <p>two ball tarmac (right tarmac) has two of our balls next to it
-     * 
      * <p>one ball tarmac (left tarmac) has one of our balls next to it
+     * 
+     * <p>two ball tarmac (right tarmac) has two of our balls next to it
      */
     public static enum Position {
-        TBT_RIGHT, // two ball tarmac, right side
-        TBT_LEFT, // two ball tarmac, left side
+        OBT_LEFT, // one ball tarmac, left side
         OBT_RIGHT, // one ball tarmac, right side
-        OBT_LEFT // one ball tarmac, left side
+        TBT_LEFT, // two ball tarmac, left side
+        TBT_RIGHT // two ball tarmac, right side
     }
     public static final Position AUTO_POSITION = Position.TBT_RIGHT;
 
