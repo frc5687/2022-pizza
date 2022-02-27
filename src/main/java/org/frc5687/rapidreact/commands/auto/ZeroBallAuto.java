@@ -1,7 +1,7 @@
 package org.frc5687.rapidreact.commands.auto;
 
 import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.commands.DriveAuto;
+import org.frc5687.rapidreact.commands.auto.DriveToPose;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -32,7 +32,7 @@ public class ZeroBallAuto extends SequentialCommandGroup {
         _velocity = 0.2;
 
         addCommands(
-            new DriveAuto(driveTrain, _destination, _heading, _velocity)
+            new DriveToPose(driveTrain, _destination, _heading, _velocity)
          );
     }
 
