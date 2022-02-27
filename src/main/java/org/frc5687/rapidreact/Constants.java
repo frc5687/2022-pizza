@@ -1,7 +1,6 @@
 /* Team 5687 (C)2020-2022 */
 package org.frc5687.rapidreact;
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,22 +9,47 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
+import org.frc5687.rapidreact.util.*;
+
 /**
  * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
- * <p>Robot port mappings are in RobotMap.
+ * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
  * 
- * <p>Joystick and Gamepad settings, including button mappings, are in ButtonMap.
+ * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
+ * 
+ * <p>TuneDriving has drive train tuning values.
  */
 public class Constants {
+
+    /**
+     * Conventions for constants
+     * 
+     * - Field position and robot size measured in meters.
+     * - Time in seconds unless otherwise noted.
+     * - Angles in radians unless otherwise noted.
+     * - Localization position is field reference relative to robot starting position.
+     * - Field reference North is away from drive team, East is to drive team's right.
+     * - Robot reference North is direction catapult shoots, South is direction intake deploys.
+     * 
+     * Coordinate space needs to be decided and documented.
+     * Q: Are angles given clockwise (+ turns right) or counter-clockwise (+ turns left)?
+     * Q: Is X axis North-South or East-West?  Is North or South +?
+     */
 
     // Declare constants as public static final so that they are globally accessible
     // and cannot be changed.
 
+    public static final String ROBOT_NAME = "pizza bot";
+    public static final OutliersContainer.IdentityMode IDENTITY = 
+        OutliersContainer.IdentityMode.programming;
+    public static final RioLogger.LogLevel DS_LOG_LVL = RioLogger.LogLevel.info;
+    public static final RioLogger.LogLevel USB_LOG_LVL = RioLogger.LogLevel.warn;
+
     public static final int TICKS_PER_UPDATE = 1; // increase to log less frequently
     public static final double METRIC_FLUSH_PERIOD = 1.0; // seconds
     public static final double UPDATE_PERIOD = 0.02; // seconds?
-    public static final double EPSILON = 0.00001;
+    public static final double EPSILON = 0.00001; // for calculations to make math work
 
     // Separate constants into individual inner classes corresponding
     // to subsystems or robot modes, to keep variable names shorter.
@@ -64,6 +88,8 @@ public class Constants {
 
         // Control
         public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
+
+
 
         // Size of the robot chassis in meters
         public static final double WIDTH = 0.6223; // meters
@@ -209,7 +235,7 @@ public class Constants {
             public static final double DRIVETRAIN_POWER = 0.5;
      }
 
-    public static class SnapPose{
+    public static class SnapPose {
         public static final double SNAP_LRF = 3.5;
     }
     public static class UDPJetson {

@@ -14,23 +14,23 @@ import org.frc5687.rapidreact.util.*;
 /**
  * The VM is configured to automatically run Robot, and to call the methods corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * the package after creating this project, update the build.gradle file.
  * 
- * <p>RobotContainer has the actual commands.
+ * <p>Responsible for the main control flow of the robot code.
+ * 
+ * <p>Why separate Robot and RobotContainer classes?
+ * See https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html
  * 
  * <p>Robot can be in four modes: disabled, autonomous, teleop, or test.
  */
 public class Robot extends OutliersRobot {
 
-    public static OutliersContainer.IdentityMode _identityMode =
-            OutliersContainer.IdentityMode.programming;
-    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.info;
-    private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
+    private String _name = Constants.ROBOT_NAME;
+    public static OutliersContainer.IdentityMode _identityMode = Constants.IDENTITY;
+    private RioLogger.LogLevel _dsLogLevel = Constants.DS_LOG_LVL;
+    private RioLogger.LogLevel _fileLogLevel = Constants.USB_LOG_LVL;
 
     private int _updateTick = 0;
-
-    private String _name;
 
     private RobotContainer _robotContainer;
 
@@ -38,19 +38,21 @@ public class Robot extends OutliersRobot {
 
     private Command _autoCommand;
 
-    // private Timer _timer;
-    // private double _prevTime;
-    // private double _time;
-
     // Initialization methods
 
     /**
      * Run once when robot code starts.
      * 
-     * <p>Set up logging and get autonomous command from RobotContainer.
+     * <p>Set up logging and whatever else needs to happen only once when the robot code starts.
+     * 
+     * <p>NB: Do NOT get autonomous command from RobotContainer in this method.  Do that in
+     * autonomousInit().  That allows us to have a rotary selector dial and choose different
+     * auto routines to run.
      */
     @Override
     public void robotInit() {
+        info("Running Robot.robotInit()");
+
         loadConfigFromUSB();
         RioLogger.getInstance().init(_fileLogLevel, _dsLogLevel);
         LiveWindow.disableAllTelemetry();
@@ -64,12 +66,10 @@ public class Robot extends OutliersRobot {
         info("Running commit " + Version.REVISION + " of branch " + Version.BRANCH);
 
         _robotContainer = new RobotContainer(this, _identityMode);
-        // _timer = new Timer();
         _robotContainer.init();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
-        // _time = _timer.get();
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
@@ -92,6 +92,11 @@ public class Robot extends OutliersRobot {
 
         info("Running Robot.autonomousInit()");
 
+        // Get auto command when we enter autonomous mode.
+        // Setting it here rather than in robotInit() allows us to turn on our robot,
+        // then use a manual rotary selector to choose which autocommand to run.
+        _autoCommand = _robotContainer.getAutonomousCommand();
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _autoCommand = _robotContainer.getAutonomousCommand();
         _robotContainer.autonomousInit();
@@ -101,6 +106,16 @@ public class Robot extends OutliersRobot {
     }
 
     public void teleopInit() {
+
+        info("Running Robot.autonomousInit()");
+
+        // Good practice to cancel the autonomous command that may still be running.
+        // If you want the autonomous to continue until interrupted by another command,
+        // comment the following out.
+        if (_autoCommand != null) {
+            _autoCommand.cancel();
+        }
+
         // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.teleopInit();
     }
@@ -123,10 +138,10 @@ public class Robot extends OutliersRobot {
     public void testPeriodic() {}
 
     /**
-     * This function is called every robot cycle, no matter the mode. Use this for items like
+     * This method is called every robot cycle, no matter the mode. Use this for items like
      * diagnostics to run during disabled, autonomous, teleoperated and test.
      *
-     * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+     * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
     @Override
@@ -144,7 +159,10 @@ public class Robot extends OutliersRobot {
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
         // _robotContainer.periodic();
+
+        // NB: It is essential to run the scheduler each cycle!  Otherwise nothing happens.
         CommandScheduler.getInstance().run();
+
         update();
         updateDashboard();
     }
@@ -182,7 +200,8 @@ public class Robot extends OutliersRobot {
             bufferedReader.close();
             reader.close();
         } catch (Exception e) {
-            _identityMode = OutliersContainer.IdentityMode.programming;
+            // in case USB config isn't found
+            // _identityMode = OutliersContainer.IdentityMode.programming;
         }
     }
 

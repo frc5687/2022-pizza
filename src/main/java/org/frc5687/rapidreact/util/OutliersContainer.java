@@ -48,7 +48,8 @@ public abstract class OutliersContainer implements ILoggingSource {
     }
 
     /***
-     * Registers a subsystem for periodic actions.
+     * Register a subsystem for periodic actions.
+     * 
      * @param subsystem
      */
     public void registerSubSystem(OutliersSubsystem subsystem) {

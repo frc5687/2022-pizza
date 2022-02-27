@@ -20,6 +20,14 @@ public class DriveOI extends OutliersCommand {
 
     private final OI _oi;
 
+    /**
+     * Create DriveOI command
+     * 
+     * <p>Default command for DriveTrain.  Drive under OI control.
+     * 
+     * @param driveTrain
+     * @param oi
+     */
     public DriveOI(DriveTrain driveTrain, OI oi) {
         _driveTrain = driveTrain;
         _oi = oi;
@@ -37,11 +45,29 @@ public class DriveOI extends OutliersCommand {
     @Override
     public void execute() {
         super.execute();
-        //  driveX and driveY are swapped due to coordinate system that WPILib uses.
+
+        // Set vx, vy and vtheta based on joystick input
+
+        // driveX and driveY are swapped due to coordinate system that WPILib uses.
         double vx = _vxFilter.calculate(-_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
         double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
-        double rot = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL;
-        _driveTrain.drive(vx, vy, rot, true);
+
+        // TODO: add snap-to here to set angular velocity of robot
+
+        /**
+         * Here's the plan:
+         * 1. Use a gamepad for rotation so we have two joysticks.
+         * 2. Left joystick is for manual rotation (left and right robot-reference rotation)
+         * 3. Right joystick for "snap-to" auto rotation (direction is field-reference rotation)
+         * 4. Snap-to overrides manual rotation, i.e.
+         *    a. If right joystick is out of deadband, use its heading to control heading of robot
+         *    b. Else, use left joystick for manual rotation
+         */
+
+        // convert clockwise to counter-clockwise for rotation
+        double vomega = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
+
+        _driveTrain.drive(vx, vy, vomega, true);
     }
 
     @Override
