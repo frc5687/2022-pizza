@@ -2,7 +2,7 @@
  * Joystick and gamepad control for the robot.
  * Also has button inits.
  * Has some instructions on how to switch controls.
- * See ButtonMap for configuration of joystick and gamepad.
+ * See JoysticknMap for configuration of joystick and gamepad.
 */
 package org.frc5687.rapidreact;
 
@@ -28,37 +28,6 @@ import static org.frc5687.rapidreact.util.Helpers.*;
 import org.frc5687.rapidreact.config.JoystickMap;
 import org.frc5687.rapidreact.config.Constants;
 
-/**
- * To add a button to control a subsystem there are a number of steps needed.  I'll use SHOOT as an example:
- * 
- * 1) Define the button in the ButtonMap.Buttons class (in ButtonMap.java):
- * 
- *         public static class SHOOT {
- *           public static int Controller = Controllers.DRIVER_JOYSTICK;
- *           public static int Button = 0;
- *         }
- *
- * 2) Add a private member variable for the button:
- * 
- *        private JoystickButton _shootButton;
- * 
- * 3) Instantiate the button in the OI() constructor, referencing the new ButtonMap entry:
- * 
- *        _shootButton = addJoystickButton(ButtonMap.Buttons.SHOOT.Controller, ButtonMap.Buttons.SHOOT.Button);
- * 
- * 4) Add the subsystem to the signature for OI.initializeButtons:
- * 
- *        public void initializeButtons(DriveTrain driveTrain, Shooter shooter)
- * 
- * 5) Initialize the button in OI.initializeButtons:
- * 
- *        _shootButton.whenHeld(new Shoot(shooter));
- * 
- * 6) Add the subsystem to the RobotContainer.init() call to _oi.inializeButtons:
- * 
- *        _oi.initializeButtons(_driveTrain, _shooter);
- */
-
  /** Operator input
  * 
  * <p>Define the types of devices that can provide operator input
@@ -66,26 +35,68 @@ import org.frc5687.rapidreact.config.Constants;
  */
 public class OI extends OutliersProxy {
 
+    // Declare joysticks
+    private Joystick _translation;
+    private Joystick _rotation;
+    private Joystick _debug;
+
+    // Declare joystick axes
+    private int _xAxis;
+    private int _yAxis;
+    private int _twistAxis;
+
+    // Declare buttons
+    private JoystickMap.Command[] _translationButtons;
+    private JoystickMap.Command[] _rotationButtons;
+    private JoystickMap.Command[] _debugButtons;
+
+    private JoystickButton _resetNavX;
+    private JoystickButton _snapBTN;
+
     private Rotation2d theta;
+
     // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
 
-    private static final int MAX_USB_PORTS = 10;
-
-    private Joystick[] _joysticks = new Joystick[MAX_USB_PORTS];
-
-    // Allocate buttons
-    private JoystickButton _resetNavX;
-    private JoystickButton _snapBTN;
-
+    /** Create an OI */
     public OI() {
-        addJoystick(JoystickMap.Controllers.TRANSLATOR_JOYSTICK);
-        addJoystick(JoystickMap.Controllers.ROTATOR_JOYSTICK);
-        addGamepad(JoystickMap.Controllers.ROTATOR_GAMEPAD);
+
+        // Create translation joystick
+        if (JoystickMap.JOYSTICK_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Joystick(JoystickMap.JOYSTICK_TRANSLATION_USB);
+            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X;
+            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y;
+            _translationButtons = JoystickMap.JOYSTICK_TRANSLATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Gamepad(JoystickMap.GAMEPAD_TRANSLATION_USB);
+            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X;
+            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y;
+            _translationButtons = JoystickMap.GAMEPAD_TRANSLATION.BUTTONS;
+        }
+
+        // Create rotation joystick
+        if (JoystickMap.JOYSTICK_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Joystick(JoystickMap.JOYSTICK_ROTATION_USB);
+            _twistAxis = JoystickMap.JOYSTICK_ROTATION.Twist;
+            _rotationButtons = JoystickMap.JOYSTICK_ROTATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
+            _twistAxis = JoystickMap.GAMEPAD_ROTATION.Twist;
+            _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
+        }
+
+        // Create debug joystick
+        if (JoystickMap.JOYSTICK_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Joystick(JoystickMap.JOYSTICK_DEBUG_USB);
+            _debugButtons = JoystickMap.JOYSTICK_DEBUG.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Gamepad(JoystickMap.GAMEPAD_DEBUG_USB);
+            _debugButtons = JoystickMap.GAMEPAD_DEBUG.BUTTONS;
+        }
 
         // Create buttons
-        _resetNavX = addJoystickButton(JoystickMap.Buttons.RESET_NAVX.Controller, JoystickMap.Buttons.RESET_NAVX.Button);
+        _resetNavX = addJoystickButton(JoystickMap.RESET_NAVX.Controller, JoystickMap.Buttons.RESET_NAVX.Button);
         _snapBTN = new JoystickButton(_joysticks[1], 4);
 
     }
@@ -107,23 +118,19 @@ public class OI extends OutliersProxy {
         // _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
     }
 
-    public double getDriveY() {
-        Joystick translation = getJoystick(JoystickMap.Axes.Translation.Controller);
-
-        yIn = getSpeedFromAxis(translation, JoystickMap.Axes.Translation.Y);
-        yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
-
-        return circularize(yIn, xIn);
+    /** Get X value from translation joystick */
+    public double getDriveX() {
+        // TODO: explain the negative sign here
+        xIn = -getSpeedFromAxis(_translation, _xAxis);
+        xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
+        return circularize(xIn, yIn);
     }
 
-    public double getDriveX() {
-        Joystick translation = getJoystick(JoystickMap.Axes.Translation.Controller);
-
-        // TODO: explain the negative sign here
-        xIn = -getSpeedFromAxis(translation, JoystickMap.Axes.Translation.X);
-        xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
-
-        return circularize(xIn, yIn);
+    /** Get Y value from translation joystick */
+    public double getDriveY() {
+        yIn = getSpeedFromAxis(_translation, _yAxis);
+        yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
+        return circularize(yIn, xIn);
     }
 
     /**
@@ -159,12 +166,10 @@ public class OI extends OutliersProxy {
         return c;
     }
 
+    /** Get rotation value from rotation joystick */
     public double getRotationX() {
-        Joystick rotation = getJoystick(JoystickMap.Axes.Rotation.Controller);
-
-        double speed = getSpeedFromAxis(rotation, JoystickMap.Axes.Rotation.Twist);
-        speed = applyDeadband(speed, 0.2);
-
+        double speed = getSpeedFromAxis(_rotation, _twistAxis);
+        speed = applyDeadband(speed, Constants.DriveTrain.DEADBAND_ROTATION);
         return speed;
     }
 
@@ -174,24 +179,6 @@ public class OI extends OutliersProxy {
 
     @Override
     public void updateDashboard() {}
-
-    /** Instantiate a Joystick on the specified port and add it to the _joysticks array.
-     * 
-     * @param port Pass -1 to skip this joystick.
-     */
-    private void addJoystick(int port) {
-        if (port < 0) { return; }
-        _joysticks[port] = new Joystick(port);
-    }
-
-    /** Instantiate Gamepad on the specified port and add it to the _joysticks array.
-     * 
-     * @param port Pass -1 to skip this gamepad.
-     */
-    private void addGamepad(int port) {
-        if (port < 0) { return; }
-        _joysticks[port] = new Gamepad(port);
-    }
 
     /** Instantiate Button on the specific controller and add it to the _buttons array.
      * 
@@ -205,21 +192,5 @@ public class OI extends OutliersProxy {
         Joystick joystick = getJoystick(controller);
         return new JoystickButton(joystick, buttonNumber);
     }
-    /** Return the joystick assigned to a specific USB port.
-     * 
-     * @param port USB
-     * @return Joystick or null if no joystick assigned to port or port is -1
-     */
-    private Joystick getJoystick(int port) {
-        if (port < 0) { return null; }
-        return _joysticks[port];
-    }
-
-    /*
-    private AxisButton addAxisButton(int port, int buttonNumber, double threshold) {
-        Joystick joystick = getJoystick(port);
-        return new AxisButton(joystick, buttonNumber, threshold);
-    }
-    */
 
 }

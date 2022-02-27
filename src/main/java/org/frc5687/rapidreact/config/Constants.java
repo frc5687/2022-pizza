@@ -110,7 +110,10 @@ public class Constants {
         public static final DriveTuning.Direction ROBOT_FACING = DriveTuning.ROBOT_FACING;
 
         // Control
-        public static final double DEADBAND = DriveTuning.DEADBAND;
+
+        // Avoid unintentional joystick movememnt
+        public static final double DEADBAND_TRANSLATION = DriveTuning.DEADBAND_TRANSLATION;
+        public static final double DEADBAND_ROTATION = DriveTuning.DEADBAND_ROTATION;
 
         // Maximum rates of motion
         public static final double MAX_MPS = DriveTuning.MAX_MPS;

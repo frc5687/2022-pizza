@@ -7,78 +7,171 @@ import edu.wpi.first.wpilibj.Joystick.AxisType;
  * <p>Take button and controller mapping out of the OI class, making it easier to
  * change button assignment without breaking the OI code.
  * 
- * <p>The class is broken into three parts:
- * 
- * <ol>
- *  <li> The Controllers class holds the USB port assignments for each controller.  Note that if a controller is to be unplugged
- *  you should set the USB port to -1.  For the most part this will cause OI to ignore it.
- * 
- *  <li> The Axes class has a subclass for each axis (or group of axes) in use.  Each axis subclass should have a constant defining
- *   which controller it's mapped to and a constant for each axis in the group.
- * 
- *  <li> The Buttons class has a subclass for each button in use.  Each button subclass should have a constant defining
- *   which controller it's mapped to and a constant for the button number itself.
- * </ol>
  */
 public class JoystickMap {
 
-    /** Joysticks and gamepads mapped to USB ports */
-    public static class Controllers {
-        /** 
-         * USB ports of joysticks or gamepads.
-         * -1 means not in use.
-        */
-        public static final int TRANSLATOR_JOYSTICK = 0;
-        public static final int ROTATOR_JOYSTICK = -1;
-        public static final int ROTATOR_GAMEPAD = 1;
+    public static final int NOT_IN_USE = -1; // flag for joysticks or gamepads not in use
+
+    // Step 1. Set USB ports of joysticks and gamepads
+
+    // Joysticks
+    public static final int JOYSTICK_TRANSLATION_USB = 0;
+    public static final int JOYSTICK_ROTATION_USB = 1;
+    public static final int JOYSTICK_DEBUG_USB = NOT_IN_USE;
+
+    // Gamepads
+    public static final int GAMEPAD_TRANSLATION_USB = NOT_IN_USE;
+    public static final int GAMEPAD_ROTATION_USB = NOT_IN_USE;
+    public static final int GAMEPAD_DEBUG_USB = 2;
+
+    // Step 2. Map commands to buttons
+
+    /** Commands that can be mapped to buttons */
+    public static enum Command {
+        NOT_IN_USE,
+        RESET_NAVX,
+        RUN_AUTO,
+        SHOOT
     }
 
-    /** Define axes of control */
-    public static class Axes {
-        /** Translation is movement in X and Y directions. */
-        public static class Translation {
-            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
-            public static int X = AxisType.kX.value;
-            public static int Y = AxisType.kY.value;
-        }
+    /** Button mappings for the translation joystick */
+    public static class JOYSTICK_TRANSLATION {
 
-        /** Rotation is angular movement around center of robot. */
-        public static class Rotation {
+        public static final String MODEL = "Logitech Attack 3";
+        public static final int BUTTON_COUNT = 11; // how many buttons on it
 
-            /**
-             * To move the Rotation control from joystick to a gamepad:
-             * 
-             * 1. Change the ROTATOR_GAMEPAD constant above to a valid USB port
-             * 2. Change Rotation.Controller to Controllers.ROTATOR_GAMEPAD.
-             * 3. Optional: You could also change Rotation.Twist to a different axis number if needed.
-             *
-             *  See commented code below.
-             */
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 trigger
+            Command.NOT_IN_USE, // 2 thumb lower
+            Command.NOT_IN_USE, // 3 thumb upper
+            Command.NOT_IN_USE, // 4 side stick left
+            Command.NOT_IN_USE, // 5 side stick right
+            Command.NOT_IN_USE, // 6 left pad left
+            Command.NOT_IN_USE, // 7 left pad right
+            Command.NOT_IN_USE, // 8 mid pad left
+            Command.NOT_IN_USE, // 9 mid pad right
+            Command.NOT_IN_USE, // 10 right pad left
+            Command.NOT_IN_USE // 11 right pad right
+        };
 
-            // Joystick control of rotation
-            //public static int Controller = Controllers.ROTATOR_JOYSTICK;
-            //public static int Twist = AxisType.kX.value;
+        public static final int X = AxisType.kX.value;
+        public static final int Y = AxisType.kY.value;
 
-            // Gamepad control of rotation
-            public static int Controller = Controllers.ROTATOR_GAMEPAD;
-            public static int Twist = AxisType.kX.value;
-        }
     }
 
-    public static class Buttons {
-        public static class SHOOT {
-            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
-            public static int Button = 0;
-        }
+    /** Button mappings for the rotation joystick */
+    public static class JOYSTICK_ROTATION {
 
-        public static class RESET_NAVX {
-            public static int Controller = Controllers.ROTATOR_GAMEPAD;
-            public static int Button = 5;
-        }
+        public static final String MODEL = "Logitech Attack 3";
+        public static final int BUTTON_COUNT = 11; // how many buttons on it
 
-        public static class RUN_AUTO {
-            public static int Controller = Controllers.TRANSLATOR_JOYSTICK;
-            public static int Button = 1;
-        }
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 trigger
+            Command.NOT_IN_USE, // 2 thumb lower
+            Command.NOT_IN_USE, // 3 thumb upper
+            Command.NOT_IN_USE, // 4 side stick left
+            Command.NOT_IN_USE, // 5 side stick right
+            Command.NOT_IN_USE, // 6 left pad left
+            Command.NOT_IN_USE, // 7 left pad right
+            Command.NOT_IN_USE, // 8 mid pad left
+            Command.NOT_IN_USE, // 9 mid pad right
+            Command.NOT_IN_USE, // 10 right pad left
+            Command.NOT_IN_USE // 11 right pad right
+        };
+
+        public static int Twist = AxisType.kX.value;
+
     }
+
+    /** Button mappings for the debug joystick */
+    public static class JOYSTICK_DEBUG {
+
+        public static final String MODEL = "Extreme 3D Pro";
+        public static final int BUTTON_COUNT = 11; // how many buttons on it
+
+        // TODO: characterize Extreme 3D Pro joystick
+
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 trigger
+            Command.NOT_IN_USE, // 2 thumb lower
+            Command.NOT_IN_USE, // 3 thumb upper
+            Command.NOT_IN_USE, // 4 side stick left
+            Command.NOT_IN_USE, // 5 side stick right
+            Command.NOT_IN_USE, // 6 left pad left
+            Command.NOT_IN_USE, // 7 left pad right
+            Command.NOT_IN_USE, // 8 mid pad left
+            Command.NOT_IN_USE, // 9 mid pad right
+            Command.NOT_IN_USE, // 10 right pad left
+            Command.NOT_IN_USE // 11 right pad right
+        };
+
+    }
+
+    /** Button mappings for the translation gamepad */
+    public static class GAMEPAD_TRANSLATION {
+
+        public static final String MODEL = "GamerSir";
+        public static final int BUTTON_COUNT = 8; // how many buttons on it
+
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 A button
+            Command.NOT_IN_USE, // 2 B button
+            Command.NOT_IN_USE, // 3 X button
+            Command.NOT_IN_USE, // 4 Y button
+            Command.NOT_IN_USE, // 5 L1
+            Command.NOT_IN_USE, // 6 R1
+            Command.NOT_IN_USE, // 7 Select
+            Command.NOT_IN_USE // 8 Start
+        };
+
+        public static final int X = AxisType.kX.value;
+        public static final int Y = AxisType.kY.value;
+
+    }
+
+    /** Button mappings for the rotation gamepad */
+    public static class GAMEPAD_ROTATION {
+
+        public static final String MODEL = "GamerSir";
+        public static final int BUTTON_COUNT = 8; // how many buttons on it
+
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 A button
+            Command.NOT_IN_USE, // 2 B button
+            Command.NOT_IN_USE, // 3 X button
+            Command.NOT_IN_USE, // 4 Y button
+            Command.NOT_IN_USE, // 5 L1
+            Command.NOT_IN_USE, // 6 R1
+            Command.NOT_IN_USE, // 7 Select
+            Command.NOT_IN_USE // 8 Start
+        };
+
+        public static int Twist = AxisType.kX.value;
+    }
+
+    /** Button mappings for the debug gamepad */
+    public static class GAMEPAD_DEBUG {
+
+        public static final String MODEL = "GamerSir";
+        public static final int BUTTON_COUNT = 8; // how many buttons on it
+
+        // Map buttons to commands
+        public static final Command[] BUTTONS = {
+            Command.SHOOT, // 1 A button
+            Command.NOT_IN_USE, // 2 B button
+            Command.NOT_IN_USE, // 3 X button
+            Command.NOT_IN_USE, // 4 Y button
+            Command.NOT_IN_USE, // 5 L1
+            Command.NOT_IN_USE, // 6 R1
+            Command.NOT_IN_USE, // 7 Select
+            Command.NOT_IN_USE // 8 Start
+        };
+
+    }
+
 }

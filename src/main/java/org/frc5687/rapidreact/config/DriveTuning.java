@@ -25,7 +25,10 @@ public class DriveTuning {
     public static final Direction ROBOT_FACING = Direction.EAST;
 
     // Control
-    public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
+
+    // Avoid unintentional joystick movememnt
+    public static final double DEADBAND_TRANSLATION = 0.2;
+    public static final double DEADBAND_ROTATION = 0.2;
 
     // Maximum rates of motion
     public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
