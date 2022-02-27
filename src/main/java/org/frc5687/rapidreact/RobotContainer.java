@@ -70,7 +70,7 @@ public class RobotContainer extends OutliersContainer {
         intake = new Intake(this);
         catapult = new Catapult(this);
 
-        _oi.initializeButtons(driveTrain, _indexer, intake);
+        _oi.initializeButtons(catapult, driveTrain, _indexer, intake);
 
         // What command to run if nothing else is scheduled for driveTrain
         setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));

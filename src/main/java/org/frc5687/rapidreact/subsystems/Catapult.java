@@ -231,7 +231,6 @@ public class Catapult extends OutliersSubsystem {
         _state = CatapultState.DEBUG;
     }
 
-
     @Override
     public void periodic() {
         super.periodic();
@@ -249,6 +248,10 @@ public class Catapult extends OutliersSubsystem {
             setWinchMotorSpeed(0);
         }
 
+    }
+
+    public void shoot() {
+        // shoot the catapult
     }
 
     public void setSpringMotorSpeed(double speed) {

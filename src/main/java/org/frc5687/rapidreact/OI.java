@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import org.frc5687.rapidreact.subsystems.Catapult;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
@@ -30,7 +31,7 @@ import org.frc5687.rapidreact.config.Constants;
 
  /** Operator input
  * 
- * <p>Define the types of devices that can provide operator input
+ * <p> Define the types of devices that can provide operator input
  * (joysticks, gamepads, drive wheels, keyboards, etc.)
  */
 public class OI extends OutliersProxy {
@@ -45,15 +46,27 @@ public class OI extends OutliersProxy {
     private int _yAxis;
     private int _twistAxis;
 
-    // Declare buttons
-    private JoystickMap.Command[] _translationButtons;
-    private JoystickMap.Command[] _rotationButtons;
-    private JoystickMap.Command[] _debugButtons;
+    /** Commands that can be mapped to buttons */
+    public static enum Command {
+        NOT_IN_USE,
+        DEPLOY_INTAKE,
+        RETRACT_INTAKE,
+        RESET_NAVX,
+        RUN_AUTO,
+        SHOOT
+    }    
 
+    // Declare joystick buttons
+    private JoystickButton _deployIntake;
     private JoystickButton _resetNavX;
-    private JoystickButton _snapBTN;
+    private JoystickButton _retractIntake;
+    private JoystickButton _runAuto;
+    private JoystickButton _shoot;
 
-    private Rotation2d theta;
+    // Button mappings
+    private Command[] _translationButtons;
+    private Command[] _rotationButtons;
+    private Command[] _debugButtons;
 
     // "Raw" joystick values
     private double yIn = 0;
@@ -62,43 +75,31 @@ public class OI extends OutliersProxy {
     /** Create an OI */
     public OI() {
 
-        // Create translation joystick
-        if (JoystickMap.JOYSTICK_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
-            _translation = new Joystick(JoystickMap.JOYSTICK_TRANSLATION_USB);
-            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X;
-            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y;
-            _translationButtons = JoystickMap.JOYSTICK_TRANSLATION.BUTTONS;
-        } else if (JoystickMap.GAMEPAD_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
-            _translation = new Gamepad(JoystickMap.GAMEPAD_TRANSLATION_USB);
-            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X;
-            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y;
-            _translationButtons = JoystickMap.GAMEPAD_TRANSLATION.BUTTONS;
+        createJoysticks();
+        createButtons();
+
+    }
+
+    /** Assign a new JoystickButton for a command.
+     * 
+     * @param joystick
+     * @param buttonNumber
+     * @param command
+     */
+    private void addJoystickButton(Joystick joystick, int buttonNumber, Command command) {
+        switch(command) {
+            case NOT_IN_USE:
+                return;
+            case RESET_NAVX:
+                _resetNavX = new JoystickButton(joystick, buttonNumber);
+                break;
+            case RUN_AUTO:
+                _runAuto = new JoystickButton(joystick, buttonNumber);
+                break;
+            case SHOOT:
+                _shoot = new JoystickButton(joystick, buttonNumber);
+                break;
         }
-
-        // Create rotation joystick
-        if (JoystickMap.JOYSTICK_ROTATION_USB > JoystickMap.NOT_IN_USE) {
-            _rotation = new Joystick(JoystickMap.JOYSTICK_ROTATION_USB);
-            _twistAxis = JoystickMap.JOYSTICK_ROTATION.Twist;
-            _rotationButtons = JoystickMap.JOYSTICK_ROTATION.BUTTONS;
-        } else if (JoystickMap.GAMEPAD_ROTATION_USB > JoystickMap.NOT_IN_USE) {
-            _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
-            _twistAxis = JoystickMap.GAMEPAD_ROTATION.Twist;
-            _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
-        }
-
-        // Create debug joystick
-        if (JoystickMap.JOYSTICK_DEBUG_USB > JoystickMap.NOT_IN_USE) {
-            _debug = new Joystick(JoystickMap.JOYSTICK_DEBUG_USB);
-            _debugButtons = JoystickMap.JOYSTICK_DEBUG.BUTTONS;
-        } else if (JoystickMap.GAMEPAD_DEBUG_USB > JoystickMap.NOT_IN_USE) {
-            _debug = new Gamepad(JoystickMap.GAMEPAD_DEBUG_USB);
-            _debugButtons = JoystickMap.GAMEPAD_DEBUG.BUTTONS;
-        }
-
-        // Create buttons
-        _resetNavX = addJoystickButton(JoystickMap.RESET_NAVX.Controller, JoystickMap.Buttons.RESET_NAVX.Button);
-        _snapBTN = new JoystickButton(_joysticks[1], 4);
-
     }
 
     /** Define how buttons work
@@ -109,13 +110,13 @@ public class OI extends OutliersProxy {
      * </ul>
      */
     public void initializeButtons(
+        Catapult catapult,
         DriveTrain driveTrain,
         Indexer indexer,
         Intake intake
         ) {
-        _resetNavX.whenPressed(new InstantCommand(driveTrain::resetYaw, driveTrain));
-        // _resetNavX.whenReleased(new ResetNavX(driveTrain));
-        // _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
+        _resetNavX.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
+        _shoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
     }
 
     /** Get X value from translation joystick */
@@ -177,20 +178,67 @@ public class OI extends OutliersProxy {
         return joystick.getRawAxis(axisNumber);
     }
 
+    // Helper methods
+
+    /** Create translation, rotation and debug joysticks */
+    private void createJoysticks() {
+
+        // Create translation joystick
+        if (JoystickMap.JOYSTICK_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Joystick(JoystickMap.JOYSTICK_TRANSLATION_USB);
+            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X;
+            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y;
+            _translationButtons = JoystickMap.JOYSTICK_TRANSLATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Gamepad(JoystickMap.GAMEPAD_TRANSLATION_USB);
+            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X;
+            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y;
+            _translationButtons = JoystickMap.GAMEPAD_TRANSLATION.BUTTONS;
+        }
+
+        // Create rotation joystick
+        if (JoystickMap.JOYSTICK_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Joystick(JoystickMap.JOYSTICK_ROTATION_USB);
+            _twistAxis = JoystickMap.JOYSTICK_ROTATION.Twist;
+            _rotationButtons = JoystickMap.JOYSTICK_ROTATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
+            _twistAxis = JoystickMap.GAMEPAD_ROTATION.Twist;
+            _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
+        }
+
+        // Create debug joystick
+        if (JoystickMap.JOYSTICK_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Joystick(JoystickMap.JOYSTICK_DEBUG_USB);
+            _debugButtons = JoystickMap.JOYSTICK_DEBUG.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Gamepad(JoystickMap.GAMEPAD_DEBUG_USB);
+            _debugButtons = JoystickMap.GAMEPAD_DEBUG.BUTTONS;
+        }
+
+    }
+
+    /** Create translation, rotation and debug joystick buttons */
+    private void createButtons() {
+        
+        // Create translation joystick buttons
+        for (int i = 1; i < (_translationButtons.length + 1); i++) {
+            addJoystickButton(_translation, i, _translationButtons[i]);
+        }
+
+        // Create rotation joystick buttons
+        for (int i = 1; i < (_rotationButtons.length + 1); i++) {
+            addJoystickButton(_rotation, i, _rotationButtons[i]);
+        }
+
+        // Create debug joystick buttons
+        for (int i = 1; i < (_debugButtons.length + 1); i++) {
+            addJoystickButton(_debug, i, _debugButtons[i]);
+        }
+
+    }
+
     @Override
     public void updateDashboard() {}
-
-    /** Instantiate Button on the specific controller and add it to the _buttons array.
-     * 
-     * <p> Joysticks are indexed by USB port.
-     * 
-     * @param controller
-     * @param buttonNumber
-     * @return new JoystickButton
-     */
-    private JoystickButton addJoystickButton(int controller, int buttonNumber) {
-        Joystick joystick = getJoystick(controller);
-        return new JoystickButton(joystick, buttonNumber);
-    }
 
 }
