@@ -66,7 +66,6 @@ public class Robot extends OutliersRobot {
         _robotContainer = new RobotContainer(this, _identityMode);
         // _timer = new Timer();
         _robotContainer.init();
-        _autoCommand = _robotContainer.getAutonomousCommand();
 
         // Periodically flushes metrics
         // TODO: configure enable/disable via USB config file
@@ -94,6 +93,7 @@ public class Robot extends OutliersRobot {
         info("Running Robot.autonomousInit()");
 
         // _fmsConnected = DriverStation.isFMSAttached();
+        _autoCommand = _robotContainer.getAutonomousCommand();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();

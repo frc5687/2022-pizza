@@ -106,6 +106,7 @@ public class DriveTrain extends OutliersSubsystem {
                                     Constants.DriveTrain.kD,
                                     new TrapezoidProfile.Constraints(
                                             Constants.DriveTrain.PROFILE_CONSTRAINT_VEL, Constants.DriveTrain.PROFILE_CONSTRAINT_ACCEL)));
+            _controller.setTolerance(Constants.DriveTrain.TOLERANCE);                                
             _angleController =
                     new ProfiledPIDController(
                             Constants.DriveTrain.ANGLE_kP,
@@ -167,7 +168,7 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
-        ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, heading);
+        ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, pose.getRotation());
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DriveTrain.MAX_MPS);
         setNorthWestModuleState(moduleStates[NORTH_WEST]);

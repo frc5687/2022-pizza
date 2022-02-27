@@ -23,9 +23,10 @@ import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.DriveAuto;
 import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
+import org.frc5687.rapidreact.commands.auto.OneBallAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
+import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 
 /**
  * TODO: explain RobotContainer class
@@ -60,6 +61,10 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.init()");
 
         // DriveTrain's default command is DriveOI
+        Pose2d spot3 = new Pose2d(6.9, 2.5, new Rotation2d());
+        
+        _driveTrain.resetOdometry(spot3);
+
         setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.
@@ -130,6 +135,54 @@ public class RobotContainer extends OutliersContainer {
     /** Return a SequentialCommandGroup to run during auto */
     public Command getAutonomousCommand() {
 
+        AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
+        AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
+        
+
+        switch(autoPosition) {
+            case First:
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
+                switch(autoMode) {
+                    case ZeroBall:
+                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_ONE);
+                    case OneBall:
+                        return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_ONE);
+                }
+            case Second:
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
+                switch(autoMode) {
+                    case ZeroBall:
+                    case OneBall:
+                }
+            case Third:
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
+                switch(autoMode) {
+                    case ZeroBall:
+                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_TWO);
+                    case OneBall:
+                }       return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_TWO);
+            case Fourth:
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
+                switch(autoMode) {
+                    case ZeroBall:
+                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_THREE);
+                    case OneBall:
+                        return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_THREE);
+                }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         Wait _waitOneSecondA;
         Wait _waitOneSecondB;
         DeployIntake _deployIntake;
@@ -146,33 +199,39 @@ public class RobotContainer extends OutliersContainer {
         _waitOneSecondB = new Wait(1.0);
         _deployIntake = new DeployIntake(_intake);
 
+        //These are the balls' exact positions,
+        //be careful not to use ball3's position, or you'll run into the wall
+        Pose2d ball1 = new Pose2d(4.8, 6.2, new Rotation2d());
+        Pose2d ball2 = new Pose2d(5.1, 1.77, new Rotation2d());
+        Pose2d ball3 = new Pose2d(7.7, 0.28, new Rotation2d());
+
         // destination A
-        _xPos = -1.0;
-        _yPos = 0.0;
-        _theta = 0.0;
-        _omega = 1.5;
+        _xPos = ball2.getX();
+        _yPos = ball2.getY();
+        _theta = 0.69;
+        _omega = 0.0;
         _velocity = 0.1;
 
         _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
 
         // destination B
-        _xPos = 0.0;
-        _yPos = 0.0;
-        _theta = 0.0;
-        _omega = 0.5;
+        _xPos = 2.0;
+        _yPos = 2.0;
+        _theta = 0.69;
+        _omega = 0.0;
         _velocity = 0.2;
 
         _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-
+        return null;
         // These all have to be unique commands.
         // Cannot execute same command twice.
-        return new SequentialCommandGroup(
-            //_waitOneSecondA,
-            _deployIntake,
-            _driveToA,
-            _waitOneSecondB
-            //_driveToB
-        );
+        // return new SequentialCommandGroup(
+        //     //_waitOneSecondA,
+        //     _deployIntake,
+        //     _driveToA,
+        //     //_waitOneSecondB
+        //     _driveToB
+        // );
 
     }
 
@@ -190,8 +249,8 @@ public class RobotContainer extends OutliersContainer {
         double _theta;
         double _omega;
 
-        _theta = theta * Math.PI;
-        _omega = omega * Math.PI;
+        _theta = theta/* Math.PI*/;
+        _omega = omega/* Math.PI*/;
 
         _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
         _heading = new Rotation2d(_omega);
@@ -203,7 +262,9 @@ public class RobotContainer extends OutliersContainer {
     public void updateDashboard() {
         //Updates the driver station
         _driveTrain.updateDashboard();
-        metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
+        // metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
         _autoChooser.updateDashboard();
+        metric("Position", _autoChooser.getSelectedPosition().name());
+        metric("Mode", _autoChooser.getSelectedMode().name());
     }
 }

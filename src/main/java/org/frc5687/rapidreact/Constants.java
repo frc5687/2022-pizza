@@ -134,8 +134,9 @@ public class Constants {
         public static final double ANGLE_kP = 3.5;
         public static final double ANGLE_kI = 0.0;
         public static final double ANGLE_kD = 0.0;
+        public static final Pose2d TOLERANCE = new Pose2d(0.02, 0.02, new Rotation2d(0.05));
 
-        public static final double kP = 10.5;
+        public static final double kP = 9.5;
         public static final double kI = 0.0;
         public static final double kD = 0.5;
         public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
@@ -192,41 +193,20 @@ public class Constants {
         public static final double CONTROL_EFFORT = VOLTAGE;
     }
 
-    public static class AutoPath {
-        public static class ZBLeft1ballT {
-                public static final List<Pose2d> waypoints =
-                     Arrays.asList(
-                             new Pose2d (9.9, 2.48, Rotation2d.fromDegrees(-43)),
-                             new Pose2d (10.8, 1.65, Rotation2d.fromDegrees(-46)));
-                        
-        }
-        public static class ZBRight1ballT {
-                public static final List<Pose2d> waypoints =
-                     Arrays.asList(
-                             new Pose2d (10.5, 4.1, Rotation2d.fromDegrees(0)),
-                             new Pose2d (12.2, 4.1, Rotation2d.fromDegrees(-46)));
-                        
-        }
-        public static class ZBLeft2ballT {
-                public static final List<Pose2d> waypoints =
-                     Arrays.asList(
-                             new Pose2d (9.6, 5.9, Rotation2d.fromDegrees(44.3)),
-                             new Pose2d (10.6, 6.9, Rotation2d.fromDegrees(46.7)));
-                        
-        }
-        public static class ZBRight2ballT {
-                public static final List<Pose2d> waypoints =
-                     Arrays.asList(
-                             new Pose2d (8.3, 6, Rotation2d.fromDegrees(90)),
-                             new Pose2d (8.3, 7.4, Rotation2d.fromDegrees(90)));
-                        
-        }
-        /*public static class 2BLeft1ballT {
-                public static final List<Pose2d> waypoints =
-                     Arrays.asList(
-                             new Pose2d (9.9, 2.6, Rotation2d.fromDegrees(-22.9)),
-                             new Pose2d (11.6, -15.3, Rotation2d.fromDegrees(90)));
-        }*/
+    public static class Auto {
+            public static class BallPositions {
+                public static Pose2d BALL_ONE = new Pose2d(4.8, 6.2, new Rotation2d());
+                public static Pose2d BALL_TWO = new Pose2d(5.1, 1.77, new Rotation2d());
+                public static Pose2d BALL_THREE = new Pose2d(7.7, 0.28, new Rotation2d());
+            }
+
+            public static class RobotPositions {
+                public static Pose2d FIRST = new Pose2d(6.46, 5.45, new Rotation2d());
+                public static Pose2d SECOND = new Pose2d(5.9, 3.93, new Rotation2d());
+                public static Pose2d THIRD = new Pose2d(6.9, 2.5, new Rotation2d());
+                public static Pose2d FOURTH = new Pose2d(8.25, 1.9, new Rotation2d());
+            }
+            public static final double DRIVETRAIN_POWER = 0.5;
      }
 
     public static class SnapPose{
@@ -315,9 +295,5 @@ public class Constants {
         public static final boolean INVERTED = false;
         public static final double ROLLER_IDLE_SPEED = 0.0;
         public static final double ROLLER_INTAKE_SPEED = 1.0;
-    }
-
-    public static class Auto{
-            public static final double DRIVETRAIN_POWER = 0.5;
     }
 }

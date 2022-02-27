@@ -29,7 +29,7 @@ public class ZeroBallAuto extends SequentialCommandGroup {
         // Now get destination from caller
         _destination = destination;
         _heading = new Rotation2d(0.0);
-        _velocity = 0.1;
+        _velocity = 0.2;
 
         addCommands(
             new DriveAuto(driveTrain, _destination, _heading, _velocity)
