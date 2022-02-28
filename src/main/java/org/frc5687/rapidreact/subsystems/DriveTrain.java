@@ -209,7 +209,6 @@ public class DriveTrain extends OutliersSubsystem {
                             _northEast.getModulePosition()
                         );
             _odometry = new SwerveDriveOdometry(_kinematics, getHeading());
-
             _controller =
                     new HolonomicDriveController(
                             new PIDController(Constants.DriveTrain.kP, Constants.DriveTrain.kI, Constants.DriveTrain.kD),
@@ -220,6 +219,7 @@ public class DriveTrain extends OutliersSubsystem {
                                     Constants.DriveTrain.kD,
                                     new TrapezoidProfile.Constraints(
                                             Constants.DriveTrain.PROFILE_CONSTRAINT_VEL, Constants.DriveTrain.PROFILE_CONSTRAINT_ACCEL)));
+            _controller.setTolerance(Constants.DriveTrain.TOLERANCE);
             _angleController =
                     new ProfiledPIDController(
                             Constants.DriveTrain.ANGLE_kP,
@@ -276,7 +276,9 @@ public class DriveTrain extends OutliersSubsystem {
     /**
      * Check if robot is at theta rotation
      * 
-     * TODO: verify that rotation is CCW and yaw is CW
+     * Rotation is CCW +.
+     * 
+     * TODO: // verify that yaw is CW +
      * 
      * @param theta
      * @return true if rotation equals theta
@@ -287,10 +289,19 @@ public class DriveTrain extends OutliersSubsystem {
         return (rotation == theta);
     }
 
-    public boolean isAtPose(Pose2d pose) {
-        double diffX = getOdometryPose().getX() - pose.getX();
-        double diffY = getOdometryPose().getY() - pose.getY();
-        return (Math.abs(diffX) <= 0.01) && (Math.abs(diffY) < 0.01);
+    public boolean isAtPose(Pose2d poseRef) {
+        // Pose error
+        Pose2d posError = poseRef.relativeTo(getOdometryPose());
+        Rotation2d rotError = poseRef.getRotation().minus(Rotation2d.fromDegrees(-getYaw()));
+        // Pose tolerance
+        double xTol = Constants.DriveTrain.TOLERANCE.getX();
+        double yTol = Constants.DriveTrain.TOLERANCE.getY();
+        double omegaTol = Constants.DriveTrain.TOLERANCE.getRotation().getRadians();
+        // Is error below tolerance?
+        return
+            (Math.abs(posError.getX()) < xTol) &&
+            (Math.abs(posError.getY()) < yTol) &&
+            (Math.abs(rotError.getRadians()) < omegaTol);
     }
 
     public void setNorthEastModuleState(SwerveModuleState state) {

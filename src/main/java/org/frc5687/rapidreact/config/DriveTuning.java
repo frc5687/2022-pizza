@@ -1,6 +1,9 @@
 /* Team 5687 (C)2020-2022 */
 package org.frc5687.rapidreact.config;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /** Drive train tuning values (such as speeds, PID gains, etc.).
  * 
  * <ul>
@@ -36,11 +39,11 @@ public class DriveTuning {
     public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
 
     // PID controller settings
+    public static final Pose2d TOLERANCE = new Pose2d(0.02, 0.02, new Rotation2d(0.05));
     public static final double ANGLE_kP = 3.5;
     public static final double ANGLE_kI = 0.0;
     public static final double ANGLE_kD = 0.0;
-
-    public static final double kP = 10.5;
+    public static final double kP = 9.5;
     public static final double kI = 0.0;
     public static final double kD = 0.5;
     public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;

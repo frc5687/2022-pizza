@@ -121,10 +121,10 @@ public class Constants {
         public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
 
         // PID controller settings
+        public static final Pose2d TOLERANCE = DriveTuning.TOLERANCE;
         public static final double ANGLE_kP = DriveTuning.ANGLE_kP;
         public static final double ANGLE_kI = DriveTuning.ANGLE_kI;
         public static final double ANGLE_kD = DriveTuning.ANGLE_kD;
-
         public static final double kP = DriveTuning.kP;
         public static final double kI = DriveTuning.kI;
         public static final double kD = DriveTuning.kD;
