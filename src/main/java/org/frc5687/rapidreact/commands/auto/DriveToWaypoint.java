@@ -8,9 +8,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
- * Drive in autonomous mode (i.e., no OI control) to a field-relative pose.
+ * Drive in autonomous mode (i.e., no OI control) to a field-relative waypoint.
+ * 
+ * <p> A waypoint is a pose and a velocity.
  */
-public class DriveToPose extends OutliersCommand {
+public class DriveToWaypoint extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
 
@@ -19,7 +21,9 @@ public class DriveToPose extends OutliersCommand {
     private Double _velocity;
 
     /**
-     * Create DriveToPose command
+     * Create DriveToWaypoint command
+     * 
+     * TODO: Use Pose and Vector (heading, velocity)
      * 
      * @param driveTrain pass in from RobotContainer
      * @param xPos meters
@@ -28,7 +32,7 @@ public class DriveToPose extends OutliersCommand {
      * @param omega fraction of radians
      * @param velocity m/s
      */
-    public DriveToPose(
+    public DriveToWaypoint(
         DriveTrain driveTrain,
         double xPos,
         double yPos,
@@ -68,6 +72,8 @@ public class DriveToPose extends OutliersCommand {
          *  West = +Y              East = -Y
          *             South = -X
          */
+
+         // TODO: fix this to use Pose and Vector for destination
 
         _driveTrain.poseFollower(_destination, _heading, _velocity);
     }

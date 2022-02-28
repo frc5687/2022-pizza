@@ -121,15 +121,27 @@ public class OI extends OutliersProxy {
         _shoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
     }
 
-    /** Get X value from translation joystick */
+    /** Get X value from translation joystick
+     * 
+     * <p> Move robot sideways (left or right).
+     */
     public double getDriveX() {
-        // TODO: explain the negative sign here
+   
+        // NOTE: x axis on the joystick controls sidewise motion (which is
+        // Y axis on the field).
+        // According to HolonomicDriveController, positive Y is to your left
+        // when standing behind your alliance wall.
+        // So we need to negate this control.
+        // Moving right is +x on joystick = -y on field.
         xIn = -getSpeedFromAxis(_translation, _xAxis);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
         return circularize(xIn, yIn);
     }
 
-    /** Get Y value from translation joystick */
+    /** Get Y value from translation joystick 
+     * 
+     * <p> Move robot forward and backward (away or toward).
+    */
     public double getDriveY() {
         yIn = getSpeedFromAxis(_translation, _yAxis);
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND_TRANSLATION);

@@ -84,6 +84,8 @@ public class DriveTrain extends OutliersSubsystem {
          * 
          *   SW (-,+)  SE (-,-)
          * 
+         * NOTE: HolonomicDriveController assumes robot NORTH = field EAST
+         * 
          */
 
         int nw_x;
@@ -209,6 +211,7 @@ public class DriveTrain extends OutliersSubsystem {
                             _northEast.getModulePosition()
                         );
             _odometry = new SwerveDriveOdometry(_kinematics, getHeading());
+            // TODO: rewrite HolonomicDriveController to use Waypoints (Pose, Vector)
             _controller =
                     new HolonomicDriveController(
                             new PIDController(Constants.DriveTrain.kP, Constants.DriveTrain.kI, Constants.DriveTrain.kD),
@@ -257,9 +260,11 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     /**
-     * Set speed and direction of each swerve module to reach the desired pose.
+     * Control each swerve module to reach the desired pose and velocity
      * 
-     * @param pose xPos in meters, yPos in meters, theta in radians
+     * //TODO: fix adjustedSpeeds to use Waypoints (Pose, Vector)
+     * 
+     * @param pose xPos in meters, yPos in meters, omega in radians
      * @param heading omega in radians
      * @param vel in m/s
      */
