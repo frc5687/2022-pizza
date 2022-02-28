@@ -289,6 +289,13 @@ public class DriveTrain extends OutliersSubsystem {
         return (rotation == theta);
     }
 
+    /** Check if robot is at pose
+     * 
+     * <p> NOTE: set TOLERANCE in Constants
+     * 
+     * @param poseRef reference pose
+     * @return true if current pose within tolerance of reference pose
+     */
     public boolean isAtPose(Pose2d poseRef) {
         // Pose error
         Pose2d posError = poseRef.relativeTo(getOdometryPose());
