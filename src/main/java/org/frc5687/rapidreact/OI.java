@@ -7,18 +7,23 @@ package org.frc5687.rapidreact;
 
 import edu.wpi.first.wpilibj.Joystick;
 
+import org.frc5687.rapidreact.config.JoystickMap;
+import org.frc5687.rapidreact.config.Constants;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 import org.frc5687.rapidreact.commands.DeployIntakeOI;
 
+import org.frc5687.rapidreact.subsystems.DriveTrain;
+import org.frc5687.rapidreact.subsystems.Catapult;
+import org.frc5687.rapidreact.subsystems.Indexer;
+import org.frc5687.rapidreact.subsystems.Intake;
+
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 import static org.frc5687.rapidreact.util.Helpers.*;
-
-import org.frc5687.rapidreact.config.JoystickMap;
-import org.frc5687.rapidreact.config.Constants;
 
  /** Operator input
  * 
@@ -28,6 +33,8 @@ import org.frc5687.rapidreact.config.Constants;
  * @see JoystickMap
  */
 public class OI extends OutliersProxy {
+
+    private RobotContainer _robot;
 
     // Declare joysticks
     private Joystick _translation;
@@ -108,11 +115,16 @@ public class OI extends OutliersProxy {
      * 
      * @param robot the RobotContainer initializing buttons
      */
-    public void initializeButtons(RobotContainer robot) {
-        _autoRun.whenPressed(new AutoOneBall(robot));
-        _intakeDeploy.whenHeld(new DeployIntakeOI(robot.intake));
-        _navXReset.whenReleased(new InstantCommand(robot.driveTrain::resetYaw, robot.driveTrain));
-        _catapultShoot.whenPressed(new InstantCommand(robot.catapult::shoot, robot.catapult));
+    public void initializeButtons(
+        Catapult catapult,
+        DriveTrain driveTrain,
+        Indexer indexer,
+        Intake intake
+    ) {
+        _autoRun.whenPressed(new AutoOneBall(catapult, driveTrain, indexer, intake));
+        _intakeDeploy.whenHeld(new DeployIntakeOI(intake));
+        _navXReset.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
+        _catapultShoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
     }
 
     // Get movement values from joysticks

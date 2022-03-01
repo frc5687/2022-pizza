@@ -1,6 +1,5 @@
 package org.frc5687.rapidreact.subsystems;
 
-
 import static org.frc5687.rapidreact.config.Constants.Catapult.*;
 
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
@@ -157,7 +156,6 @@ public class Catapult extends OutliersSubsystem {
             return solenoidValue;
         }
     }
-
 
     /** Catapult constructor */
     public Catapult(OutliersContainer container) {

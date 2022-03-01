@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+import org.frc5687.rapidreact.config.Constants;
+
 // import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
@@ -21,7 +23,6 @@ import org.frc5687.rapidreact.subsystems.Catapult;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.AutoZeroBall;
-import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 
 /**
@@ -39,10 +40,10 @@ public class RobotContainer extends OutliersContainer {
     // private AutoChooser _autoChooser;
     private AHRS _imu;
 
-    public DriveTrain driveTrain;
-    private Indexer _indexer;
-    public Intake intake;
     public Catapult catapult;
+    public DriveTrain driveTrain;
+    private Indexer indexer;
+    public Intake intake;
 
     /** Create RobotContainer 
      * 
@@ -66,11 +67,16 @@ public class RobotContainer extends OutliersContainer {
 
         // Create subsystems
         driveTrain = new DriveTrain(this, _oi, _imu);
-        _indexer = new Indexer(this);
-        intake = new Intake(this);
         catapult = new Catapult(this);
+        indexer = new Indexer(this);
+        intake = new Intake(this);
 
-        _oi.initializeButtons(this);
+        _oi.initializeButtons(
+            catapult,
+            driveTrain,
+            indexer,
+            intake
+        );
 
         // What command to run if nothing else is scheduled for driveTrain
         setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
@@ -94,7 +100,7 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.autonomousInit()");
 
         // Set state of subsystems
-        _indexer.setState(Indexer.IndexerState.DEPLOYED);
+        indexer.setState(Indexer.IndexerState.DEPLOYED);
         intake.setState(Intake.IntakeState.STOWED);
     }
 
@@ -156,7 +162,12 @@ public class RobotContainer extends OutliersContainer {
                 _auto = new AutoZeroBall(this);
                 break;
             case ONE_BALL:
-                _auto = new AutoOneBall(this);
+                _auto = new AutoOneBall(
+                    catapult,
+                    driveTrain,
+                    indexer,
+                    intake
+                );
                 break;
             default:
                 _auto = new AutoZeroBall(this);
