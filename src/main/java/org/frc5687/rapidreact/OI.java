@@ -1,27 +1,18 @@
 /** Team 5687 (C)2021-2022
  * Joystick and gamepad control for the robot.
  * Also has button inits.
- * Has some instructions on how to switch controls.
- * See JoysticknMap for configuration of joystick and gamepad.
+ * @see JoystickMap for configuration of joystick and gamepad.
 */
 package org.frc5687.rapidreact;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import org.frc5687.rapidreact.subsystems.Catapult;
-import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.subsystems.Indexer;
-import org.frc5687.rapidreact.subsystems.Intake;
+import org.frc5687.rapidreact.commands.auto.AutoOneBall;
+import org.frc5687.rapidreact.commands.DeployIntakeOI;
 
-// import org.frc5687.rapidreact.commands.ResetNavX;
-
-// import org.frc5687.rapidreact.util.AxisButton;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 import static org.frc5687.rapidreact.util.Helpers.*;
@@ -51,19 +42,17 @@ public class OI extends OutliersProxy {
     /** Commands that can be mapped to buttons */
     public static enum Command {
         NOT_IN_USE,
-        DEPLOY_INTAKE,
-        RETRACT_INTAKE,
-        RESET_NAVX,
-        RUN_AUTO,
-        SHOOT
+        AUTO_RUN,
+        CATAPULT_SHOOT,
+        INTAKE_DEPLOY,
+        NAVX_RESET
     }    
 
     // Declare joystick buttons
-    private JoystickButton _deployIntake;
-    private JoystickButton _resetNavX;
-    private JoystickButton _retractIntake;
-    private JoystickButton _runAuto;
-    private JoystickButton _shoot;
+    private JoystickButton _autoRun;
+    private JoystickButton _catapultShoot;
+    private JoystickButton _intakeDeploy;
+    private JoystickButton _navXReset;
 
     // Button mappings
     private Command[] _translationButtons;
@@ -92,14 +81,17 @@ public class OI extends OutliersProxy {
         switch(command) {
             case NOT_IN_USE:
                 return;
-            case RESET_NAVX:
-                _resetNavX = new JoystickButton(joystick, buttonNumber);
+            case AUTO_RUN:
+                _autoRun = new JoystickButton(joystick, buttonNumber);
                 break;
-            case RUN_AUTO:
-                _runAuto = new JoystickButton(joystick, buttonNumber);
+            case CATAPULT_SHOOT:
+                _catapultShoot = new JoystickButton(joystick, buttonNumber);
                 break;
-            case SHOOT:
-                _shoot = new JoystickButton(joystick, buttonNumber);
+            case INTAKE_DEPLOY:
+                _intakeDeploy = new JoystickButton(joystick, buttonNumber);
+                break;
+            case NAVX_RESET:
+                _navXReset = new JoystickButton(joystick, buttonNumber);
                 break;
         }
     }
@@ -110,29 +102,33 @@ public class OI extends OutliersProxy {
      *  <li> when button calls command (when pressed, released, held, etc.)
      *  <li> which command gets called
      * </ul>
+     * 
+     * @param robot the RobotContainer initializing buttons
      */
-    public void initializeButtons(
-        Catapult catapult,
-        DriveTrain driveTrain,
-        Indexer indexer,
-        Intake intake
-        ) {
-        _resetNavX.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
-        _shoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
+    public void initializeButtons(RobotContainer robot) {
+        _autoRun.whenPressed(new AutoOneBall(robot));
+        _intakeDeploy.whenHeld(new DeployIntakeOI(robot.intake));
+        _navXReset.whenReleased(new InstantCommand(robot.driveTrain::resetYaw, robot.driveTrain));
+        _catapultShoot.whenPressed(new InstantCommand(robot.catapult::shoot, robot.catapult));
     }
+
+    // Get movement values from joysticks
+
+    // Goal is to move the robot relative to field reference.
+
+    // According to WPI's kinematics classes:
+    // Positive x is away from your alliance wall.
+    // Positive y is to your left when standing behind the alliance wall.
+    // Positve theta (rotation) is counter clockwise (CCW).
+
+    // TODO: make sure we're sending correct X and Y values to DriveOI
 
     /** Get X value from translation joystick
      * 
-     * <p> Move robot sideways (left or right).
+     * <p> Move robot forward and backward (away or toward).
      */
     public double getDriveX() {
    
-        // NOTE: x axis on the joystick controls sidewise motion (which is
-        // Y axis on the field).
-        // According to HolonomicDriveController, positive Y is to your left
-        // when standing behind your alliance wall.
-        // So we need to negate this control.
-        // Moving right is +x on joystick = -y on field.
         xIn = -getSpeedFromAxis(_translation, _xAxis);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
         return circularize(xIn, yIn);
@@ -140,7 +136,7 @@ public class OI extends OutliersProxy {
 
     /** Get Y value from translation joystick 
      * 
-     * <p> Move robot forward and backward (away or toward).
+     * <p> Move robot sideways (left or right).
     */
     public double getDriveY() {
         yIn = getSpeedFromAxis(_translation, _yAxis);
@@ -182,7 +178,8 @@ public class OI extends OutliersProxy {
     }
 
     /** Get rotation value from rotation joystick */
-    public double getRotationX() {
+    public double getRotation() {
+        // TODO: convert to CCW
         double speed = getSpeedFromAxis(_rotation, _twistAxis);
         speed = applyDeadband(speed, Constants.DriveTrain.DEADBAND_ROTATION);
         return speed;

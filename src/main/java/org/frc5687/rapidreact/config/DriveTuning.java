@@ -37,6 +37,8 @@ public class DriveTuning {
     public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
     public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
     public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
+    public static final double SLEW_LIMIT_X = 3.0; // rate of change limit, units per s
+    public static final double SLEW_LIMIT_Y = 3.0; // rate of change limit, units per s
 
     // PID controller settings
     public static final Pose2d TOLERANCE = new Pose2d(0.02, 0.02, new Rotation2d(0.05));

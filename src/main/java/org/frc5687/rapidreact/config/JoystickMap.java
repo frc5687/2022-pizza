@@ -39,7 +39,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.SHOOT, // 1 trigger
+            OI.Command.CATAPULT_SHOOT, // 1 trigger
             OI.Command.NOT_IN_USE, // 2 thumb lower
             OI.Command.NOT_IN_USE, // 3 thumb upper
             OI.Command.NOT_IN_USE, // 4 side stick left
@@ -63,7 +63,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.DEPLOY_INTAKE, // 1 trigger
+            OI.Command.INTAKE_DEPLOY, // 1 trigger
             OI.Command.NOT_IN_USE, // 2 thumb lower
             OI.Command.NOT_IN_USE, // 3 thumb upper
             OI.Command.NOT_IN_USE, // 4 side stick left
@@ -88,7 +88,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.SHOOT, // 1 trigger
+            OI.Command.CATAPULT_SHOOT, // 1 trigger
             OI.Command.NOT_IN_USE, // 2 thumb lower
             OI.Command.NOT_IN_USE, // 3 thumb upper
             OI.Command.NOT_IN_USE, // 4 side stick left
@@ -113,7 +113,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.SHOOT, // 1 A button
+            OI.Command.CATAPULT_SHOOT, // 1 A button
             OI.Command.NOT_IN_USE, // 2 B button
             OI.Command.NOT_IN_USE, // 3 X button
             OI.Command.NOT_IN_USE, // 4 Y button
@@ -134,7 +134,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.SHOOT, // 1 A button
+            OI.Command.CATAPULT_SHOOT, // 1 A button
             OI.Command.NOT_IN_USE, // 2 B button
             OI.Command.NOT_IN_USE, // 3 X button
             OI.Command.NOT_IN_USE, // 4 Y button
@@ -154,7 +154,7 @@ public class JoystickMap {
 
         // Map buttons to commands
         public static final OI.Command[] BUTTONS = {
-            OI.Command.SHOOT, // 1 A button
+            OI.Command.CATAPULT_SHOOT, // 1 A button
             OI.Command.NOT_IN_USE, // 2 B button
             OI.Command.NOT_IN_USE, // 3 X button
             OI.Command.NOT_IN_USE, // 4 Y button

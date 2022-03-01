@@ -119,7 +119,9 @@ public class Constants {
         public static final double MAX_MPS = DriveTuning.MAX_MPS;
         public static final double MAX_ANG_VEL = DriveTuning.MAX_ANG_VEL;
         public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
-
+        public static final double SLEW_LIMIT_X = DriveTuning.SLEW_LIMIT_X;
+        public static final double SLEW_LIMIT_Y = DriveTuning.SLEW_LIMIT_Y;
+    
         // PID controller settings
         public static final Pose2d TOLERANCE = DriveTuning.TOLERANCE;
         public static final double ANGLE_kP = DriveTuning.ANGLE_kP;

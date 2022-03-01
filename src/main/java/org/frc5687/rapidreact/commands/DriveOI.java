@@ -32,8 +32,8 @@ public class DriveOI extends OutliersCommand {
     public DriveOI(DriveTrain driveTrain, OI oi) {
         _driveTrain = driveTrain;
         _oi = oi;
-        _vxFilter = new SlewRateLimiter(3.0);
-        _vyFilter = new SlewRateLimiter(3.0);
+        _vxFilter = new SlewRateLimiter(Constants.DriveTrain.SLEW_LIMIT_X);
+        _vyFilter = new SlewRateLimiter(Constants.DriveTrain.SLEW_LIMIT_Y);
         addRequirements(_driveTrain); // necessary to be DriveTrain's default command
     }
 
@@ -48,10 +48,8 @@ public class DriveOI extends OutliersCommand {
         super.execute();
 
         // Set vx, vy and vtheta based on joystick input
-
-        // driveX and driveY are swapped due to coordinate system that WPILib uses.
-        double vx = _vxFilter.calculate(-_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
-        double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
+        double vx = _vxFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
+        double vy = _vyFilter.calculate(_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
 
         // TODO: add snap-to here to set angular velocity of robot
 
@@ -66,7 +64,7 @@ public class DriveOI extends OutliersCommand {
          */
 
         // convert clockwise to counter-clockwise for rotation
-        double vomega = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
+        double vomega = _oi.getRotation() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
 
         _driveTrain.drive(vx, vy, vomega, true);
     }
