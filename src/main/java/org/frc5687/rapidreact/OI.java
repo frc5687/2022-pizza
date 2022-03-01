@@ -121,10 +121,10 @@ public class OI extends OutliersProxy {
         Indexer indexer,
         Intake intake
     ) {
-        _autoRun.whenPressed(new AutoOneBall(catapult, driveTrain, indexer, intake));
-        _intakeDeploy.whenHeld(new DeployIntakeOI(intake));
-        _navXReset.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
-        _catapultShoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
+        // _autoRun.whenPressed(new AutoOneBall(catapult, driveTrain, indexer, intake));
+        // _intakeDeploy.whenHeld(new DeployIntakeOI(intake));
+        // _navXReset.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
+        // _catapultShoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
     }
 
     // Get movement values from joysticks
