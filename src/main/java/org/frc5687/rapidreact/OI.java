@@ -34,10 +34,13 @@ public class OI extends OutliersProxy {
     private Joystick _rotation;
     private Joystick _debug;
 
-    // Declare joystick axes
-    private int _xAxis;
-    private int _yAxis;
-    private int _twistAxis;
+    // Declare joystick axes and signs
+    private int _xAxis; // which axis controls forward / back
+    private int _xSign; // whether to invert joystick value
+    private int _yAxis; // which axis controls left / right
+    private int _ySign;
+    private int _twistAxis; // which axis controls rotation
+    private int _twistSign;
 
     /** Commands that can be mapped to buttons */
     public static enum Command {
@@ -121,27 +124,42 @@ public class OI extends OutliersProxy {
     // Positive y is to your left when standing behind the alliance wall.
     // Positve theta (rotation) is counter clockwise (CCW).
 
-    // TODO: make sure we're sending correct X and Y values to DriveOI
-
     /** Get X value from translation joystick
      * 
-     * <p> Move robot forward and backward (away or toward).
+     * <p> Robot forward and backward motion (away or toward). Forward +x.
      */
     public double getDriveX() {
    
-        xIn = -getSpeedFromAxis(_translation, _xAxis);
+        xIn = _xSign * getSpeedFromAxis(_translation, _xAxis);
         xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
         return circularize(xIn, yIn);
     }
 
     /** Get Y value from translation joystick 
      * 
-     * <p> Move robot sideways (left or right).
+     * <p> Robot sideways motion (left or right). Left +y.
     */
     public double getDriveY() {
-        yIn = getSpeedFromAxis(_translation, _yAxis);
+        yIn = _ySign * getSpeedFromAxis(_translation, _yAxis);
         yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
         return circularize(yIn, xIn);
+    }
+
+    /** Get rotation value from rotation joystick
+     * 
+     * <p> Left +omega.
+    */
+    public double getRotation() {
+        double rotIn = _twistSign * getSpeedFromAxis(_rotation, _twistAxis);
+        rotIn = applyDeadband(rotIn, Constants.DriveTrain.DEADBAND_ROTATION);
+        return rotIn;
+    }
+
+    // Helper methods
+
+    /** Read joystick value */
+    protected double getSpeedFromAxis(Joystick joystick, int axisNumber) {
+        return joystick.getRawAxis(axisNumber);
     }
 
     /**
@@ -177,44 +195,36 @@ public class OI extends OutliersProxy {
         return c;
     }
 
-    /** Get rotation value from rotation joystick */
-    public double getRotation() {
-        // TODO: convert to CCW
-        double speed = getSpeedFromAxis(_rotation, _twistAxis);
-        speed = applyDeadband(speed, Constants.DriveTrain.DEADBAND_ROTATION);
-        return speed;
-    }
-
-    protected double getSpeedFromAxis(Joystick joystick, int axisNumber) {
-        return joystick.getRawAxis(axisNumber);
-    }
-
-    // Helper methods
-
     /** Create translation, rotation and debug joysticks */
     private void createJoysticks() {
 
         // Create translation joystick
         if (JoystickMap.JOYSTICK_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
             _translation = new Joystick(JoystickMap.JOYSTICK_TRANSLATION_USB);
-            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X;
-            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y;
+            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X_AXIS;
+            _xSign = JoystickMap.JOYSTICK_TRANSLATION.X_SIGN;
+            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y_AXIS;
+            _ySign = JoystickMap.JOYSTICK_TRANSLATION.Y_SIGN;
             _translationButtons = JoystickMap.JOYSTICK_TRANSLATION.BUTTONS;
         } else if (JoystickMap.GAMEPAD_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
             _translation = new Gamepad(JoystickMap.GAMEPAD_TRANSLATION_USB);
-            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X;
-            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y;
+            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X_AXIS;
+            _xSign = JoystickMap.GAMEPAD_TRANSLATION.X_SIGN;
+            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y_AXIS;
+            _ySign = JoystickMap.GAMEPAD_TRANSLATION.Y_SIGN;
             _translationButtons = JoystickMap.GAMEPAD_TRANSLATION.BUTTONS;
         }
 
         // Create rotation joystick
         if (JoystickMap.JOYSTICK_ROTATION_USB > JoystickMap.NOT_IN_USE) {
             _rotation = new Joystick(JoystickMap.JOYSTICK_ROTATION_USB);
-            _twistAxis = JoystickMap.JOYSTICK_ROTATION.Twist;
+            _twistAxis = JoystickMap.JOYSTICK_ROTATION.TWIST_AXIS;
+            _twistSign = JoystickMap.JOYSTICK_ROTATION.TWIST_SIGN;
             _rotationButtons = JoystickMap.JOYSTICK_ROTATION.BUTTONS;
         } else if (JoystickMap.GAMEPAD_ROTATION_USB > JoystickMap.NOT_IN_USE) {
             _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
-            _twistAxis = JoystickMap.GAMEPAD_ROTATION.Twist;
+            _twistAxis = JoystickMap.GAMEPAD_ROTATION.TWIST_AXIS;
+            _twistSign = JoystickMap.GAMEPAD_ROTATION.TWIST_SIGN;
             _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
         }
 

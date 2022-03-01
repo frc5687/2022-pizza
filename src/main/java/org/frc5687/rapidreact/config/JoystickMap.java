@@ -32,9 +32,14 @@ public class JoystickMap {
     /** Button mappings for the translation joystick */
     public static class JOYSTICK_TRANSLATION {
 
+        // Move forward +x, move backward -x
+        // Move left +y, move right -y
+
         public static final String MODEL = "Logitech Attack 3";
-        public static final int X = AxisType.kX.value;
-        public static final int Y = AxisType.kY.value;
+        public static final int X_AXIS = AxisType.kY.value; // forward and back
+        public static final int X_SIGN = 1; // 1 to keep, -1 to invert
+        public static final int Y_AXIS = AxisType.kX.value; // left and right
+        public static final int Y_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 11; // how many buttons on it
 
         // Map buttons to commands
@@ -57,8 +62,11 @@ public class JoystickMap {
     /** Button mappings for the rotation joystick */
     public static class JOYSTICK_ROTATION {
 
+        // Turn left +omega, turn right -omega
+
         public static final String MODEL = "Logitech Attack 3";
-        public static int Twist = AxisType.kX.value;
+        public static final int TWIST_AXIS = AxisType.kX.value;
+        public static final int TWIST_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 11; // how many buttons on it
 
         // Map buttons to commands
@@ -106,9 +114,14 @@ public class JoystickMap {
     /** Button mappings for the translation gamepad */
     public static class GAMEPAD_TRANSLATION {
 
-        public static final String MODEL = "GamerSir";
-        public static final int X = AxisType.kX.value;
-        public static final int Y = AxisType.kY.value;
+        // Move forward +x, move backward -x
+        // Move left +y, move right -y
+
+        public static final String MODEL = "GameSir";
+        public static final int X_AXIS = AxisType.kY.value; // forward and back
+        public static final int X_SIGN = 1; // 1 to keep, -1 to invert
+        public static final int Y_AXIS = AxisType.kX.value; // left and right
+        public static final int Y_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 8; // how many buttons on it
 
         // Map buttons to commands
@@ -128,8 +141,11 @@ public class JoystickMap {
     /** Button mappings for the rotation gamepad */
     public static class GAMEPAD_ROTATION {
 
-        public static final String MODEL = "GamerSir";
-        public static int Twist = AxisType.kX.value;
+        // Turn left +omega, turn right -omega
+
+        public static final String MODEL = "GameSir";
+        public static final int TWIST_AXIS = AxisType.kX.value;
+        public static final int TWIST_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 8; // how many buttons on it
 
         // Map buttons to commands

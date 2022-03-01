@@ -28,6 +28,16 @@ import org.frc5687.rapidreact.util.OutliersContainer;
 
 /**
  * DriveTrain moves the robot using four DiffSwerveModule instances.
+ * 
+ * <p> NOTE: this class uses WPI field orientation for movement
+ * and assumes calling classes have sorted out X (forward and backward),
+ * Y (left and right) and OMEGA (rotation).
+ * 
+ * <ul>
+ *  <li> +x moves forward (EAST) on the field
+ *  <li> +y moves left (NORTH) on the field
+ *  <li> +omega turns left on the field
+ * </ul>
  */
 public class DriveTrain extends OutliersSubsystem {
 
@@ -154,12 +164,23 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     /**
-     * Method to set correct module speeds and angle based on wanted vx, vy, vomega
+     * Set module speeds and angles based on desired vx, vy, vomega
+     * 
+     * <ul>
+     *  <li> Translate "forward" is +x, "back" is -x.
+     *  <li> Translate "left" is +y, "right" is -y.
+     *  <li> Rotate "left" is +omega, "right" is -omega.
+     * </ul>
+     * 
+     * <p> Field reference: when standing behind alliance wall facing other alliance wall,
+     * forward is away from our alliance wall toward other alliance wall.
+     * 
+     * <p> Robot reference: forward is robot NORTH.
      *
-     * @param vx velocity in x direction
-     * @param vy velocity in y direction
-     * @param vomega angular velocity (rotating speed)
-     * @param fieldRelative forward is always forward no matter orientation of robot.
+     * @param vx desired velocity in x direction (forward and back)
+     * @param vy desired velocity in y direction (sideways)
+     * @param vomega desired angular velocity (rotating speed)
+     * @param fieldRelative motion relative to field (true) or robot (false)
      */
     public void drive(double vx, double vy, double vomega, boolean fieldRelative) {
         if (
@@ -344,6 +365,8 @@ public class DriveTrain extends OutliersSubsystem {
 
         /** Figure out signs of compass headings
          * 
+         * NOTE: WPI kinematics classes assume robot NORTH = field EAST
+         * 
          * If we put robot on field with robot North facing field North,
          * Bob's your uncle.
          * 
@@ -357,8 +380,6 @@ public class DriveTrain extends OutliersSubsystem {
          *   NW (+,+)  NE (+,-)
          * 
          *   SW (-,+)  SE (-,-)
-         * 
-         * NOTE: WPI kinematics classes assume robot NORTH = field EAST
          * 
          */
 
@@ -412,15 +433,15 @@ public class DriveTrain extends OutliersSubsystem {
                 se_y = 1;
                 ne_y = 1;
                 break;
-            default: // robot North = field North
-                nw_x = -1;
+            default: // robot North = field East
+                nw_x = 1;
                 sw_x = -1;
-                se_x = 1;
+                se_x = -1;
                 ne_x = 1;
                 nw_y = 1;
-                sw_y = -1;
+                sw_y = 1;
                 se_y = -1;
-                ne_y = 1;
+                ne_y = -1;
         }
 
         NW_MODULE =
