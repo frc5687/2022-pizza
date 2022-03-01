@@ -159,18 +159,13 @@ public class RobotContainer extends OutliersContainer {
         // Choose which auto to run
         switch(Constants.Auto.AUTO_MODE) {
             case ZERO_BALL:
-                _auto = new AutoZeroBall(this);
+                _auto = new AutoZeroBall(catapult, driveTrain, indexer, intake);
                 break;
             case ONE_BALL:
-                _auto = new AutoOneBall(
-                    catapult,
-                    driveTrain,
-                    indexer,
-                    intake
-                );
+                _auto = new AutoOneBall(catapult, driveTrain, indexer, intake);
                 break;
             default:
-                _auto = new AutoZeroBall(this);
+                _auto = new AutoZeroBall(catapult, driveTrain, indexer, intake);
         }
 
         return _auto;

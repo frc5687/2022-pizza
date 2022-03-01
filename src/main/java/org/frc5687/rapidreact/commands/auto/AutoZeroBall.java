@@ -5,6 +5,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.frc5687.rapidreact.RobotContainer;
 import org.frc5687.rapidreact.config.Constants;
 
+import org.frc5687.rapidreact.subsystems.DriveTrain;
+import org.frc5687.rapidreact.subsystems.Catapult;
+import org.frc5687.rapidreact.subsystems.Indexer;
+import org.frc5687.rapidreact.subsystems.Intake;
+
 /**
  * Taxi out of tarmac.
  */
@@ -15,8 +20,12 @@ public class AutoZeroBall extends SequentialCommandGroup {
      * 
      * @param robotContainer
      */
-    public AutoZeroBall(RobotContainer robot) {
-
+    public AutoZeroBall(
+        Catapult catapult,
+        DriveTrain driveTrain,
+        Indexer indexer,
+        Intake intake
+    ) {
 
         double xPos;
         double yPos;
@@ -66,7 +75,7 @@ public class AutoZeroBall extends SequentialCommandGroup {
         }
         
         addCommands(
-            new DriveToPose(robot.driveTrain, xPos, yPos, theta, omega, velocity)
+            new DriveToPose(driveTrain, xPos, yPos, theta, omega, velocity)
         );
     }
 
