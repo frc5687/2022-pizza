@@ -243,18 +243,18 @@ public class OI extends OutliersProxy {
     private void createButtons() {
         
         // Create translation joystick buttons
-        for (int i = 1; i < (_translationButtons.length + 1); i++) {
-            addJoystickButton(_translation, i, _translationButtons[i]);
+        for (int i = 0; i < _translationButtons.length; i++) {
+            addJoystickButton(_translation, i+1, _translationButtons[i]);
         }
 
         // Create rotation joystick buttons
-        for (int i = 1; i < (_rotationButtons.length + 1); i++) {
-            addJoystickButton(_rotation, i, _rotationButtons[i]);
+        for (int i = 0; i < _rotationButtons.length; i++) {
+            addJoystickButton(_rotation, i+1, _rotationButtons[i]);
         }
 
         // Create debug joystick buttons
-        for (int i = 1; i < (_debugButtons.length + 1); i++) {
-            addJoystickButton(_debug, i, _debugButtons[i]);
+        for (int i = 0; i < _debugButtons.length; i++) {
+            addJoystickButton(_debug, i+1, _debugButtons[i]);
         }
 
     }
