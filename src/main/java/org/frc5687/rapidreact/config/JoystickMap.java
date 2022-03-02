@@ -19,12 +19,12 @@ public class JoystickMap {
 
     // Joysticks
     public static final int JOYSTICK_TRANSLATION_USB = NOT_IN_USE;
-    public static final int JOYSTICK_ROTATION_USB = 1;
+    public static final int JOYSTICK_ROTATION_USB = NOT_IN_USE;
     public static final int JOYSTICK_DEBUG_USB = NOT_IN_USE;
 
     // Gamepads
     public static final int GAMEPAD_TRANSLATION_USB = 0;
-    public static final int GAMEPAD_ROTATION_USB = NOT_IN_USE;
+    public static final int GAMEPAD_ROTATION_USB = 0;
     public static final int GAMEPAD_DEBUG_USB = 2;
 
     // Step 2. Configure joysticks and map commands to buttons
@@ -147,7 +147,7 @@ public class JoystickMap {
         // Turn left +omega, turn right -omega
 
         public static final String MODEL = "GameSir";
-        public static final int TWIST_AXIS = AxisType.kX.value;
+        public static final int TWIST_AXIS = 0;
         public static final int TWIST_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 8; // how many buttons on it
 
