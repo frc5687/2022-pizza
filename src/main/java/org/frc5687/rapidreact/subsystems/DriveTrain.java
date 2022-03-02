@@ -247,12 +247,12 @@ public class DriveTrain extends OutliersSubsystem {
             );
     }
 
+    /** Turn to a given heading */
     public void snap(Rotation2d theta){
         poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
     }
 
-    /**
-     * Control each swerve module to reach the desired pose and velocity
+    /** Control each swerve module to reach the desired pose and velocity
      * 
      * //TODO: fix adjustedSpeeds to use Waypoints (Pose, Vector)
      * 
@@ -267,8 +267,7 @@ public class DriveTrain extends OutliersSubsystem {
         setAllModuleStates(moduleStates);
     }
 
-    /**
-     * Check if robot is at theta rotation
+    /** Check if robot is at theta rotation
      * 
      * Rotation is CCW +.
      * 
@@ -305,16 +304,14 @@ public class DriveTrain extends OutliersSubsystem {
             (Math.abs(rotError.getRadians()) < omegaTol);
     }
 
+    /** Get robot heading in degrees (CW+) as reported by IMU. */
     public double getYaw() {
         return _imu.getYaw();
     }
 
-    /**
-     * Get heading of robot according to IMU
+    /** Get heading of robot as a Rotation2d
      * 
-     * Note: yaw is CW, but heading is CCW
-     * 
-     * TODO: confirm that CW and CCW is documented correctly for getHeading()
+     * <p> Note: yaw is CW (right +), but heading is CCW (left +)
      * 
      * @return heading as a Rotation2d
      */
@@ -330,16 +327,19 @@ public class DriveTrain extends OutliersSubsystem {
         _imu.reset();
     }
 
+    /** Get a swerve drive kinematics constraint that keeps robot below max speed */
     public SwerveDriveKinematicsConstraint getKinematicConstraint() {
         return new SwerveDriveKinematicsConstraint(_kinematics, Constants.DriveTrain.MAX_MPS);
     }
 
+    /** Get a trajectory constraint that keeps robot below max speed */
     public TrajectoryConfig getConfig() {
         return new TrajectoryConfig(Constants.DriveTrain.MAX_MPS, Constants.DriveTrain.MAX_MPSS)
                 .setKinematics(_kinematics)
                 .addConstraint(getKinematicConstraint());
     }
 
+    /** Follow trajectory */
     public void trajectoryFollower(Trajectory.State goal, Rotation2d heading) {
         ChassisSpeeds adjustedSpeeds =
                 _controller.calculate(_odometry.getPoseMeters(), goal, heading);
@@ -348,14 +348,17 @@ public class DriveTrain extends OutliersSubsystem {
         setAllModuleStates(moduleStates);
     }
 
+    /** Get odometry's idea of robot pose */
     public Pose2d getOdometryPose() {
         return _odometry.getPoseMeters();
     }
 
+    /** Tell odometry the robot pose */
     public void resetOdometry(Pose2d position) {
         _odometry.resetPosition(position, getHeading());
     }
 
+    /** Set all modules to _running = true */
     public void startModules() {
         _northWest.start();
         _southWest.start();
