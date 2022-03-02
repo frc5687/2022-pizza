@@ -4,9 +4,7 @@ package org.frc5687.rapidreact.commands.auto;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.Catapult;
 
-/**
- * Aim in autonomous mode (i.e., no OI control) to shoot ball.
- */
+/** Shoot ball in autonomous mode (i.e., no OI control). */
 public class Shoot extends OutliersCommand {
 
     private final Catapult _catapult;

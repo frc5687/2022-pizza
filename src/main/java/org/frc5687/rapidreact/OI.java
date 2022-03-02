@@ -7,19 +7,16 @@ package org.frc5687.rapidreact;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-import org.frc5687.rapidreact.config.JoystickMap;
-import org.frc5687.rapidreact.config.Constants;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import org.frc5687.rapidreact.config.JoystickMap;
+import org.frc5687.rapidreact.config.Constants;
+
 import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 import org.frc5687.rapidreact.commands.DeployIntakeOI;
-
-import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.subsystems.Catapult;
-import org.frc5687.rapidreact.subsystems.Indexer;
-import org.frc5687.rapidreact.subsystems.Intake;
 
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
@@ -34,7 +31,7 @@ import static org.frc5687.rapidreact.util.Helpers.*;
  */
 public class OI extends OutliersProxy {
 
-    private RobotContainer _robot;
+    // private RobotContainer _robot;
 
     // Declare joysticks
     private Joystick _translation;
@@ -115,16 +112,23 @@ public class OI extends OutliersProxy {
      * 
      * @param robot the RobotContainer initializing buttons
      */
-    public void initializeButtons(
-        Catapult catapult,
-        DriveTrain driveTrain,
-        Indexer indexer,
-        Intake intake
-    ) {
-        // _autoRun.whenPressed(new AutoOneBall(catapult, driveTrain, indexer, intake));
-        // _intakeDeploy.whenHeld(new DeployIntakeOI(intake));
-        // _navXReset.whenReleased(new InstantCommand(driveTrain::resetYaw, driveTrain));
-        // _catapultShoot.whenPressed(new InstantCommand(catapult::shoot, catapult));
+    public void initializeButtons(RobotContainer robot) {
+        // We may or may not have assigned each command to a button.
+        // So check for null before initializing button method.
+        if (_autoRun != null) {
+            _autoRun.whenPressed(new AutoOneBall(robot));
+        }
+        if (_intakeDeploy != null) {
+            _intakeDeploy.whenHeld(new DeployIntakeOI(robot.intake));
+        }
+        if (_navXReset != null) {
+            _navXReset.whenReleased(
+                new InstantCommand(robot.driveTrain::resetYaw, robot.driveTrain));
+        }
+        if (_catapultShoot != null) {
+            _catapultShoot.whenPressed(
+                new InstantCommand(robot.catapult::shoot, robot.catapult));
+        }
     }
 
     // Get movement values from joysticks
@@ -175,10 +179,8 @@ public class OI extends OutliersProxy {
     }
 
     /**
-     * Change joystick output in corners to approximate movement around a circle
+     * Change joystick output in corners to emulate movement around a circle.
      * I.e., have a constant velocity when moving in a straight line or diagonally
-     * 
-     * TODO: use some real math to circularize joystick input
      * 
      * @param a xIn or yIn
      * @param b yIn or xIn
@@ -197,14 +199,36 @@ public class OI extends OutliersProxy {
          * But if joystick is at E side, velocity is only 1.
          * 
          * As joystick moves along edge of box, we want to recalculate both
-         * X and Y input to emulate moving along arc of circle.  At NE corner,
-         * X and Y input should both be sqrt of 0.5.  That would make total
-         * velocity 1.
+         * X and Y input to emulate moving along arc of circle.
+         * 
+         * Set Z to be radius of circle.
+         * 
+         * cos(omega) = X / Z
+         * X = cos(omega) * Z
+         * 
+         * Since our max velocity is 1, we can set Z = 1.  So for any angle
+         * that our joystick is at, the maximum X is cos(omega) to keep our
+         * velocity at or below 1.
+         * 
          */
 
-        double c = a / (Math.sqrt(a * a + (b * b)) + Constants.EPSILON);
-        c = (c + (a * 2)) / 3.0;
-        return c;
+        // Find angle of joystick position
+        double angle = new Rotation2d(a, b).getRadians();
+
+        // Max velocity is 1.  So we can use cos(omega) as our max
+        // velocity in this direction.
+        if (Math.abs(a) > Math.abs(Math.cos(angle)) ) {
+            // Speed limit is cos(angle)
+            return Math.cos(angle);
+        } else {
+            // We're below speed limit
+            return a;
+        }
+
+        // This was the old way
+        // double c = a / (Math.sqrt(a * a + (b * b)) + Constants.EPSILON);
+        // c = (c + (a * 2)) / 3.0;
+        // return c;
     }
 
     /** Create translation, rotation and debug joysticks */

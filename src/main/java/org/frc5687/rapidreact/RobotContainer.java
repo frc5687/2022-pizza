@@ -71,12 +71,7 @@ public class RobotContainer extends OutliersContainer {
         indexer = new Indexer(this);
         intake = new Intake(this);
 
-        _oi.initializeButtons(
-            catapult,
-            driveTrain,
-            indexer,
-            intake
-        );
+        _oi.initializeButtons(this);
 
         // What command to run if nothing else is scheduled for driveTrain
         setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
@@ -159,13 +154,13 @@ public class RobotContainer extends OutliersContainer {
         // Choose which auto to run
         switch(Constants.Auto.AUTO_MODE) {
             case ZERO_BALL:
-                _auto = new AutoZeroBall(catapult, driveTrain, indexer, intake);
+                _auto = new AutoZeroBall(this);
                 break;
             case ONE_BALL:
-                _auto = new AutoOneBall(catapult, driveTrain, indexer, intake);
+                _auto = new AutoOneBall(this);
                 break;
             default:
-                _auto = new AutoZeroBall(catapult, driveTrain, indexer, intake);
+                _auto = new AutoZeroBall(this);
         }
 
         return _auto;

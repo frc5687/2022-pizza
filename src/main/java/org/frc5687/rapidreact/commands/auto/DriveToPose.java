@@ -7,9 +7,7 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/**
- * Drive in autonomous mode (i.e., no OI control) to a field-relative pose.
- */
+/** Drive in autonomous mode (i.e., no OI control) to a field-relative pose. */
 public class DriveToPose extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
@@ -18,8 +16,7 @@ public class DriveToPose extends OutliersCommand {
     private Rotation2d _heading;
     private Double _velocity;
 
-    /**
-     * Create DriveToPose command
+    /** Create DriveToPose command
      * 
      * @param driveTrain pass in from RobotContainer
      * @param xPos meters
@@ -62,7 +59,7 @@ public class DriveToPose extends OutliersCommand {
          * Positive Y is to your left when standing behind your alliance wall.
          * Robot's angle is considered 0 when it is facing directly away
          * from your alliance wall.
-         * CCW is positive.
+         * Turning left (CCW) is positive.
          * 
          *             North = +X
          *  West = +Y              East = -Y

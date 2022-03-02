@@ -7,8 +7,7 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/**
- * Drive in autonomous mode (i.e., no OI control) to a field-relative waypoint.
+/** Drive in autonomous mode (i.e., no OI control) to a field-relative waypoint.
  * 
  * <p> A waypoint is a pose and a velocity.
  */
@@ -20,8 +19,7 @@ public class DriveToWaypoint extends OutliersCommand {
     private Rotation2d _heading;
     private Double _velocity;
 
-    /**
-     * Create DriveToWaypoint command
+    /** Create DriveToWaypoint command
      * 
      * TODO: Use Pose and Vector (heading, velocity)
      * 

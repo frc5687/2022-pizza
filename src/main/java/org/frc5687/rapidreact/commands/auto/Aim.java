@@ -6,16 +6,13 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/**
- * Aim in autonomous mode (i.e., no OI control) to shoot ball.
- */
+/** Aim in autonomous mode (i.e., no OI control) to shoot ball. */
 public class Aim extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
     private Rotation2d _heading;
 
-    /**
-     * Create auto Aim command
+    /** Create auto Aim command
      * 
      * @param driveTrain pass in from RobotContainer
      */

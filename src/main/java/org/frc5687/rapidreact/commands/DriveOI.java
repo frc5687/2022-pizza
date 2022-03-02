@@ -7,8 +7,7 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.OI;
 import org.frc5687.rapidreact.config.Constants;
 
-/**
- * Drive using OI control
+/** Drive using OI control
  * 
  * <p>This is the default command for DriveTrain, so requires subsystem and
  * never finishes.
@@ -21,8 +20,7 @@ public class DriveOI extends OutliersCommand {
 
     private final OI _oi;
 
-    /**
-     * Create DriveOI command
+    /** Create DriveOI command
      * 
      * <p>Default command for DriveTrain.  Drive under OI control.
      * 
@@ -66,7 +64,10 @@ public class DriveOI extends OutliersCommand {
         // convert clockwise to counter-clockwise for rotation
         double vomega = _oi.getRotation() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
 
-        _driveTrain.drive(vx, vy, vomega, true);
+        // translate robot relative to field reference
+        boolean fieldRef = true;
+
+        _driveTrain.drive(vx, vy, vomega, fieldRef);
     }
 
     @Override

@@ -3,15 +3,12 @@ package org.frc5687.rapidreact.commands.auto;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.Intake;
 
-/**
- * Deploy intake so we can shoot catapult
- */
+/** Deploy intake so we can shoot catapult */
 public class DeployIntake extends OutliersCommand {
 
     private final Intake _intake;
 
-    /**
-     * Create auto DeployIntake command
+    /** Create auto DeployIntake command
      * 
      * @param intake passed from RobotContainer
      */

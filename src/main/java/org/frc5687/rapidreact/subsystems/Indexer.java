@@ -2,8 +2,7 @@ package org.frc5687.rapidreact.subsystems;
 
 import org.frc5687.rapidreact.util.OutliersContainer;
 
-/**
- * Keep balls separated so can intake two, shoot just one.
+/** Keep balls separated so can intake two, shoot just one.
  * 
  * <p>Note: 2022-robot repo calls this subsystem "ServoStop"
  */
@@ -15,7 +14,7 @@ public class Indexer extends OutliersSubsystem {
     }
     private IndexerState _state;
 
-    /** Indexer constructor */
+    /** Create an Indexer subsystem */
     public Indexer(OutliersContainer container) {
         super(container);
         _state = IndexerState.DEPLOYED;
@@ -32,14 +31,14 @@ public class Indexer extends OutliersSubsystem {
     }
 
     public void retract() {
-        //Retract the blocking arm
-        //Let balls enter the catapult
+        // Retract the blocking arm
+        // Let balls enter the catapult
         _state = IndexerState.RETRACTED;
     }
 
     public void deploy() {
-        //Deploy the blocking arm
-        //Stop balls from entering the catapult
+        // Deploy the blocking arm
+        // Stop balls from entering the catapult
         _state = IndexerState.DEPLOYED;
     }
 

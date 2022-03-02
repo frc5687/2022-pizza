@@ -2,15 +2,12 @@ package org.frc5687.rapidreact.commands;
 
 import org.frc5687.rapidreact.subsystems.Intake;
 
-/**
- * Deploy intake to pick up balls
- */
+/** Deploy intake to pick up balls */
 public class DeployIntakeOI extends OutliersCommand {
 
     private final Intake _intake;
 
-    /**
-     * Create DeployIntake command for teleop mode
+    /** Create DeployIntake command for teleop mode
      * 
      * @param intake passed from RobotContainer
      */

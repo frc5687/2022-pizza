@@ -2,9 +2,7 @@ package org.frc5687.rapidreact.subsystems;
 
 import org.frc5687.rapidreact.util.OutliersContainer;
 
-/**
- * Intake balls onto robot.
- */
+/** Intake balls onto robot. */
 public class Intake extends OutliersSubsystem {
 
     public enum IntakeState {
@@ -20,8 +18,7 @@ public class Intake extends OutliersSubsystem {
     // an explicit setState().
     // Check for ERROR state in every action method.
 
-    /**
-     * Constructor
+    /** Create an intake subsystem
      * 
      * @param container
      */

@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 
-/**
- * Drive in autonomous mode (i.e., no OI control) following a trajectory.
- */
+/** Drive in autonomous mode (i.e., no OI control) following a trajectory. */
 public class DriveTrajectory extends OutliersCommand {
 
     private final DriveTrain _driveTrain;

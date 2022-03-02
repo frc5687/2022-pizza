@@ -21,13 +21,14 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 
-import org.frc5687.rapidreact.OI;
 import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.config.RobotMap;
+
+import org.frc5687.rapidreact.OI;
+
 import org.frc5687.rapidreact.util.OutliersContainer;
 
-/**
- * DriveTrain moves the robot using four DiffSwerveModule instances.
+/** DriveTrain moves the robot using four DiffSwerveModule instances.
  * 
  * <p> NOTE: this class uses WPI field orientation for movement
  * and assumes calling classes have sorted out X (forward and backward),
@@ -70,8 +71,7 @@ public class DriveTrain extends OutliersSubsystem {
     private HolonomicDriveController _controller;
     private ProfiledPIDController _angleController;
 
-    /**
-     * Create a DriveTrain
+    /** Create a DriveTrain subsystem
      * 
      * @param container
      * @param oi
@@ -146,16 +146,18 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.ANGLE_kD,
                             new TrapezoidProfile.Constraints(
                                     Constants.DriveTrain.PROFILE_CONSTRAINT_VEL, Constants.DriveTrain.PROFILE_CONSTRAINT_ACCEL));
-            _angleController.enableContinuousInput(-Math.PI / 2.0, Math.PI / 2.0);
+            _angleController.enableContinuousInput(-Math.PI, Math.PI); // -PI is right-hand turn around; PI is left-hand turn around
         } catch (Exception e) {
             error(e.getMessage());
         }
     }
 
+    /** Set given module to a given state */
     public void setModuleState(DiffSwerveModule module, SwerveModuleState state) {
         module.setIdealState(state);
     }
 
+    /** Set all modules to states passed in as an array */
     public void setAllModuleStates(SwerveModuleState[] states) {
         setModuleState(_northWest, states[NORTH_WEST]);
         setModuleState(_southWest, states[SOUTH_WEST]);
@@ -163,8 +165,7 @@ public class DriveTrain extends OutliersSubsystem {
         setModuleState(_northEast, states[NORTH_EAST]);
     }
 
-    /**
-     * Set module speeds and angles based on desired vx, vy, vomega
+    /** Set module speeds and angles based on desired vx, vy, vomega
      * 
      * <ul>
      *  <li> Translate "forward" is +x, "back" is -x.
@@ -183,6 +184,9 @@ public class DriveTrain extends OutliersSubsystem {
      * @param fieldRelative motion relative to field (true) or robot (false)
      */
     public void drive(double vx, double vy, double vomega, boolean fieldRelative) {
+
+        // TODO: fix this method to allow field relative or robot relative motion control
+
         if (
             (Math.abs(vx) < Constants.DriveTrain.DEADBAND_TRANSLATION) &&
             (Math.abs(vy) < Constants.DriveTrain.DEADBAND_TRANSLATION) &&
@@ -318,6 +322,10 @@ public class DriveTrain extends OutliersSubsystem {
         return Rotation2d.fromDegrees(-getYaw());
     }
 
+    /** Reset Gyro Z axis to 0.
+     * 
+     *  <p> Wherever the robot is heading becomes robot NORTH.
+     */
     public void resetYaw() {
         _imu.reset();
     }
