@@ -122,7 +122,7 @@ public class JoystickMap {
         // right mini joystick
         public static final int X_AXIS = 5; // forward and back
         public static final int X_SIGN = -1; // 1 to keep, -1 to invert
-        public static final int Y_AXIS = 04; // left and right
+        public static final int Y_AXIS = 4; // left and right
         public static final int Y_SIGN = -1; // 1 to keep, -1 to invert
 
         public static final int BUTTON_COUNT = 8; // how many buttons on it
