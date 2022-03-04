@@ -2,12 +2,12 @@
 package org.frc5687.rapidreact.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import org.frc5687.rapidreact.Constants;
+
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.OI;
+import org.frc5687.rapidreact.config.Constants;
 
-/**
- * Drive using OI control
+/** Drive using OI control
  * 
  * <p>This is the default command for DriveTrain, so requires subsystem and
  * never finishes.
@@ -20,8 +20,7 @@ public class DriveOI extends OutliersCommand {
 
     private final OI _oi;
 
-    /**
-     * Create DriveOI command
+    /** Create DriveOI command
      * 
      * <p>Default command for DriveTrain.  Drive under OI control.
      * 
@@ -31,8 +30,8 @@ public class DriveOI extends OutliersCommand {
     public DriveOI(DriveTrain driveTrain, OI oi) {
         _driveTrain = driveTrain;
         _oi = oi;
-        _vxFilter = new SlewRateLimiter(3.0);
-        _vyFilter = new SlewRateLimiter(3.0);
+        _vxFilter = new SlewRateLimiter(Constants.DriveTrain.SLEW_LIMIT_X);
+        _vyFilter = new SlewRateLimiter(Constants.DriveTrain.SLEW_LIMIT_Y);
         addRequirements(_driveTrain); // necessary to be DriveTrain's default command
     }
 
@@ -47,10 +46,8 @@ public class DriveOI extends OutliersCommand {
         super.execute();
 
         // Set vx, vy and vtheta based on joystick input
-
-        // driveX and driveY are swapped due to coordinate system that WPILib uses.
-        double vx = _vxFilter.calculate(-_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
-        double vy = _vyFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
+        double vx = _vxFilter.calculate(_oi.getDriveX()) * Constants.DriveTrain.MAX_MPS;
+        double vy = _vyFilter.calculate(_oi.getDriveY()) * Constants.DriveTrain.MAX_MPS;
 
         // TODO: add snap-to here to set angular velocity of robot
 
@@ -65,9 +62,12 @@ public class DriveOI extends OutliersCommand {
          */
 
         // convert clockwise to counter-clockwise for rotation
-        double vomega = -_oi.getRotationX() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
+        double vomega = _oi.getRotation() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
 
-        _driveTrain.drive(vx, vy, vomega, true);
+        // translate robot relative to field reference
+        boolean fieldRef = true;
+
+        _driveTrain.drive(vx, vy, vomega, fieldRef);
     }
 
     @Override

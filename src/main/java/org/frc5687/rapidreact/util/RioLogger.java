@@ -112,15 +112,21 @@ public class RioLogger {
     }
 
     protected void logint(LogLevel level, String source, String message) {
-        if (level.getValue() >= _dsLogLevel.getValue()) {
-            DriverStation.reportError(level.toString() + "\t" + source + "\t" + message, false);
-        }
-        if (_fileLogLevel == LogLevel.none) {
+        try {
+            if (level.getValue() >= _dsLogLevel.getValue()) {
+                DriverStation.reportError(level.toString() + "\t" + source + "\t" + message, false);
+            }
+            if (_fileLogLevel == LogLevel.none) {
+                return;
+            }
+    
+            if (level.getValue() >= _fileLogLevel.getValue()) {
+                writeData(getDateTimeString(), level.toString(), source, message);
+            }    
+        } catch (Exception e) {
+            // TODO: figure out how to report an error here
+            DriverStation.reportError("Logging error", true);
             return;
-        }
-
-        if (level.getValue() >= _fileLogLevel.getValue()) {
-            writeData(getDateTimeString(), level.toString(), source, message);
         }
     }
 

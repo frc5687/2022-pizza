@@ -1,131 +1,186 @@
 /** Team 5687 (C)2021-2022
  * Joystick and gamepad control for the robot.
  * Also has button inits.
- * Has some instructions on how to switch controls.
- * See ButtonMap for configuration of joystick and gamepad.
+ * @see JoystickMap for configuration of joystick and gamepad.
 */
 package org.frc5687.rapidreact;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj.DriverStation;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import org.frc5687.rapidreact.subsystems.DriveTrain;
-import org.frc5687.rapidreact.subsystems.Indexer;
-import org.frc5687.rapidreact.subsystems.Intake;
+import org.frc5687.rapidreact.config.JoystickMap;
+import org.frc5687.rapidreact.config.Constants;
 
-// import org.frc5687.rapidreact.commands.ResetNavX;
+import org.frc5687.rapidreact.commands.auto.AutoOneBall;
+import org.frc5687.rapidreact.commands.DeployIntakeOI;
 
-// import org.frc5687.rapidreact.util.AxisButton;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
 import static org.frc5687.rapidreact.util.Helpers.*;
 
-/**
- * To add a button to control a subsystem there are a number of steps needed.  I'll use SHOOT as an example:
+ /** Operator input
  * 
- * 1) Define the button in the ButtonMap.Buttons class (in ButtonMap.java):
- * 
- *         public static class SHOOT {
- *           public static int Controller = Controllers.DRIVER_JOYSTICK;
- *           public static int Button = 0;
- *         }
- *
- * 2) Add a private member variable for the button:
- * 
- *        private JoystickButton _shootButton;
- * 
- * 3) Instantiate the button in the OI() constructor, referencing the new ButtonMap entry:
- * 
- *        _shootButton = addJoystickButton(ButtonMap.Buttons.SHOOT.Controller, ButtonMap.Buttons.SHOOT.Button);
- * 
- * 4) Add the subsystem to the signature for OI.initializeButtons:
- * 
- *        public void initializeButtons(DriveTrain driveTrain, Shooter shooter)
- * 
- * 5) Initialize the button in OI.initializeButtons:
- * 
- *        _shootButton.whenHeld(new Shoot(shooter));
- * 
- * 6) Add the subsystem to the RobotContainer.init() call to _oi.inializeButtons:
- * 
- *        _oi.initializeButtons(_driveTrain, _shooter);
- */
-
- /**
- * OI is the operator input class
- * 
- * <p>Define the types of devices that can provide operator input
+ * <p> Define the types of devices that can provide operator input
  * (joysticks, gamepads, drive wheels, keyboards, etc.)
+ * 
+ * @see JoystickMap
  */
 public class OI extends OutliersProxy {
 
-    private Rotation2d theta;
+    // private RobotContainer _robot;
+
+    // Declare joysticks
+    private Joystick _translation;
+    private Joystick _rotation;
+    private Joystick _debug;
+
+    // Declare joystick axes and signs
+    private int _xAxis; // which axis controls forward / back
+    private int _xSign; // whether to invert joystick value
+    private int _yAxis; // which axis controls left / right
+    private int _ySign;
+    private int _twistAxis; // which axis controls rotation
+    private int _twistSign;
+
+    /** Commands that can be mapped to buttons */
+    public static enum Command {
+        NOT_IN_USE,
+        AUTO_RUN,
+        CATAPULT_SHOOT,
+        INTAKE_DEPLOY,
+        NAVX_RESET
+    }    
+
+    // Declare joystick buttons
+    private JoystickButton _autoRun;
+    private JoystickButton _catapultShoot;
+    private JoystickButton _intakeDeploy;
+    private JoystickButton _navXReset;
+
+    // Button mappings
+    private Command[] _translationButtons;
+    private Command[] _rotationButtons;
+    private Command[] _debugButtons;
+
     // "Raw" joystick values
     private double yIn = 0;
     private double xIn = 0;
 
-    private static final int MAX_USB_PORTS = 10;
-
-    private Joystick[] _joysticks = new Joystick[MAX_USB_PORTS];
-
-    // Allocate buttons
-    private JoystickButton _resetNavX;
-    private JoystickButton _snapBTN;
-
+    /** Create an OI */
     public OI() {
-        addJoystick(ButtonMap.Controllers.TRANSLATOR_JOYSTICK);
-        addJoystick(ButtonMap.Controllers.ROTATOR_JOYSTICK);
-        addGamepad(ButtonMap.Controllers.ROTATOR_GAMEPAD);
 
-        // Create buttons
-        _resetNavX = addJoystickButton(ButtonMap.Buttons.RESET_NAVX.Controller, ButtonMap.Buttons.RESET_NAVX.Button);
-        _snapBTN = new JoystickButton(_joysticks[1], 4);
+        createJoysticks();
+        createButtons();
 
     }
 
-    /** Define how buttons work:
-     *  - when button calls command (when pressed, released, held, etc.)
-     *  - which command gets called
+    /** Assign a new JoystickButton for a command.
+     * 
+     * @param joystick
+     * @param buttonNumber
+     * @param command
      */
-    public void initializeButtons(
-        DriveTrain driveTrain,
-        Indexer indexer,
-        Intake intake
-        ) {
-        _resetNavX.whenPressed(new InstantCommand(driveTrain::resetYaw, driveTrain));
-        // _resetNavX.whenReleased(new ResetNavX(driveTrain));
-        // _snapBTN.whenHeld(new SnapTo(driveTrain, theta));
+    private void addJoystickButton(Joystick joystick, int buttonNumber, Command command) {
+        switch(command) {
+            case NOT_IN_USE:
+                return;
+            case AUTO_RUN:
+                _autoRun = new JoystickButton(joystick, buttonNumber);
+                break;
+            case CATAPULT_SHOOT:
+                _catapultShoot = new JoystickButton(joystick, buttonNumber);
+                break;
+            case INTAKE_DEPLOY:
+                _intakeDeploy = new JoystickButton(joystick, buttonNumber);
+                break;
+            case NAVX_RESET:
+                _navXReset = new JoystickButton(joystick, buttonNumber);
+                break;
+        }
     }
 
-    public double getDriveY() {
-        Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
-
-        yIn = getSpeedFromAxis(translation, ButtonMap.Axes.Translation.Y);
-        yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND);
-
-        return circularize(yIn, xIn);
+    /** Define how buttons work
+     * 
+     * <ul>
+     *  <li> when button calls command (when pressed, released, held, etc.)
+     *  <li> which command gets called
+     * </ul>
+     * 
+     * @param robot the RobotContainer initializing buttons
+     */
+    public void initializeButtons(RobotContainer robot) {
+        // We may or may not have assigned each command to a button.
+        // So check for null before initializing button method.
+        if (_autoRun != null) {
+            _autoRun.whenPressed(new AutoOneBall(robot));
+        }
+        if (_intakeDeploy != null) {
+            _intakeDeploy.whenHeld(new DeployIntakeOI(robot.intake));
+        }
+        if (_navXReset != null) {
+            _navXReset.whenReleased(
+                new InstantCommand(robot.driveTrain::resetYaw, robot.driveTrain));
+        }
+        if (_catapultShoot != null) {
+            _catapultShoot.whenPressed(
+                new InstantCommand(robot.catapult::shoot, robot.catapult));
+        }
     }
 
+    // Get movement values from joysticks
+
+    // Goal is to move the robot relative to field reference.
+
+    // According to WPI's kinematics classes:
+    // Positive x is away from your alliance wall.
+    // Positive y is to your left when standing behind the alliance wall.
+    // Positve theta (rotation) is counter clockwise (CCW).
+
+    /** Get X value from translation joystick
+     * 
+     * <p> Robot forward and backward motion (away or toward). Forward +x.
+     */
     public double getDriveX() {
-        Joystick translation = getJoystick(ButtonMap.Axes.Translation.Controller);
-
-        // TODO: explain the negative sign here
-        xIn = -getSpeedFromAxis(translation, ButtonMap.Axes.Translation.X);
-        xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND);
-
+   
+        xIn = _xSign * getSpeedFromAxis(_translation, _xAxis);
+        xIn = applyDeadband(xIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
         return circularize(xIn, yIn);
     }
 
-    /**
-     * Change joystick output in corners to approximate movement around a circle
-     * I.e., have a constant velocity when moving in a straight line or diagonally
+    /** Get Y value from translation joystick 
      * 
-     * TODO: use some real math to circularize joystick input
+     * <p> Robot sideways motion (left or right). Left +y.
+    */
+    public double getDriveY() {
+        yIn = _ySign * getSpeedFromAxis(_translation, _yAxis);
+        yIn = applyDeadband(yIn, Constants.DriveTrain.DEADBAND_TRANSLATION);
+        return circularize(yIn, xIn);
+    }
+
+    /** Get rotation value from rotation joystick
+     * 
+     * <p> Left +omega.
+    */
+    public double getRotation() {
+        double rotIn = _twistSign * getSpeedFromAxis(_rotation, _twistAxis);
+        rotIn = applyDeadband(rotIn, Constants.DriveTrain.DEADBAND_ROTATION);
+        return rotIn;
+    }
+
+    // Helper methods
+
+    /** Read joystick value */
+    protected double getSpeedFromAxis(Joystick joystick, int axisNumber) {
+        return joystick.getRawAxis(axisNumber);
+    }
+
+    /**
+     * Change joystick output in corners to emulate movement around a circle.
+     * I.e., have a constant velocity when moving in a straight line or diagonally
      * 
      * @param a xIn or yIn
      * @param b yIn or xIn
@@ -144,76 +199,103 @@ public class OI extends OutliersProxy {
          * But if joystick is at E side, velocity is only 1.
          * 
          * As joystick moves along edge of box, we want to recalculate both
-         * X and Y input to emulate moving along arc of circle.  At NE corner,
-         * X and Y input should both be sqrt of 0.5.  That would make total
-         * velocity 1.
+         * X and Y input to emulate moving along arc of circle.
+         * 
+         * Set Z to be radius of circle.
+         * 
+         * cos(omega) = X / Z
+         * X = cos(omega) * Z
+         * 
+         * Since our max velocity is 1, we can set Z = 1.  So for any angle
+         * that our joystick is at, the maximum X is cos(omega) to keep our
+         * velocity at or below 1.
+         * 
          */
 
-        double c = a / (Math.sqrt(a * a + (b * b)) + Constants.EPSILON);
-        c = (c + (a * 2)) / 3.0;
-        return c;
+        // Find angle of joystick position
+        double angle = new Rotation2d(a, b).getRadians();
+
+        // Max velocity is 1.  So we can use cos(omega) as our max
+        // velocity in this direction.
+        if (Math.abs(a) > Math.abs(Math.cos(angle)) ) {
+            // Speed limit is cos(angle)
+            return Math.cos(angle);
+        } else {
+            // We're below speed limit
+            return a;
+        }
+
+        // This was the old way
+        // double c = a / (Math.sqrt(a * a + (b * b)) + Constants.EPSILON);
+        // c = (c + (a * 2)) / 3.0;
+        // return c;
     }
 
-    public double getRotationX() {
-        Joystick rotation = getJoystick(ButtonMap.Axes.Rotation.Controller);
+    /** Create translation, rotation and debug joysticks */
+    private void createJoysticks() {
 
-        double speed = getSpeedFromAxis(rotation, ButtonMap.Axes.Rotation.Twist);
-        speed = applyDeadband(speed, 0.2);
+        // Create translation joystick
+        if (JoystickMap.JOYSTICK_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Joystick(JoystickMap.JOYSTICK_TRANSLATION_USB);
+            _xAxis = JoystickMap.JOYSTICK_TRANSLATION.X_AXIS;
+            _xSign = JoystickMap.JOYSTICK_TRANSLATION.X_SIGN;
+            _yAxis = JoystickMap.JOYSTICK_TRANSLATION.Y_AXIS;
+            _ySign = JoystickMap.JOYSTICK_TRANSLATION.Y_SIGN;
+            _translationButtons = JoystickMap.JOYSTICK_TRANSLATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_TRANSLATION_USB > JoystickMap.NOT_IN_USE) {
+            _translation = new Gamepad(JoystickMap.GAMEPAD_TRANSLATION_USB);
+            _xAxis = JoystickMap.GAMEPAD_TRANSLATION.X_AXIS;
+            _xSign = JoystickMap.GAMEPAD_TRANSLATION.X_SIGN;
+            _yAxis = JoystickMap.GAMEPAD_TRANSLATION.Y_AXIS;
+            _ySign = JoystickMap.GAMEPAD_TRANSLATION.Y_SIGN;
+            _translationButtons = JoystickMap.GAMEPAD_TRANSLATION.BUTTONS;
+        }
 
-        return speed;
+        // Create rotation joystick
+        if (JoystickMap.JOYSTICK_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Joystick(JoystickMap.JOYSTICK_ROTATION_USB);
+            _twistAxis = JoystickMap.JOYSTICK_ROTATION.TWIST_AXIS;
+            _twistSign = JoystickMap.JOYSTICK_ROTATION.TWIST_SIGN;
+            _rotationButtons = JoystickMap.JOYSTICK_ROTATION.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_ROTATION_USB > JoystickMap.NOT_IN_USE) {
+            _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
+            _twistAxis = JoystickMap.GAMEPAD_ROTATION.TWIST_AXIS;
+            _twistSign = JoystickMap.GAMEPAD_ROTATION.TWIST_SIGN;
+            _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
+        }
+
+        // Create debug joystick
+        if (JoystickMap.JOYSTICK_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Joystick(JoystickMap.JOYSTICK_DEBUG_USB);
+            _debugButtons = JoystickMap.JOYSTICK_DEBUG.BUTTONS;
+        } else if (JoystickMap.GAMEPAD_DEBUG_USB > JoystickMap.NOT_IN_USE) {
+            _debug = new Gamepad(JoystickMap.GAMEPAD_DEBUG_USB);
+            _debugButtons = JoystickMap.GAMEPAD_DEBUG.BUTTONS;
+        }
+
     }
 
-    protected double getSpeedFromAxis(Joystick joystick, int axisNumber) {
-        return joystick.getRawAxis(axisNumber);
+    /** Create translation, rotation and debug joystick buttons */
+    private void createButtons() {
+        
+        // Create translation joystick buttons
+        for (int i = 0; i < _translationButtons.length; i++) {
+            addJoystickButton(_translation, i+1, _translationButtons[i]);
+        }
+
+        // Create rotation joystick buttons
+        for (int i = 0; i < _rotationButtons.length; i++) {
+            addJoystickButton(_rotation, i+1, _rotationButtons[i]);
+        }
+
+        // Create debug joystick buttons
+        for (int i = 0; i < _debugButtons.length; i++) {
+            addJoystickButton(_debug, i+1, _debugButtons[i]);
+        }
+
     }
 
     @Override
     public void updateDashboard() {}
-
-    /**
-     * Instantiates a Joystick on the specified port and adds it to the _joysticks array.
-     * 
-     * @param port Pass -1 to skip this joystick.
-     */
-    private void addJoystick(int port) {
-        if (port < 0) { return; }
-        _joysticks[port] = new Joystick(port);
-    }
-
-    /**
-     * Instantiates Gamepad on the specified port and adds it to the _joysticks array.
-     * 
-     * @param port Pass -1 to skip this gamepad.
-     */
-    private void addGamepad(int port) {
-        if (port < 0) { return; }
-        _joysticks[port] = new Gamepad(port);
-    }
-
-    /**
-     * Instantiates Button on the specific controller and adds it to the _buttons array.
-     * first "number of buttons" is for the first controller, seconds "number of buttons" is for the 2nd controller, etc.
-     * @param button
-     */
-    private JoystickButton addJoystickButton(int controller, int buttonNumber) {
-        Joystick joystick = getJoystick(controller);
-        return new JoystickButton(joystick, buttonNumber);
-    }
-    /**
-     * Returns the joystick assigned to a specific port.  Returns null is no joystick assigned or port is -1.
-     * @param port
-     * @return
-     */
-    private Joystick getJoystick(int port) {
-        if (port < 0) { return null; }
-        return _joysticks[port];
-    }
-
-    /*
-    private AxisButton addAxisButton(int port, int buttonNumber, double threshold) {
-        Joystick joystick = getJoystick(port);
-        return new AxisButton(joystick, buttonNumber, threshold);
-    }
-    */
 
 }

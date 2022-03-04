@@ -3,23 +3,22 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-import org.frc5687.rapidreact.util.AutoChooser;
+import org.frc5687.rapidreact.config.Constants;
+
+// import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
+import org.frc5687.rapidreact.subsystems.Catapult;
 
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
@@ -41,18 +40,18 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
 
     private OI _oi;
-    private AutoChooser _autoChooser;
+    // private AutoChooser _autoChooser;
     private AHRS _imu;
 
-    private DriveTrain _driveTrain;
-    private Indexer _indexer;
-    private Intake _intake;
+    public Catapult catapult;
+    public DriveTrain driveTrain;
+    private Indexer indexer;
+    public Intake intake;
 
-    /**
-     * Create RobotContainer 
+    /** Create RobotContainer 
      * 
-     * @param robot
-     * @param identityMode
+     * @param robot this robot
+     * @param identityMode TODO: document identityMode
      */
     public RobotContainer(Robot robot, IdentityMode identityMode) {
         super(identityMode);
@@ -61,26 +60,25 @@ public class RobotContainer extends OutliersContainer {
 
     // Initialization methods
 
+    /** Run once when robot code starts. */
     public void init() {
         info("Running RobotContainer.init()");
 
         _oi = new OI();
-        _autoChooser = new AutoChooser();
-
-        // 
+        // _autoChooser = new AutoChooser();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
-        _driveTrain = new DriveTrain(this, _oi, _imu);
-        _indexer = new Indexer(this);
-        _intake = new Intake(this);
 
-        _oi.initializeButtons(_driveTrain, _indexer, _intake);
+        // Create subsystems
+        driveTrain = new DriveTrain(this, _oi, _imu);
+        catapult = new Catapult(this);
+        indexer = new Indexer(this);
+        intake = new Intake(this);
 
-        // DriveTrain's default command is DriveOI
-        Pose2d spot3 = new Pose2d(6.9, 2.5, new Rotation2d());
-        
-        _driveTrain.resetOdometry(spot3);
+        _oi.initializeButtons(this);
 
-        setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
+        // What command to run if nothing else is scheduled for driveTrain
+        setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
+
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
@@ -100,8 +98,8 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.autonomousInit()");
 
         // Set state of subsystems
-        _indexer.setState(Indexer.IndexerState.DEPLOYED);
-        _intake.setState(Intake.IntakeState.STOWED);
+        indexer.setState(Indexer.IndexerState.DEPLOYED);
+        intake.setState(Intake.IntakeState.STOWED);
     }
 
     @Override
@@ -121,18 +119,19 @@ public class RobotContainer extends OutliersContainer {
 
     // Helper methods
 
-    /** 
-     * Helper function to wrap DriveTrain.controllerPeriodic.  
-     * _driveTrain can be null during initial development
+    /** Wrap DriveTrain.controllerPeriodic.
+     * 
+     * <p> _driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
-        if (_driveTrain != null) {
-            _driveTrain.controllerPeriodic();
+        if (driveTrain != null) {
+            driveTrain.controllerPeriodic();
         }
     }
 
-    /**
-     * Helper function to wrap CommandScheduler.setDefaultCommand.
+    /** Wrap CommandScheduler.setDefaultCommand.
+     * 
+     * <p> Allow nulls during initial development.
      * 
      * @param subSystem can be null
      * @param command can be null
@@ -145,8 +144,7 @@ public class RobotContainer extends OutliersContainer {
         s.setDefaultCommand(subSystem, command);
     }
 
-    /**
-     * Return sequence of commands to run during auto
+    /** Return sequence of commands to run during auto
      * 
      * @return SequentialCommandGroup
     */
@@ -250,7 +248,7 @@ public class RobotContainer extends OutliersContainer {
         //     _driveToB
         // );
 
-    }
+        return _auto;
 
     /**
      * Return a drive to destination command

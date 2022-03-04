@@ -1,3 +1,7 @@
+# ROADMAP
+
+The team had a hard time understanding and meeting deadlines.  Something to work on for next season is project management skills.
+
 This season we will have a pizza bot to program while the team is building the competition bot.  We're asking the mechies to do a few things to the pizza bot:
 
 - Fasten everything down so we can drive it fast without breaking it.

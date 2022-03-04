@@ -2,26 +2,43 @@
 package org.frc5687.rapidreact.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import org.frc5687.rapidreact.Constants;
-import org.frc5687.rapidreact.RobotMap;
+
+import org.frc5687.rapidreact.config.Constants;
+import org.frc5687.rapidreact.config.RobotMap;
+
 import org.frc5687.rapidreact.OI;
+
 import org.frc5687.rapidreact.util.OutliersContainer;
 
-/**
- * DriveTrain moves the robot using four DiffSwerveModule instances.
+/** DriveTrain moves the robot using four DiffSwerveModule instances.
+ * 
+ * <p> NOTE: this class uses WPI field orientation for movement
+ * and assumes calling classes have sorted out X (forward and backward),
+ * Y (left and right) and OMEGA (rotation).
+ * 
+ * <ul>
+ *  <li> +x moves forward (EAST) on the field
+ *  <li> +y moves left (NORTH) on the field
+ *  <li> +omega turns left on the field
+ * </ul>
  */
 public class DriveTrain extends OutliersSubsystem {
 
@@ -31,6 +48,12 @@ public class DriveTrain extends OutliersSubsystem {
     public static final int SOUTH_WEST = 1;
     public static final int SOUTH_EAST = 2;
     public static final int NORTH_EAST = 3;
+
+    // location of swerve modules on chassis
+    private Translation2d NW_MODULE;
+    private Translation2d SW_MODULE;
+    private Translation2d SE_MODULE;
+    private Translation2d NE_MODULE;
 
     private DiffSwerveModule _northWest;
     private DiffSwerveModule _southWest;
@@ -48,8 +71,7 @@ public class DriveTrain extends OutliersSubsystem {
     private HolonomicDriveController _controller;
     private ProfiledPIDController _angleController;
 
-    /**
-     * Create a DriveTrain
+    /** Create a DriveTrain subsystem
      * 
      * @param container
      * @param oi
@@ -57,13 +79,16 @@ public class DriveTrain extends OutliersSubsystem {
      */
     public DriveTrain(OutliersContainer container, OI oi, AHRS imu) {
         super(container);
+
+        locateModules(); // figure out where swerve modules are on chassis
+
         try {
             _oi = oi;
             _imu = imu;
 
             _northWest =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.NORTH_WEST,
+                            NW_MODULE,
                             RobotMap.CAN.TALONFX.NORTH_WEST_OUTER,
                             RobotMap.CAN.TALONFX.NORTH_WEST_INNER,
                             RobotMap.DIO.NORTH_WEST,
@@ -71,7 +96,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.NORTH_WEST_ENCODER_INVERTED);
             _southWest =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.SOUTH_WEST,
+                            SW_MODULE,
                             RobotMap.CAN.TALONFX.SOUTH_WEST_OUTER,
                             RobotMap.CAN.TALONFX.SOUTH_WEST_INNER,
                             RobotMap.DIO.SOUTH_WEST,
@@ -79,7 +104,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.SOUTH_WEST_ENCODER_INVERTED);
             _southEast =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.SOUTH_EAST,
+                            SE_MODULE,
                             RobotMap.CAN.TALONFX.SOUTH_EAST_INNER,
                             RobotMap.CAN.TALONFX.SOUTH_EAST_OUTER,
                             RobotMap.DIO.SOUTH_EAST,
@@ -87,7 +112,7 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.SOUTH_EAST_ENCODER_INVERTED);
             _northEast =
                     new DiffSwerveModule(
-                            Constants.DriveTrain.NORTH_EAST,
+                            NE_MODULE,
                             RobotMap.CAN.TALONFX.NORTH_EAST_INNER,
                             RobotMap.CAN.TALONFX.NORHT_EAST_OUTER,
                             RobotMap.DIO.NORTH_EAST,
@@ -102,7 +127,7 @@ public class DriveTrain extends OutliersSubsystem {
                             _northEast.getModulePosition()
                         );
             _odometry = new SwerveDriveOdometry(_kinematics, getHeading());
-
+            // TODO: rewrite HolonomicDriveController to use Waypoints (Pose, Vector)
             _controller =
                     new HolonomicDriveController(
                             new PIDController(Constants.DriveTrain.kP, Constants.DriveTrain.kI, Constants.DriveTrain.kD),
@@ -121,9 +146,85 @@ public class DriveTrain extends OutliersSubsystem {
                             Constants.DriveTrain.ANGLE_kD,
                             new TrapezoidProfile.Constraints(
                                     Constants.DriveTrain.PROFILE_CONSTRAINT_VEL, Constants.DriveTrain.PROFILE_CONSTRAINT_ACCEL));
-            _angleController.enableContinuousInput(-Math.PI / 2.0, Math.PI / 2.0);
+            _angleController.enableContinuousInput(-Math.PI, Math.PI); // -PI is right-hand turn around; PI is left-hand turn around
         } catch (Exception e) {
             error(e.getMessage());
+        }
+    }
+
+    /** Set given module to a given state */
+    public void setModuleState(DiffSwerveModule module, SwerveModuleState state) {
+        module.setIdealState(state);
+    }
+
+    /** Set all modules to states passed in as an array */
+    public void setAllModuleStates(SwerveModuleState[] states) {
+        setModuleState(_northWest, states[NORTH_WEST]);
+        setModuleState(_southWest, states[SOUTH_WEST]);
+        setModuleState(_southEast, states[SOUTH_EAST]);
+        setModuleState(_northEast, states[NORTH_EAST]);
+    }
+
+    /** Set module speeds and angles based on desired vx, vy, vomega
+     * 
+     * <ul>
+     *  <li> Translate "forward" is +x, "back" is -x.
+     *  <li> Translate "left" is +y, "right" is -y.
+     *  <li> Rotate "left" is +omega, "right" is -omega.
+     * </ul>
+     * 
+     * <p> Field reference: when standing behind alliance wall facing other alliance wall,
+     * forward is away from our alliance wall toward other alliance wall.
+     * 
+     * <p> Robot reference: forward is robot NORTH.
+     *
+     * @param vx desired velocity in x direction (forward and back)
+     * @param vy desired velocity in y direction (sideways)
+     * @param vomega desired angular velocity (rotating speed)
+     * @param fieldRelative motion relative to field (true) or robot (false)
+     */
+    public void drive(double vx, double vy, double vomega, boolean fieldRelative) {
+
+        // TODO: fix this method to allow field relative or robot relative motion control
+
+        if (
+            (Math.abs(vx) < Constants.DriveTrain.DEADBAND_TRANSLATION) &&
+            (Math.abs(vy) < Constants.DriveTrain.DEADBAND_TRANSLATION) &&
+            (Math.abs(vomega) < Constants.DriveTrain.DEADBAND_ROTATION)
+        ) {
+            // stop moving
+            setModuleState(_northWest,
+                    new SwerveModuleState(0, new Rotation2d(_northWest.getModuleAngle())));
+            setModuleState(_southWest,
+                    new SwerveModuleState(0, new Rotation2d(_southWest.getModuleAngle())));
+            setModuleState(_southEast,
+                    new SwerveModuleState(0, new Rotation2d(_southEast.getModuleAngle())));
+            setModuleState(_northEast,
+                    new SwerveModuleState(0, new Rotation2d(_northEast.getModuleAngle())));
+            _PIDAngle = getHeading().getRadians();
+            _angleController.reset(_PIDAngle);
+        } else if (Math.abs(vomega) > 0) {
+            SwerveModuleState[] swerveModuleStates =
+                    _kinematics.toSwerveModuleStates(
+                            fieldRelative
+                                    ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                                            vx, vy, vomega, getHeading())
+                                    : new ChassisSpeeds(vx, vy, vomega));
+            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
+            setAllModuleStates(swerveModuleStates);
+            _PIDAngle = getHeading().getRadians();
+            _angleController.reset(_PIDAngle);
+        } else {
+            SwerveModuleState[] swerveModuleStates =
+                    _kinematics.toSwerveModuleStates(
+                            ChassisSpeeds.fromFieldRelativeSpeeds(
+                                    vx,
+                                    vy,
+                                    _angleController.calculate(
+                                            getHeading().getRadians(), _PIDAngle),
+                                    new Rotation2d(_PIDAngle)));
+            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
+            setAllModuleStates(swerveModuleStates);
         }
     }
 
@@ -146,14 +247,16 @@ public class DriveTrain extends OutliersSubsystem {
             );
     }
 
+    /** Turn to a given heading */
     public void snap(Rotation2d theta){
         poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
     }
 
-    /**
-     * Set speed and direction of each swerve module to reach the desired pose.
+    /** Control each swerve module to reach the desired pose and velocity
      * 
-     * @param pose xPos in meters, yPos in meters, theta in radians
+     * //TODO: fix adjustedSpeeds to use Waypoints (Pose, Vector)
+     * 
+     * @param pose xPos in meters, yPos in meters, omega in radians
      * @param heading omega in radians
      * @param vel in m/s
      */
@@ -161,16 +264,14 @@ public class DriveTrain extends OutliersSubsystem {
         ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, pose.getRotation());
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DriveTrain.MAX_MPS);
-        setNorthWestModuleState(moduleStates[NORTH_WEST]);
-        setSouthWestModuleState(moduleStates[SOUTH_WEST]);
-        setSouthEastModuleState(moduleStates[SOUTH_EAST]);
-        setNorthEastModuleState(moduleStates[NORTH_EAST]);
+        setAllModuleStates(moduleStates);
     }
 
-    /**
-     * Check if robot is at theta rotation
+    /** Check if robot is at theta rotation
      * 
-     * TODO: verify that rotation is CCW and yaw is CW
+     * Rotation is CCW +.
+     * 
+     * TODO: // verify that yaw is CW +
      * 
      * @param theta
      * @return true if rotation equals theta
@@ -181,38 +282,36 @@ public class DriveTrain extends OutliersSubsystem {
         return (rotation == theta);
     }
 
-    public boolean isAtPose(Pose2d pose) {
-        double diffX = getOdometryPose().getX() - pose.getX();
-        double diffY = getOdometryPose().getY() - pose.getY();
-        return (Math.abs(diffX) <= 0.01) && (Math.abs(diffY) < 0.01);
+    /** Check if robot is at pose
+     * 
+     * <p> NOTE: set TOLERANCE in Constants
+     * 
+     * @param poseRef reference pose
+     * @return true if current pose within tolerance of reference pose
+     */
+    public boolean isAtPose(Pose2d poseRef) {
+        // Pose error
+        Pose2d posError = poseRef.relativeTo(getOdometryPose());
+        Rotation2d rotError = poseRef.getRotation().minus(Rotation2d.fromDegrees(-getYaw()));
+        // Pose tolerance
+        double xTol = Constants.DriveTrain.TOLERANCE.getX();
+        double yTol = Constants.DriveTrain.TOLERANCE.getY();
+        double omegaTol = Constants.DriveTrain.TOLERANCE.getRotation().getRadians();
+        // Is error below tolerance?
+        return
+            (Math.abs(posError.getX()) < xTol) &&
+            (Math.abs(posError.getY()) < yTol) &&
+            (Math.abs(rotError.getRadians()) < omegaTol);
     }
 
-    public void setNorthEastModuleState(SwerveModuleState state) {
-        _northEast.setIdealState(state);
-    }
-
-    public void setNorthWestModuleState(SwerveModuleState state) {
-        _northWest.setIdealState(state);
-    }
-
-    public void setSouthEastModuleState(SwerveModuleState state) {
-        _southEast.setIdealState(state);
-    }
-
-    public void setSouthWestModuleState(SwerveModuleState state) {
-        _southWest.setIdealState(state);
-    }
-
+    /** Get robot heading in degrees (CW+) as reported by IMU. */
     public double getYaw() {
         return _imu.getYaw();
     }
 
-    /**
-     * Get heading of robot according to IMU
+    /** Get heading of robot as a Rotation2d
      * 
-     * Note: yaw is CW, but heading is CCW
-     * 
-     * TODO: confirm that CW and CCW is documented correctly for getHeading()
+     * <p> Note: yaw is CW (right +), but heading is CCW (left +)
      * 
      * @return heading as a Rotation2d
      */
@@ -220,95 +319,158 @@ public class DriveTrain extends OutliersSubsystem {
         return Rotation2d.fromDegrees(-getYaw());
     }
 
+    /** Reset Gyro Z axis to 0.
+     * 
+     *  <p> Wherever the robot is heading becomes robot NORTH.
+     */
     public void resetYaw() {
         _imu.reset();
     }
 
-    /**
-     * Method to set correct module speeds and angle based on wanted vx, vy, omega
-     *
-     * @param vx velocity in x direction
-     * @param vy velocity in y direction
-     * @param omega angular velocity (rotating speed)
-     * @param fieldRelative forward is always forward no matter orientation of robot.
-     */
-    public void drive(double vx, double vy, double omega, boolean fieldRelative) {
-        if (Math.abs(vx) < Constants.DriveTrain.DEADBAND && Math.abs(vy) < Constants.DriveTrain.DEADBAND && Math.abs(omega) < Constants.DriveTrain.DEADBAND) {
-            setNorthWestModuleState(
-                    new SwerveModuleState(0, new Rotation2d(_northWest.getModuleAngle())));
-            setSouthWestModuleState(
-                    new SwerveModuleState(0, new Rotation2d(_southWest.getModuleAngle())));
-            setSouthEastModuleState(
-                    new SwerveModuleState(0, new Rotation2d(_southEast.getModuleAngle())));
-            setNorthEastModuleState(
-                    new SwerveModuleState(0, new Rotation2d(_northEast.getModuleAngle())));
-            _PIDAngle = getHeading().getRadians();
-            _angleController.reset(_PIDAngle);
-        } else if (Math.abs(omega) > 0) {
-            SwerveModuleState[] swerveModuleStates =
-                    _kinematics.toSwerveModuleStates(
-                            fieldRelative
-                                    ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                            vx, vy, omega, getHeading())
-                                    : new ChassisSpeeds(vx, vy, omega));
-            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-            setNorthWestModuleState(swerveModuleStates[NORTH_WEST]);
-            setSouthWestModuleState(swerveModuleStates[SOUTH_WEST]);
-            setSouthEastModuleState(swerveModuleStates[SOUTH_EAST]);
-            setNorthEastModuleState(swerveModuleStates[NORTH_EAST]);
-            _PIDAngle = getHeading().getRadians();
-            _angleController.reset(_PIDAngle);
-        } else {
-            SwerveModuleState[] swerveModuleStates =
-                    _kinematics.toSwerveModuleStates(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    vx,
-                                    vy,
-                                    _angleController.calculate(
-                                            getHeading().getRadians(), _PIDAngle),
-                                    new Rotation2d(_PIDAngle)));
-            SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-            setNorthWestModuleState(swerveModuleStates[NORTH_WEST]);
-            setSouthWestModuleState(swerveModuleStates[SOUTH_WEST]);
-            setSouthEastModuleState(swerveModuleStates[SOUTH_EAST]);
-            setNorthEastModuleState(swerveModuleStates[NORTH_EAST]);
-        }
-    }
-
+    /** Get a swerve drive kinematics constraint that keeps robot below max speed */
     public SwerveDriveKinematicsConstraint getKinematicConstraint() {
         return new SwerveDriveKinematicsConstraint(_kinematics, Constants.DriveTrain.MAX_MPS);
     }
 
+    /** Get a trajectory constraint that keeps robot below max speed */
     public TrajectoryConfig getConfig() {
         return new TrajectoryConfig(Constants.DriveTrain.MAX_MPS, Constants.DriveTrain.MAX_MPSS)
                 .setKinematics(_kinematics)
                 .addConstraint(getKinematicConstraint());
     }
 
+    /** Follow trajectory */
     public void trajectoryFollower(Trajectory.State goal, Rotation2d heading) {
         ChassisSpeeds adjustedSpeeds =
                 _controller.calculate(_odometry.getPoseMeters(), goal, heading);
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DifferentialSwerveModule.MAX_MODULE_SPEED_MPS);
-        setNorthWestModuleState(moduleStates[NORTH_WEST]);
-        setSouthWestModuleState(moduleStates[SOUTH_WEST]);
-        setSouthEastModuleState(moduleStates[SOUTH_EAST]);
-        setNorthEastModuleState(moduleStates[NORTH_EAST]);
+        setAllModuleStates(moduleStates);
     }
 
+    /** Get odometry's idea of robot pose */
     public Pose2d getOdometryPose() {
         return _odometry.getPoseMeters();
     }
 
+    /** Tell odometry the robot pose */
     public void resetOdometry(Pose2d position) {
         _odometry.resetPosition(position, getHeading());
     }
 
+    /** Set all modules to _running = true */
     public void startModules() {
         _northWest.start();
         _southWest.start();
         _southEast.start();
         _northEast.start();
+    }
+
+    // Helper methods
+
+    /** Calculate position vectors for the swerve module kinematics */
+    private void locateModules() {
+
+        // Location of each swerve module from center of robot
+        // NB: signs depend on orientation of robot when IMU inits
+
+        /** Figure out signs of compass headings
+         * 
+         * NOTE: WPI kinematics classes assume robot NORTH = field EAST
+         * 
+         * If we put robot on field with robot North facing field North,
+         * Bob's your uncle.
+         * 
+         * But put robot on field with robot North facing field East,
+         * this is what happens.
+         * 
+         * (X, Y):
+         *   X is N or S, N is +
+         *   Y is W or E, W is +
+         * 
+         *   NW (+,+)  NE (+,-)
+         * 
+         *   SW (-,+)  SE (-,-)
+         * 
+         */
+
+        int nw_x;
+        int sw_x;
+        int se_x;
+        int ne_x;
+        int nw_y;
+        int sw_y;
+        int se_y;
+        int ne_y;
+
+        switch(Constants.DriveTrain.ROBOT_FACING) {
+            case NORTH:
+                nw_x = -1;
+                sw_x = -1;
+                se_x = 1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = -1;
+                se_y = -1;
+                ne_y = 1;
+                break;
+            case EAST:
+                nw_x = 1;
+                sw_x = -1;
+                se_x = -1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = 1;
+                se_y = -1;
+                ne_y = -1;
+                break;
+            case SOUTH:
+                nw_x = 1;
+                sw_x = 1;
+                se_x = -1;
+                ne_x = -1;
+                nw_y = -1;
+                sw_y = 1;
+                se_y = 1;
+                ne_y = -1;
+                break;
+            case WEST:
+                nw_x = -1;
+                sw_x = 1;
+                se_x = 1;
+                ne_x = -1;
+                nw_y = -1;
+                sw_y = -1;
+                se_y = 1;
+                ne_y = 1;
+                break;
+            default: // robot North = field East
+                nw_x = 1;
+                sw_x = -1;
+                se_x = -1;
+                ne_x = 1;
+                nw_y = 1;
+                sw_y = 1;
+                se_y = -1;
+                ne_y = -1;
+        }
+
+        NW_MODULE =
+            new Translation2d(
+                nw_x * Constants.DriveTrain.SWERVE_NS_POS,
+                nw_y * Constants.DriveTrain.SWERVE_WE_POS );
+        SW_MODULE =
+            new Translation2d(
+                sw_x * Constants.DriveTrain.SWERVE_NS_POS,
+                sw_y * Constants.DriveTrain.SWERVE_WE_POS );
+        SE_MODULE =
+            new Translation2d(
+                se_x * Constants.DriveTrain.SWERVE_NS_POS,
+                se_y * Constants.DriveTrain.SWERVE_WE_POS );
+        NE_MODULE =
+            new Translation2d(
+                ne_x * Constants.DriveTrain.SWERVE_NS_POS,
+                ne_y * Constants.DriveTrain.SWERVE_WE_POS );
     }
 
     @Override

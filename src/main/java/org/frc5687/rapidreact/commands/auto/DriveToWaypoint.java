@@ -7,8 +7,11 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/** Drive in autonomous mode (i.e., no OI control) to a field-relative pose. */
-public class DriveToPose extends OutliersCommand {
+/** Drive in autonomous mode (i.e., no OI control) to a field-relative waypoint.
+ * 
+ * <p> A waypoint is a pose and a velocity.
+ */
+public class DriveToWaypoint extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
 
@@ -16,7 +19,9 @@ public class DriveToPose extends OutliersCommand {
     private Rotation2d _heading;
     private Double _velocity;
 
-    /** Create DriveToPose command
+    /** Create DriveToWaypoint command
+     * 
+     * TODO: Use Pose and Vector (heading, velocity)
      * 
      * @param driveTrain pass in from RobotContainer
      * @param xPos meters
@@ -25,7 +30,7 @@ public class DriveToPose extends OutliersCommand {
      * @param omega fraction of radians
      * @param velocity m/s
      */
-    public DriveToPose(
+    public DriveToWaypoint(
         DriveTrain driveTrain,
         double xPos,
         double yPos,
@@ -59,12 +64,14 @@ public class DriveToPose extends OutliersCommand {
          * Positive Y is to your left when standing behind your alliance wall.
          * Robot's angle is considered 0 when it is facing directly away
          * from your alliance wall.
-         * Turning left (CCW) is positive.
+         * CCW is positive.
          * 
          *             North = +X
          *  West = +Y              East = -Y
          *             South = -X
          */
+
+         // TODO: fix this to use Pose and Vector for destination
 
         _driveTrain.poseFollower(_destination, _heading, _velocity);
     }

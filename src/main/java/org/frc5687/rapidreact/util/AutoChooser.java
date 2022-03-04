@@ -1,7 +1,6 @@
 package org.frc5687.rapidreact.util;
 
-import org.frc5687.rapidreact.RobotMap;
-// import org.frc5687.rapidreact.util.RotarySwitch;
+import org.frc5687.rapidreact.config.RobotMap;
 
 /** Created by Ben Bernard on 2/2/2018. */
 public class AutoChooser extends OutliersProxy {
