@@ -8,86 +8,55 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
+import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.util.*;
 
 /**
- * See IterativeRobotBase for the base class and methods documentation.
+ * The VM is configured to automatically run Robot, and to call the methods corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, update the build.gradle file.
  * 
- * Note about overriding methods and annotations (e.g., @Override):
+ * <p>Responsible for the main control flow of the robot code.
  * 
- * An instance method in a subclass with the same signature (name, plus the number and the type
- * of its parameters) and return type as an instance method in the superclass overrides the
- * superclass's method.
+ * <p>Why separate Robot and RobotContainer classes?
+ * See https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html
  * 
- * The ability of a subclass to override a method allows a class to inherit from a superclass whose
- * behavior is"close enough" and then to modify behavior as needed. The overriding method has the
- * same name, number and type of parameters, and return type as the method that it overrides.
- * An overriding method can also return a subtype of the type returned by the overridden method.
- * 
- * When overriding a method, you might want to use the @Override annotation that instructs the
- * compiler that you intend to override a method in the superclass. If, for some reason, the compiler
- * detects that the method does not exist in one of the superclasses, then it will generate an error.
- * 
- * Annotations, a form of metadata, provide data about a program that is not part of the program
- * itself.  Annotations have no direct effect on the operation of the code they annotate.
- * 
- * Annotations have a number of uses, among them:
- *  - Information for the compiler — Annotations can be used by the compiler to detect errors
- *    or suppress warnings.
- *  - Compile-time and deployment-time processing — Software tools can process annotation information
- *    to generate code, XML files, and so forth.
- *  - Runtime processing — Some annotations are available to be examined at runtime.
- * 
- * Note: unused variables in the class and methods below have been commented out
- * 
- */
-
-/**
- * Robot is responsible for control flow.
- * 
- * <p>Command-based is a declarative paradigm designed to minimize the need to pay attention
- * to explicit program control flow, so the Robot class of a command-based project should
- * be mostly empty.
- * 
- * <p>The VM is configured to automatically run this class, and to call the methods corresponding to
- * each mode, as described in the IterativeRobotBase documentation. If you change the name of this
- * class or the package after creating this project, you must also update the build.gradle file in
- * the project.
+ * <p>Robot can be in four modes: disabled, autonomous, teleop, or test.
  */
 public class Robot extends OutliersRobot {
 
-    // TODO: identityMode should be set in Constants file
-    public static OutliersContainer.IdentityMode _identityMode =
-            OutliersContainer.IdentityMode.competition;
-    // TODO: log levels should be set in Constants file
-    private RioLogger.LogLevel _dsLogLevel = RioLogger.LogLevel.warn;
-    private RioLogger.LogLevel _fileLogLevel = RioLogger.LogLevel.warn;
+    private String _name = Constants.ROBOT_NAME;
+    public static OutliersContainer.IdentityMode _identityMode = Constants.IDENTITY;
+    private RioLogger.LogLevel _dsLogLevel = Constants.DS_LOG_LVL;
+    private RioLogger.LogLevel _fileLogLevel = Constants.USB_LOG_LVL;
+
     private int _updateTick = 0;
-    private String _name;
+
     private RobotContainer _robotContainer;
+
     // private boolean _fmsConnected;
+
     private Command _autoCommand;
-    // private Timer _timer;
-    // private double _prevTime;
-    // private double _time;
 
-    /* ---- Init methods called when a mode is entered --- */
+    // Initialization methods
 
-    /**
-     * Robot-wide initialization code
-     *
-     * <p>Called when the robot is first powered on. It will be called exactly one time.
-     *
-     * <p>Warning: the Driver Station "Robot Code" light and FMS "Robot Ready" indicators will be off
-     * until RobotInit() exits. Code in RobotInit() that waits for enable will cause the robot to
-     * never indicate that the code is ready, causing the robot to be bypassed in a match.
+    /** Run once when robot code starts.
+     * 
+     * <p>Set up logging and whatever else needs to happen only once when the robot code starts.
+     * 
+     * <p>NB: Do NOT get autonomous command from RobotContainer in this method.  Do that in
+     * autonomousInit().  That allows us to have a rotary selector dial and choose different
+     * auto routines to run.
      */
     @Override
     public void robotInit() {
+        info("Running Robot.robotInit()");
+
         loadConfigFromUSB();
         RioLogger.getInstance().init(_fileLogLevel, _dsLogLevel);
         LiveWindow.disableAllTelemetry();
-        // DriverStation.silenceJoystickConnectionWarning(true);
+        DriverStation.silenceJoystickConnectionWarning(true);
 
         metric("Identity", _identityMode.toString());
         metric("Commit", Version.REVISION);
@@ -97,23 +66,17 @@ public class Robot extends OutliersRobot {
         info("Running commit " + Version.REVISION + " of branch " + Version.BRANCH);
 
         _robotContainer = new RobotContainer(this, _identityMode);
-        // _timer = new Timer();
-        _robotContainer.init(); // allocate subsystems and set default commands
+        _robotContainer.init();
 
-        // Periodically flushes metrics
+        // Periodically flush metrics
         // TODO: configure enable/disable via USB config file
-        // _time = _timer.get();
-        // TODO: fix resource leak on next line (Closeable value never closed)
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
-    /**
-    * Initialization code for disabled mode
-    *
-    * <p>Called each time the robot enters disabled mode.
-     */
     @Override
     public void disabledInit() {
+        info("Running Robot.disabledInit()");
+
         // _limelight.disableLEDs();
         RioLogger.getInstance().forceSync();
         RioLogger.getInstance().close();
@@ -121,130 +84,97 @@ public class Robot extends OutliersRobot {
         // MetricTracker.flushAll();
     }
 
-    /**
-     * Initialization code for autonomous mode
-     *
-     * <p>Called each time the robot enters autonomous mode.
+    /** Run once when robot enters autonomous mode
+     * 
+     * <p>Schedule the auto command.
      */
     @Override
     public void autonomousInit() {
-        // _fmsConnected = DriverStation.isFMSAttached();
+        info("Running Robot.autonomousInit()");
+
+        // Get auto command when we enter autonomous mode.
+        // Setting it here rather than in robotInit() allows us to turn on our robot,
+        // then use a manual rotary selector to choose which autocommand to run.
         _autoCommand = _robotContainer.getAutonomousCommand();
+
+        // _fmsConnected = DriverStation.isFMSAttached();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();
         }
     }
 
-    /** 
-     * Initialization code for teleop mode
-     *
-     * <p>Called each time the robot enters teleop mode.
-     * 
-     * <p>It is generally good practice to have the teleopInit() method cancel
-     * any still-running autonomous commands.
-     */
     public void teleopInit() {
+        info("Running Robot.teleopInit()");
+
+        // Good practice to cancel the autonomous command that may still be running.
+        // If you want the autonomous to continue until interrupted by another command,
+        // comment the following out.
+        if (_autoCommand != null) {
+            _autoCommand.cancel();
+        }
+
         // _fmsConnected = DriverStation.isFMSAttached();
-        // Stop autonomous when teleop starts running.
-        // If you want the autonomous to continue until
-        // interrupted by another command, remove
-        // this line or comment it out.
-        if (_autoCommand != null) { _autoCommand.cancel(); }
         _robotContainer.teleopInit();
     }
 
-    /* ----------- Periodic code called on an interval --------------- */
+    // Periodic methods
 
-    /** Our own periodic method
-     * 
-     * <p>This is currently being called all the time by robotPeriodic().
-     * 
-     * <p>TODO: why create an ourPeriodic() method?
-     * TODO: why does ourPeriodic() call update()?
-     * 
-     */
-    private void ourPeriodic() {
-
-        // Example of starting a new row of metrics for all instrumented objects.
-        // MetricTracker.newMetricRowAll();
-        MetricTracker.newMetricRowAll();
-        _robotContainer.periodic();
-        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-        // commands, running already-scheduled commands, removing finished or interrupted commands,
-        // and running subsystem periodic() methods.  This must be called from the robot's periodic
-        // block in order for anything in the Command-based framework to work.
-        CommandScheduler.getInstance().run();
-        update();
-        updateDashboard();
-    }
-
-    /** Autonomous mode periodic */
-    @Override
-    public void autonomousPeriodic() {}
-
-    /** Teleoperator control mode periodic */
-    @Override
-    public void teleopPeriodic() {}
-
-    /** Test mode periodic */
-    @Override
-    public void testPeriodic() {}
-
-    /** Disabled mode periodic */
     @Override
     public void disabledPeriodic() {
         super.disabledPeriodic();
         _robotContainer.disabledPeriodic();
     }
 
-    /**
-     * robotPeriodic is called every interval, no matter the mode. Use this for items like
-     * diagnostics that you want to run during disabled, autonomous, teleoperated and test.
+    @Override
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void teleopPeriodic() {}
+
+    @Override
+    public void testPeriodic() {}
+
+    /** Call every robot cycle, no matter the mode.
+     * 
+     * <p>Use for items like diagnostics to run during disabled, autonomous, teleoperated
+     * and test.
      *
      * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
-        ourPeriodic(); // runs the Scheduler
+        ourPeriodic();
     }
 
-    /* ---- Exit methods are called when the mode is exited --- */
-
-    /* ----- Other methods ----- */
-
-    /**
-     * Looks like a placeholder method for periodic updates.
+    /** What we want to run periodically.
      * 
-     * TODO: why does ourPeriodic() call update()? 
-     * 
-     * <p>This looks like a place to put code that should run during ourPeriodic(),
-     * but why not just put that code in ourPeriodic()?
-     * 
-    */
-    private void update() {}
-
-    /** 
-     * Update dashboard updates values on drive station and does logging.
-     * 
-     * Updating dashboard is expensive. Increase TICKS_PER_UPDATE to throttle back
-     * how often this is done.
-     * 
+     * <p>Write to log, schedule commands and update the dashboard.
      */
-    public void updateDashboard() {
-        _updateTick++;
-        if (_updateTick >= Constants.TICKS_PER_UPDATE) {
-            _updateTick = 0;
-            _robotContainer.updateDashboard();
-        }
+    private void ourPeriodic() {
+
+        // Example of starting a new row of metrics for all instrumented objects.
+        // MetricTracker.newMetricRowAll();
+        MetricTracker.newMetricRowAll();
+
+        _robotContainer.periodic();
+
+        // NB: It is essential to run the scheduler each cycle!  Otherwise nothing happens.
+        CommandScheduler.getInstance().run();
+
+        update();
+        updateDashboard();
     }
 
-    // TODO: loadConfigFromUSB() should probably go in util
+    // Helper methods
+
+    /** Load configuration file from USB thumb drive attached to roboRio. */
     private void loadConfigFromUSB() {
-        // String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
+        String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
+
         try {
-            String usbDir = "/U/"; // USB drive is mounted to /U on roboRIO
+            String usbDir = output_dir;
             String configFileName = usbDir + "frc5687.cfg";
             File configFile = new File(configFileName);
             FileReader reader = new FileReader(configFile);
@@ -258,11 +188,12 @@ public class Robot extends OutliersRobot {
             bufferedReader.close();
             reader.close();
         } catch (Exception e) {
-            _identityMode = OutliersContainer.IdentityMode.competition;
+            // in case USB config isn't found
+            // _identityMode = OutliersContainer.IdentityMode.programming;
         }
     }
 
-    // TODO: processConfigLine() should probably go in util
+    /** Parse one line of the configuration file */
     private void processConfigLine(String line) {
         try {
             if (line.startsWith("#")) {
@@ -289,6 +220,24 @@ public class Robot extends OutliersRobot {
             }
         } catch (Exception e) {
 
+        }
+    }
+
+    /** Updates to run every cycle before updating dashboard. */
+    private void update() {}
+
+    /** Update the dashboard.
+     * 
+     * <p>Last thing we do every cycle.
+     * 
+     * <p>Whether we actually update every cycle depends on TICKS_PER_UPDATE.
+     * Updating every tick can slow down the robot.
+     */
+    public void updateDashboard() {
+        _updateTick++;
+        if (_updateTick >= Constants.TICKS_PER_UPDATE) {
+            _updateTick = 0;
+            _robotContainer.updateDashboard();
         }
     }
 }

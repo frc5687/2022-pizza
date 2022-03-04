@@ -1,24 +1,29 @@
+# Season Plan
+
 The goals of the controls team (programming) are
 
 1. to write code that allows our robot to become world champion, and
 2. to have fun and learn valuable skills and knowledge.
 
-# Controls Team (Student Wizards)
+# Controls Team
+## Student Programmers
 
  - Gabe -- Vision Point Person
  - Jack E. -- Autos Point Person
  - Ivan -- Robot Systems Point Person
+ - Ely -- Tools Point Person
 
-# Controls Team (Mentor Wizards)
+## Mentors
 
  - Dennis (Alumni Mentor)
  - Ben (Alumni Parent Mentor)
  - John (Parent Mentor)
  - Fred (Parent Mentor)
 
-# Core Competencies of Wizards
+# Controls Exams
+## Core Competencies
 
-We will use wizardry exams to ensure that students learn the knowledge and skills necessary to control robots. By the end of the season, every level 4 wizard will know how to do the following:
+We will use controls exams to ensure that students learn the knowledge and skills necessary to control robots. By the end of the season, every programmer will know how to do the following:
 
 - Create a subsystem with one sensor and one actuator.
 - Create a default command to run the subsystem based on operator input.
@@ -32,22 +37,21 @@ We will use wizardry exams to ensure that students learn the knowledge and skill
 - Adjust the direction the wheels on the drive train point and spin.
 - Deploy code to the robot.
 
-Passive coders will learn terminology, observe team practices, and expand their skills and knowledge so that in future seasons they can become wizards if they want.
+Operators and tuners will learn terminology, observe team practices, and expand their skills and knowledge so that in future seasons they can become programmers if they want.
 
 # Robot Hardware
 
-In years past, the team has built two robots: a practice bot and a competition bot. This year the team will build only one robot. But, we already have one robot to practice with now: the chassis bot. (Last year's robot is being disassembled for parts.) The chassis bot uses differential swerve drive (DSD) modules to rotate and translate the robot in the field. We expect the competition bot will also use DSD modules.
+In years past, the team has built two robots: a practice bot and a competition bot. This year the team will build only one robot. But, we already have one robot to practice with now: the pizza bot. (Last year's robot is being disassembled for parts.) The pizza bot uses differential swerve drive (DSD) modules to rotate and translate the robot in the field. The competition bot also uses DSD modules.
 
 We will use our practice bot to develop code to move around the field during autonomous and to give the drive team practice driving DSD robots. The drive mechanics of the competition bot will be different than the chassis bot due to differences in mass, but the team can add ballast to the chassis bot to compensate.
 
-If the team is unable to get DSD working reliably, the back up plan is tank drive. We are assuming there is a high likelihood that our comp bot drive mechanism will be DSD so we are starting with swerve drive base code.
+If the team had been unable to get DSD working reliably, the back up plan was tank drive. We are assumed there was a high likelihood that our comp bot drive mechanism would be DSD so we started with swerve drive base code.
 
 # Project Management Tools
 
 We have started writing code in the 2022-robot repo on GitHub at [https://github.com/frc5687/2022-robot](https://github.com/frc5687/2022-robot)
 
-We are using [Good Day](https://www.goodday.work/p/lFrsVp) in combination with GitHub for task management. This overall project plan is kept on Good Day at [https://www.goodday.work/n/m1k9B3](https://www.goodday.work/n/m1k9B3)
-
+We are using GitHub for task management and issue tracking.
 # Season Milestones
 
 Mentors will define controls milestones to ensure we have a robot that works for all the students on the team. Our prime objective is to have high-quality code ready to deploy on hardware quickly enough so that the team can practice before events and compete successfully at events. Our secondary objective is to provide opportunities for student coders to learn, develop good work habits, and gain valuable management and coding experience that will help them achieve life goals.
@@ -61,6 +65,8 @@ See [ROADMAP](ROADMAP.md) for milestones.
 See [autos](autos.md).
 
 # Notes
+
+![Driving Coordinate System](driving-coordinate-system.jpg)
 
 Point People (Students):
 Control Systems (Ivan)
