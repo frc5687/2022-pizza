@@ -160,8 +160,8 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Position autoPosition = AutoChooser.Position.Third;
         AutoChooser.Mode autoMode = AutoChooser.Mode.OneBall;
 
-        Pose2d[] destinationsZeroBall = {};
-        Pose2d[] destinationsOneBall = {};
+        Pose2d[] destinationsZeroBall = { new Pose2d() };
+        Pose2d[] destinationsOneBall = { new Pose2d() };
         
         switch(autoPosition) {
             case First:
