@@ -145,35 +145,6 @@ public class Constants {
         public static final boolean SOUTH_EAST_ENCODER_INVERTED = DriveTuning.SOUTH_EAST_ENCODER_INVERTED;
         public static final boolean NORTH_EAST_ENCODER_INVERTED = DriveTuning.NORTH_EAST_ENCODER_INVERTED;
 
-        // Should be 0, but can correct for hardware error in swerve module headings here.
-        public static final double NORTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_EAST_OFFSET = 0; // radians
-        public static final double NORTH_EAST_OFFSET = 0; // radians
-
-        // In case encoder is measuring rotation in the opposite direction we expect.
-        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
-        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
-
-        // Maximum rates of motion
-        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
-        public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
-        public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
-
-        // PID controller settings
-        public static final double ANGLE_kP = 3.5;
-        public static final double ANGLE_kI = 0.0;
-        public static final double ANGLE_kD = 0.0;
-        public static final Pose2d TOLERANCE = new Pose2d(0.02, 0.02, new Rotation2d(0.05));
-
-        public static final double kP = 9.5;
-        public static final double kI = 0.0;
-        public static final double kD = 0.5;
-        public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
-        public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
-
     }
 
     /** Constants for swerve module hardware.
@@ -224,22 +195,6 @@ public class Constants {
         public static final double SENSOR_WHEEL_ANG_VELOCITY_NOISE = 0.1; // radians per sec
         public static final double CONTROL_EFFORT = VOLTAGE;
     }
-
-    public static class Auto {
-            public static class BallPositions {
-                public static Pose2d BALL_ONE = new Pose2d(4.8, 6.2, new Rotation2d());
-                public static Pose2d BALL_TWO = new Pose2d(5.1, 1.77, new Rotation2d());
-                public static Pose2d BALL_THREE = new Pose2d(7.7, 0.28, new Rotation2d());
-            }
-
-            public static class RobotPositions {
-                public static Pose2d FIRST = new Pose2d(6.46, 5.45, new Rotation2d());
-                public static Pose2d SECOND = new Pose2d(5.9, 3.93, new Rotation2d());
-                public static Pose2d THIRD = new Pose2d(6.9, 2.5, new Rotation2d());
-                public static Pose2d FOURTH = new Pose2d(8.25, 1.9, new Rotation2d());
-            }
-            public static final double DRIVETRAIN_POWER = 0.5;
-     }
 
     public static class SnapPose {
         public static final double SNAP_LRF = 3.5;
@@ -337,5 +292,19 @@ public class Constants {
         public static final double DRIVETRAIN_POWER = AutoConfig.DRIVETRAIN_POWER;
         public static final AutoConfig.Mode AUTO_MODE = AutoConfig.AUTO_MODE;
         public static final AutoConfig.Position AUTO_POSITION = AutoConfig.AUTO_POSITION;
+
+        public static class BallPositions {
+            public static Pose2d BALL_ONE = new Pose2d(4.8, 6.2, new Rotation2d());
+            public static Pose2d BALL_TWO = new Pose2d(5.1, 1.77, new Rotation2d());
+            public static Pose2d BALL_THREE = new Pose2d(7.7, 0.28, new Rotation2d());
+        }
+
+        public static class RobotPositions {
+            public static Pose2d FIRST = new Pose2d(6.46, 5.45, new Rotation2d());
+            public static Pose2d SECOND = new Pose2d(5.9, 3.93, new Rotation2d());
+            public static Pose2d THIRD = new Pose2d(6.9, 2.5, new Rotation2d());
+            public static Pose2d FOURTH = new Pose2d(8.25, 1.9, new Rotation2d());
+        }
+
     }
 }
