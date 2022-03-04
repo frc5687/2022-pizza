@@ -248,7 +248,7 @@ public class RobotContainer extends OutliersContainer {
             metric("Auto Position", autoPosition.name());
         }
         if (autoMode != null) {
-            metric("Auto Mode", autoChooser.getSelectedMode().name());
+            metric("Auto Mode", autoMode.name());
         }
     }
 }
