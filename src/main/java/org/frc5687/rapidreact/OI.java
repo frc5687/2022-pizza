@@ -43,8 +43,12 @@ public class OI extends OutliersProxy {
     private int _xSign; // whether to invert joystick value
     private int _yAxis; // which axis controls left / right
     private int _ySign;
-    private int _twistAxis; // which axis controls rotation
+    private int _twistAxis; // which axis controls manual rotation
     private int _twistSign;
+    private int _rotXAxis; // which axis conttols automatic X heading
+    private int _rotXSign;
+    private int _rotYAxis; // which axis conttols automatic Y heading
+    private int _rotYSign;
 
     /** Commands that can be mapped to buttons */
     public static enum Command {
@@ -161,7 +165,7 @@ public class OI extends OutliersProxy {
         return circularize(yIn, xIn);
     }
 
-    /** Get rotation value from rotation joystick
+    /** Get manual rotation value from rotation joystick
      * 
      * <p> Left +omega.
     */
@@ -169,6 +173,23 @@ public class OI extends OutliersProxy {
         double rotIn = _twistSign * getSpeedFromAxis(_rotation, _twistAxis);
         rotIn = applyDeadband(rotIn, Constants.DriveTrain.DEADBAND_ROTATION);
         return rotIn;
+    }
+
+    /** Automatic rotation flag (true to use getHeading instead of getRotation) */
+    public boolean rotateAutomatic() {
+        double rotX = _rotation.getRawAxis(_rotXAxis);
+        double rotY = getSpeedFromAxis(_rotation, _rotYAxis);
+        rotX = applyDeadband(rotX, Constants.DriveTrain.DEADBAND_ROTATION);
+        rotY = applyDeadband(rotY, Constants.DriveTrain.DEADBAND_ROTATION);
+        return ((rotX > 0) || (rotY > 0));
+    }
+
+    /** Get heading value from rotation joystick */
+    public double getHeading() {
+        double rotX = _rotXSign * _rotation.getRawAxis(_rotXAxis);
+        double rotY = _rotYSign * _rotation.getRawAxis(_rotYAxis);
+        double omega = Math.atan2(rotY, rotX);
+        return omega;
     }
 
     // Helper methods
@@ -261,6 +282,10 @@ public class OI extends OutliersProxy {
             _rotation = new Gamepad(JoystickMap.GAMEPAD_ROTATION_USB);
             _twistAxis = JoystickMap.GAMEPAD_ROTATION.TWIST_AXIS;
             _twistSign = JoystickMap.GAMEPAD_ROTATION.TWIST_SIGN;
+            _rotXAxis = JoystickMap.GAMEPAD_ROTATION.X_AXIS;
+            _rotXSign = JoystickMap.GAMEPAD_ROTATION.X_SIGN;
+            _rotYAxis = JoystickMap.GAMEPAD_ROTATION.Y_AXIS;
+            _rotYSign = JoystickMap.GAMEPAD_ROTATION.Y_SIGN;
             _rotationButtons = JoystickMap.GAMEPAD_ROTATION.BUTTONS;
         }
 

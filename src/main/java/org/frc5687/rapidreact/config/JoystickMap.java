@@ -18,12 +18,12 @@ public class JoystickMap {
     // Step 1. Set USB ports of joysticks and gamepads to use
 
     // Joysticks
-    public static final int JOYSTICK_TRANSLATION_USB = NOT_IN_USE;
+    public static final int JOYSTICK_TRANSLATION_USB = 1;
     public static final int JOYSTICK_ROTATION_USB = NOT_IN_USE;
     public static final int JOYSTICK_DEBUG_USB = NOT_IN_USE;
 
     // Gamepads
-    public static final int GAMEPAD_TRANSLATION_USB = 0;
+    public static final int GAMEPAD_TRANSLATION_USB = NOT_IN_USE;
     public static final int GAMEPAD_ROTATION_USB = 0;
     public static final int GAMEPAD_DEBUG_USB = 2;
 
@@ -144,11 +144,20 @@ public class JoystickMap {
     /** Button mappings for the rotation gamepad */
     public static class GAMEPAD_ROTATION {
 
+        // Turn forward +x, turn backward -x
+        // Turn left +y, turn right -y
         // Turn left +omega, turn right -omega
 
         public static final String MODEL = "GameSir";
+        // manual rotation
         public static final int TWIST_AXIS = 4;
         public static final int TWIST_SIGN = -1; // 1 to keep, -1 to invert
+        // automatic rotation
+        public static final int X_AXIS = 1; // forward and back
+        public static final int X_SIGN = -1; // 1 to keep, -1 to invert
+        public static final int Y_AXIS = 0; // left and right
+        public static final int Y_SIGN = -1; // 1 to keep, -1 to invert
+
         public static final int BUTTON_COUNT = 8; // how many buttons on it
 
         // Map buttons to commands

@@ -54,12 +54,17 @@ public class DriveOI extends OutliersCommand {
         /**
          * Here's the plan:
          * 1. Use a gamepad for rotation so we have two joysticks.
-         * 2. Left joystick is for manual rotation (left and right robot-reference rotation)
-         * 3. Right joystick for "snap-to" auto rotation (direction is field-reference rotation)
+         * 2. Right joystick is for manual rotation (left and right robot-reference rotation)
+         * 3. Left joystick for "snap-to" auto rotation (direction is field-reference rotation)
          * 4. Snap-to overrides manual rotation, i.e.
-         *    a. If right joystick is out of deadband, use its heading to control heading of robot
-         *    b. Else, use left joystick for manual rotation
+         *    a. If left joystick is out of deadband, use its heading to control heading of robot
+         *    b. Else, use right joystick for manual rotation
          */
+
+        // Is automatic rotation joystick out of DEADBAND?
+        if (_oi.rotateAutomatic()) {
+            // Use OI automatic rotation joystick heading to control robot heading
+        }
 
         // convert clockwise to counter-clockwise for rotation
         double vomega = _oi.getRotation() * Constants.DriveTrain.MAX_ANG_VEL; // manual rotation
