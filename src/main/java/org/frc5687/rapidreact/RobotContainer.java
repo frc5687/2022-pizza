@@ -122,6 +122,7 @@ public class RobotContainer extends OutliersContainer {
 
     public void periodic() {
         // Run every 20ms
+        updateDashboard();
     }
 
     // Helper methods
