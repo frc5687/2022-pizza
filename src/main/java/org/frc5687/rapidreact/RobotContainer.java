@@ -21,7 +21,7 @@ import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
-
+import org.frc5687.rapidreact.subsystems.Lights;
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.DeployIntake;
@@ -70,12 +70,12 @@ public class RobotContainer extends OutliersContainer {
         // 
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
         _driveTrain = new DriveTrain(this, _oi, _imu);
-        _lights = new Lights(RobotMap.PWM.BLINKIN, Constants.Blinkins.BLINKIN_LENGTH);
+        _lights = new Lights(this, RobotMap.PWM.BLINKIN, Constants.Blinkins.BLINKIN_LENGTH);
         _indexer = new Indexer(this);
         _intake = new Intake(this);
 
         // Initialize buttons AFTER subsystems allocated
-        _oi.initializeButtons(_driveTrain, _indexer, _intake);
+        _oi.initializeButtons(_driveTrain);
 
         // DriveTrain's default command is DriveOI
         setDefaultCommand(_driveTrain, new DriveOI(_driveTrain, _oi));
@@ -83,7 +83,8 @@ public class RobotContainer extends OutliersContainer {
         // DriveTrain has four DiffSwerveModules.
         // controllerPeriodic calls the periodic for each of them.
         _robot.addPeriodic(this::controllerPeriodic, Constants.DifferentialSwerveModule.kDt, 0.005);
-
+        _lights.initialize();
+        _lights.setRed();
         _imu.reset();
     }
 
@@ -122,7 +123,7 @@ public class RobotContainer extends OutliersContainer {
             _indexer.stopAgitator();
         }
         */
-        _lights.setRed();
+        
         // Run every 20ms
     }
 
