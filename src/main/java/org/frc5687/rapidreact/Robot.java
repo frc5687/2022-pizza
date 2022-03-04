@@ -238,7 +238,8 @@ public class Robot extends OutliersRobot {
         _updateTick++;
         if (_updateTick >= Constants.TICKS_PER_UPDATE) {
             _updateTick = 0;
-            _robotContainer.updateDashboard();
+            //TODO: Uncomment
+            //_robotContainer.updateDashboard();
         }
     }
 }
