@@ -157,7 +157,7 @@ public class RobotContainer extends OutliersContainer {
         // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
 
-        AutoChooser.Position autoPosition = AutoChooser.Position.Third;
+        AutoChooser.Position autoPosition = AutoChooser.Position.Fourth;
         AutoChooser.Mode autoMode = AutoChooser.Mode.OneBall;
 
         Pose2d[] destinationsZeroBall = { new Pose2d() };
