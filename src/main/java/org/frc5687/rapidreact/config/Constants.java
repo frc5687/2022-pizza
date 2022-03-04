@@ -293,6 +293,12 @@ public class Constants {
         public static final AutoConfig.Mode AUTO_MODE = AutoConfig.AUTO_MODE;
         public static final AutoConfig.Position AUTO_POSITION = AutoConfig.AUTO_POSITION;
 
+        public static class FieldPositions {
+            public static Pose2d SAFE_BALL_THREE = new Pose2d(7.7, 1.42, new Rotation2d());
+            public static Pose2d ROBOT_POS_ONE_DEST = new Pose2d(5.75, 6.3, new Rotation2d());
+            public static Pose2d ROBOT_POS_TWO_DEST = new Pose2d(4.63, 3.65, new Rotation2d());
+            public static Pose2d ROBOT_POS_THREE_DEST = new Pose2d(5.95, 1.42, new Rotation2d());
+        }
         public static class BallPositions {
             public static Pose2d BALL_ONE = new Pose2d(4.8, 6.2, new Rotation2d());
             public static Pose2d BALL_TWO = new Pose2d(5.1, 1.77, new Rotation2d());

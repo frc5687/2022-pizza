@@ -162,22 +162,22 @@ public class RobotContainer extends OutliersContainer {
         
         switch(autoPosition) {
             case First:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
                 destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_ONE;
                 destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_ONE;
                 break;
             case Second:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
                 destinationsZeroBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
                 break;
             case Third:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
                 destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_TWO;
                 destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_TWO;
                 break;
             case Fourth:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
                 destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
                 break;
