@@ -147,7 +147,7 @@ public class JoystickMap {
         // Turn left +omega, turn right -omega
 
         public static final String MODEL = "GameSir";
-        public static final int TWIST_AXIS = 1;
+        public static final int TWIST_AXIS = 0;
         public static final int TWIST_SIGN = -1; // 1 to keep, -1 to invert
         public static final int BUTTON_COUNT = 8; // how many buttons on it
 
