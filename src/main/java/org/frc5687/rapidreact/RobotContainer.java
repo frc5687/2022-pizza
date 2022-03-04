@@ -217,27 +217,27 @@ public class RobotContainer extends OutliersContainer {
      * @param velocity
      * @return new DriveAuto
      */
-    public DriveToPose getAutoDriveCommand(
-        double xPos,
-        double yPos,
-        double theta,
-        double omega,
-        double velocity
-        ) {
+    // public DriveToPose getAutoDriveCommand(
+    //     double xPos,
+    //     double yPos,
+    //     double theta,
+    //     double omega,
+    //     double velocity
+    //     ) {
 
-        Pose2d _wayPoint; // contains xPos, yPos and theta
-        Rotation2d _heading; // uses omega
-        double _theta;
-        double _omega;
+    //     Pose2d _wayPoint; // contains xPos, yPos and theta
+    //     Rotation2d _heading; // uses omega
+    //     double _theta;
+    //     double _omega;
 
-        _theta = theta/* Math.PI*/;
-        _omega = omega/* Math.PI*/;
+    //     _theta = theta/* Math.PI*/;
+    //     _omega = omega/* Math.PI*/;
 
-        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
-        _heading = new Rotation2d(_omega);
+    //     _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
+    //     _heading = new Rotation2d(_omega);
     
-        return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
-    }
+    //     return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
+    // }
 
     @Override
     public void updateDashboard() {

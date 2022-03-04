@@ -13,17 +13,16 @@ public class OneBallAuto extends SequentialCommandGroup{
         DriveTrain driveTrain,
         //Catapult catapult,
         Pose2d destination,
-        Rotation2d heading
+        Rotation2d rotation
     ) {
+        Rotation2d _rotation;
+        Pose2d _newPose;
+
+        _rotation = rotation;
+        _newPose = new Pose2d(destination.getX(), destination.getY(), _rotation);
         addCommands(
             //shoot
-            new DriveToPose(
-                driveTrain,
-                destination.getX(),
-                destination.getY(),
-                destination.getRotation().getRadians(),
-                destination.getRotation().getRadians(),
-                .2)
+            new DriveToPose(driveTrain, _newPose, new Rotation2d(0.0), 0.2)
         );
     }
 }
