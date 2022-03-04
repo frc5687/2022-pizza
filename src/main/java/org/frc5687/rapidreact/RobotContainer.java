@@ -157,6 +157,9 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
 
+        autoPosition = AutoChooser.Position.Third;
+        autoMode = AutoChooser.Mode.OneBall;
+
         Pose2d[] destinationsZeroBall = {};
         Pose2d[] destinationsOneBall = {};
         
@@ -195,22 +198,6 @@ public class RobotContainer extends OutliersContainer {
         }
 
     }
-
-        // _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-        // return null;
-        // These all have to be unique commands.
-        // Cannot execute same command twice.
-        // return new SequentialCommandGroup(
-        //     //_waitOneSecondA,
-        //     _deployIntake,
-        //     _driveToA,
-        //     //_waitOneSecondB
-        //     _driveToB
-        // );
-
-        // return _auto;
-
-        // return null;
 
     /**
      * Return a drive to destination command
