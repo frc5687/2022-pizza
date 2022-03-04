@@ -44,7 +44,10 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
 
     private OI _oi;
-    private AutoChooser _autoChooser;
+    private AutoChooser autoChooser;
+    AutoChooser.Position autoPosition;
+    AutoChooser.Mode autoMode;
+
     private AHRS _imu;
 
     public Catapult catapult;
@@ -157,8 +160,8 @@ public class RobotContainer extends OutliersContainer {
         // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
 
-        AutoChooser.Position autoPosition = AutoChooser.Position.Fourth;
-        AutoChooser.Mode autoMode = AutoChooser.Mode.OneBall;
+        autoPosition = AutoChooser.Position.Fourth;
+        autoMode = AutoChooser.Mode.OneBall;
 
         Pose2d[] destinationsZeroBall = { new Pose2d() };
         Pose2d[] destinationsOneBall = { new Pose2d() };
@@ -233,11 +236,18 @@ public class RobotContainer extends OutliersContainer {
 
     @Override
     public void updateDashboard() {
-        //Updates the driver station
-        driveTrain.updateDashboard();
-        // metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
-        _autoChooser.updateDashboard();
-        metric("Position", _autoChooser.getSelectedPosition().name());
-        metric("Mode", _autoChooser.getSelectedMode().name());
+        // Updates the driver station
+        if (driveTrain != null) {
+            driveTrain.updateDashboard();
+        }
+        if (autoChooser != null) {
+            autoChooser.updateDashboard();
+        }
+        if (autoPosition != null) {
+            metric("Auto Position", autoPosition.name());
+        }
+        if (autoMode != null) {
+            metric("Auto Mode", autoChooser.getSelectedMode().name());
+        }
     }
 }
