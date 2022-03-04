@@ -1,18 +1,17 @@
-package org.frc5687.rapidreact.commands.auto;
+package org.frc5687.rapidreact.commands;
 
-import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.Intake;
 
-/** Deploy intake so we can shoot catapult */
-public class DeployIntake extends OutliersCommand {
+/** Deploy intake to pick up balls */
+public class DeployIntakeOI extends OutliersCommand {
 
     private final Intake _intake;
 
-    /** Create auto DeployIntake command
+    /** Create DeployIntake command for teleop mode
      * 
      * @param intake passed from RobotContainer
      */
-    public DeployIntake(Intake intake) {
+    public DeployIntakeOI(Intake intake) {
         _intake = intake;
         addRequirements(_intake);
     }
@@ -26,7 +25,7 @@ public class DeployIntake extends OutliersCommand {
     @Override
     public void execute() {
         super.execute();
-        // do nothing
+        // spin
     }
 
     @Override

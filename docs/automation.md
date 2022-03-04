@@ -1,4 +1,6 @@
-Automation is similar to autonomous operation, but occurs during the teleoperated period. The goals of automation are to
+# Automation
+
+Automation is similar to autonomous operation, but occurs during the teleoperating mode. The goals of automation are to
 
 1. reduce the load on the human driver and operator,
 2. improve robot capabilities, and

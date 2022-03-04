@@ -1,29 +1,28 @@
 /* Team 5687 (C)2020-2022 */
-package org.frc5687.rapidreact;
+package org.frc5687.rapidreact.config;
 
 import java.util.Arrays;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 import org.frc5687.rapidreact.util.*;
 
-/**
- * Define globally-accessible robot constants (such as speeds, PID gains, etc.).
+/** Define globally-accessible robot constants (such as speeds, PID gains, etc.).
  * 
- * <p>RobotMap has Robot port mappings (CAN IDs, etc.).
+ * @see RobotMap RobotMap for Robot port mappings (CAN IDs, etc.)
  * 
- * <p>ButtonMap has Joystick and Gamepad settings, including button mappings.
+ * @see JoystickMap JoystickMap for Joystick and Gamepad settings and button mappings
  * 
- * <p>TuneDriving has drive train tuning values.
+ * @see DriveTuning DriveTuning for drive train tuning values
+ * 
+ * @see AutoConfig AutoConfig for auto mode configurations
  */
 public class Constants {
 
-    /**
-     * Conventions for constants
+    /** Conventions for constants
      * 
      * - Field position and robot size measured in meters.
      * - Time in seconds unless otherwise noted.
@@ -32,10 +31,14 @@ public class Constants {
      * - Field reference North is away from drive team, East is to drive team's right.
      * - Robot reference North is direction catapult shoots, South is direction intake deploys.
      * 
-     * Coordinate space needs to be decided and documented.
      * Q: Are angles given clockwise (+ turns right) or counter-clockwise (+ turns left)?
-     * Q: Is X axis North-South or East-West?  Is North or South +?
      */
+
+    // NOTE: see DriveTuning for configuring direction robot drives.
+    // You must decide whether robot North = field North or another field direction.
+    // We have been placing robot on field with robot North = field East.
+    // Doing this makes our code a bit confusing.
+    // Field East is away from our drive team.
 
     // Declare constants as public static final so that they are globally accessible
     // and cannot be changed.
@@ -54,68 +57,32 @@ public class Constants {
     // Separate constants into individual inner classes corresponding
     // to subsystems or robot modes, to keep variable names shorter.
 
-    /**
-     * We use compass headings to reference swerve modules.
-     * 
-     * When looking down at top of robot:
-     * 
-     *          N
-     *          |
-     *      W -- -- E
-     *          |
-     *          S
-     * 
-     * When robot is flipped over on its back:
-     * 
-     *          N
-     *          |
-     *      E -- -- W
-     *          |
-     *          S
-     */
-
-
     /** Constants for driving robot
      * 
-     * <p>These constants control how entire drivetrain works, including
+     * <p>Set physical characteristics of drive train.
      * 
-     * - what angle the wheels point,
-     * - which direction the wheels turn,
-     * - how sensitive the joystick is,
-     * - maximum speed and acceleration
+     * @see DriveTuning DriveTuning for drive train tuning values
      */
     public static class DriveTrain {
 
-        // Control
-        public static final double DEADBAND = 0.2; // Avoid unintentional joystick movement
-
-        // Maximum rates of motion
-        public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
-        public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
-        public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
-
-        // PID controller settings
-        public static final double ANGLE_kP = 3.5;
-        public static final double ANGLE_kI = 0.0;
-        public static final double ANGLE_kD = 0.0;
-
-        public static final double kP = 10.5;
-        public static final double kI = 0.0;
-        public static final double kD = 0.5;
-        public static final double PROFILE_CONSTRAINT_VEL = 3.0 * Math.PI;
-        public static final double PROFILE_CONSTRAINT_ACCEL = Math.PI;
-
-        // Should be 0, but can correct for hardware error in swerve module headings here.
-        public static final double NORTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_WEST_OFFSET = 0; // radians
-        public static final double SOUTH_EAST_OFFSET = 0; // radians
-        public static final double NORTH_EAST_OFFSET = 0; // radians
-
-        // In case encoder is measuring rotation in the opposite direction we expect.
-        public static final boolean NORTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_WEST_ENCODER_INVERTED = false;
-        public static final boolean SOUTH_EAST_ENCODER_INVERTED = false;
-        public static final boolean NORTH_EAST_ENCODER_INVERTED = false;
+        /** Use compass headings to reference swerve modules.
+         * 
+         * When looking down at top of robot:
+         * 
+         *          N
+         *          |
+         *      W -- -- E
+         *          |
+         *          S
+         * 
+         * When robot is flipped over on its back:
+         * 
+         *          N
+         *          |
+         *      E -- -- W
+         *          |
+         *          S
+         */
 
         // Size of the robot chassis in meters
         public static final double WIDTH = 0.6223; // meters
@@ -137,33 +104,46 @@ public class Constants {
         public static final double SWERVE_NS_POS = LENGTH / 2.0;
         public static final double SWERVE_WE_POS = WIDTH / 2.0;
 
-        /**
-         * 
-         * Coordinate system is wacky:
-         * 
-         * (X, Y):
-         *   X is N or S, N is +
-         *   Y is W or E, W is +
-         * 
-         *   NW (+,+)  NE (+,-)
-         * 
-         *   SW (-,+)  SE (-,-)
-         * 
-         * We go counter-counter clockwise starting at NW of chassis:
-         * 
-         *  NW, SW, SE, NE
-         * 
-         * Note: when robot is flipped over, this is clockwise.
-         * 
-         */
+        // Values set in DriveTuning
 
-        // Position vectors for the swerve module kinematics
-        // i.e. location of each swerve module from center of robot
-        // see coordinate system above to understand signs of vector coordinates
-        public static final Translation2d NORTH_WEST = new Translation2d( SWERVE_NS_POS, SWERVE_WE_POS ); // +,+
-        public static final Translation2d SOUTH_WEST = new Translation2d( -SWERVE_NS_POS, SWERVE_WE_POS ); // -,+
-        public static final Translation2d SOUTH_EAST = new Translation2d( -SWERVE_NS_POS, -SWERVE_WE_POS ); // -,-
-        public static final Translation2d NORTH_EAST = new Translation2d( SWERVE_NS_POS, -SWERVE_WE_POS ); // +,-
+        // Which way robot is facing when IMU inits
+        public static final DriveTuning.Direction ROBOT_FACING = DriveTuning.ROBOT_FACING;
+
+        // Control
+
+        // Avoid unintentional joystick movememnt
+        public static final double DEADBAND_TRANSLATION = DriveTuning.DEADBAND_TRANSLATION;
+        public static final double DEADBAND_ROTATION = DriveTuning.DEADBAND_ROTATION;
+
+        // Maximum rates of motion
+        public static final double MAX_MPS = DriveTuning.MAX_MPS;
+        public static final double MAX_ANG_VEL = DriveTuning.MAX_ANG_VEL;
+        public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
+        public static final double SLEW_LIMIT_X = DriveTuning.SLEW_LIMIT_X;
+        public static final double SLEW_LIMIT_Y = DriveTuning.SLEW_LIMIT_Y;
+    
+        // PID controller settings
+        public static final Pose2d TOLERANCE = DriveTuning.TOLERANCE;
+        public static final double ANGLE_kP = DriveTuning.ANGLE_kP;
+        public static final double ANGLE_kI = DriveTuning.ANGLE_kI;
+        public static final double ANGLE_kD = DriveTuning.ANGLE_kD;
+        public static final double kP = DriveTuning.kP;
+        public static final double kI = DriveTuning.kI;
+        public static final double kD = DriveTuning.kD;
+        public static final double PROFILE_CONSTRAINT_VEL = DriveTuning.PROFILE_CONSTRAINT_VEL;
+        public static final double PROFILE_CONSTRAINT_ACCEL = DriveTuning.PROFILE_CONSTRAINT_ACCEL;
+
+        // Should be 0, but can correct for hardware error in swerve module headings here.
+        public static final double NORTH_WEST_OFFSET = DriveTuning.NORTH_WEST_OFFSET;
+        public static final double SOUTH_WEST_OFFSET = DriveTuning.SOUTH_WEST_OFFSET;
+        public static final double SOUTH_EAST_OFFSET = DriveTuning.SOUTH_EAST_OFFSET;
+        public static final double NORTH_EAST_OFFSET = DriveTuning.NORTH_EAST_OFFSET;
+
+        // In case encoder is measuring rotation in the opposite direction we expect.
+        public static final boolean NORTH_WEST_ENCODER_INVERTED = DriveTuning.NORTH_WEST_ENCODER_INVERTED;
+        public static final boolean SOUTH_WEST_ENCODER_INVERTED = DriveTuning.SOUTH_WEST_ENCODER_INVERTED;
+        public static final boolean SOUTH_EAST_ENCODER_INVERTED = DriveTuning.SOUTH_EAST_ENCODER_INVERTED;
+        public static final boolean NORTH_EAST_ENCODER_INVERTED = DriveTuning.NORTH_EAST_ENCODER_INVERTED;
 
     }
 
@@ -334,19 +314,25 @@ public class Constants {
 
 
     }
-    public static class IntakeBlocker{
+    public static class IntakeBlocker {
         public static final double DOWN_POSITION = 180;
         public static final double UP_POSITION = 50;
     }
 
-    public static class Intake{
+    public static class Intake {
         public static final boolean INVERTED = false;
         public static final double ROLLER_IDLE_SPEED = 0.0;
         public static final double ROLLER_INTAKE_SPEED = 1.0;
     }
 
-    public static class Auto{
-            public static final double DRIVETRAIN_POWER = 0.5;
+    /** Constants for autonomous mode
+     * 
+     * @see AutoConfig
+     */
+    public static class Auto {
+        public static final double DRIVETRAIN_POWER = AutoConfig.DRIVETRAIN_POWER;
+        public static final AutoConfig.Mode AUTO_MODE = AutoConfig.AUTO_MODE;
+        public static final AutoConfig.Position AUTO_POSITION = AutoConfig.AUTO_POSITION;
     }
 
     public class Lights {

@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.util.*;
 
 /**
@@ -40,8 +41,7 @@ public class Robot extends OutliersRobot {
 
     // Initialization methods
 
-    /**
-     * Run once when robot code starts.
+    /** Run once when robot code starts.
      * 
      * <p>Set up logging and whatever else needs to happen only once when the robot code starts.
      * 
@@ -68,13 +68,15 @@ public class Robot extends OutliersRobot {
         _robotContainer = new RobotContainer(this, _identityMode);
         _robotContainer.init();
 
-        // Periodically flushes metrics
+        // Periodically flush metrics
         // TODO: configure enable/disable via USB config file
         new Notifier(MetricTracker::flushAll).startPeriodic(Constants.METRIC_FLUSH_PERIOD);
     }
 
     @Override
     public void disabledInit() {
+        info("Running Robot.disabledInit()");
+
         // _limelight.disableLEDs();
         RioLogger.getInstance().forceSync();
         RioLogger.getInstance().close();
@@ -82,14 +84,12 @@ public class Robot extends OutliersRobot {
         // MetricTracker.flushAll();
     }
 
-    /**
-     * Run once when robot enters autonomous mode
+    /** Run once when robot enters autonomous mode
      * 
      * <p>Schedule the auto command.
      */
     @Override
     public void autonomousInit() {
-
         info("Running Robot.autonomousInit()");
 
         // Get auto command when we enter autonomous mode.
@@ -105,8 +105,7 @@ public class Robot extends OutliersRobot {
     }
 
     public void teleopInit() {
-
-        info("Running Robot.autonomousInit()");
+        info("Running Robot.teleopInit()");
 
         // Good practice to cancel the autonomous command that may still be running.
         // If you want the autonomous to continue until interrupted by another command,
@@ -136,9 +135,10 @@ public class Robot extends OutliersRobot {
     @Override
     public void testPeriodic() {}
 
-    /**
-     * This method is called every robot cycle, no matter the mode. Use this for items like
-     * diagnostics to run during disabled, autonomous, teleoperated and test.
+    /** Call every robot cycle, no matter the mode.
+     * 
+     * <p>Use for items like diagnostics to run during disabled, autonomous, teleoperated
+     * and test.
      *
      * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
      * SmartDashboard integrated updating.
@@ -148,7 +148,7 @@ public class Robot extends OutliersRobot {
         ourPeriodic();
     }
 
-    /** What we want to run every robot cycle in every mode.
+    /** What we want to run periodically.
      * 
      * <p>Write to log, schedule commands and update the dashboard.
      */
@@ -157,7 +157,8 @@ public class Robot extends OutliersRobot {
         // Example of starting a new row of metrics for all instrumented objects.
         // MetricTracker.newMetricRowAll();
         MetricTracker.newMetricRowAll();
-        // _robotContainer.periodic();
+
+        _robotContainer.periodic();
 
         // NB: It is essential to run the scheduler each cycle!  Otherwise nothing happens.
         CommandScheduler.getInstance().run();
@@ -168,19 +169,7 @@ public class Robot extends OutliersRobot {
 
     // Helper methods
 
-    /** Update the dashboard.
-     * 
-     * <p>Frequency depends on TICKS_PER_UPDATE.  Updating every tick can slow
-     * down the robot.
-     */
-    public void updateDashboard() {
-        _updateTick++;
-        if (_updateTick >= Constants.TICKS_PER_UPDATE) {
-            _updateTick = 0;
-            _robotContainer.updateDashboard();
-        }
-    }
-
+    /** Load configuration file from USB thumb drive attached to roboRio. */
     private void loadConfigFromUSB() {
         String output_dir = "/U/"; // USB drive is mounted to /U on roboRIO
 
@@ -204,6 +193,7 @@ public class Robot extends OutliersRobot {
         }
     }
 
+    /** Parse one line of the configuration file */
     private void processConfigLine(String line) {
         try {
             if (line.startsWith("#")) {
@@ -233,5 +223,21 @@ public class Robot extends OutliersRobot {
         }
     }
 
+    /** Updates to run every cycle before updating dashboard. */
     private void update() {}
+
+    /** Update the dashboard.
+     * 
+     * <p>Last thing we do every cycle.
+     * 
+     * <p>Whether we actually update every cycle depends on TICKS_PER_UPDATE.
+     * Updating every tick can slow down the robot.
+     */
+    public void updateDashboard() {
+        _updateTick++;
+        if (_updateTick >= Constants.TICKS_PER_UPDATE) {
+            _updateTick = 0;
+            _robotContainer.updateDashboard();
+        }
+    }
 }

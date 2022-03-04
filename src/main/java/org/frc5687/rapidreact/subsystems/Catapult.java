@@ -1,5 +1,6 @@
 package org.frc5687.rapidreact.subsystems;
 
+import static org.frc5687.rapidreact.config.Constants.Catapult.*;
 
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.revrobotics.CANSparkMax;
@@ -11,15 +12,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import org.frc5687.rapidreact.Constants;
-import org.frc5687.rapidreact.RobotMap;
+
+import org.frc5687.rapidreact.config.Constants;
+import org.frc5687.rapidreact.config.RobotMap;
 import org.frc5687.rapidreact.util.HallEffect;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
-import static org.frc5687.rapidreact.Constants.Catapult.*;
-
 public class Catapult extends OutliersSubsystem {
 
+    /*
     private final CANSparkMax _springMotor;
     private final CANSparkMax _winchMotor;
 
@@ -33,6 +34,7 @@ public class Catapult extends OutliersSubsystem {
 
     private final HallEffect _springHall;
     private final HallEffect _armHall;
+    */
 
     private boolean _springEncoderZeroed = false;
     private boolean _winchEncoderZeroed = false;
@@ -157,12 +159,13 @@ public class Catapult extends OutliersSubsystem {
         }
     }
 
-
     /** Catapult constructor */
     public Catapult(OutliersContainer container) {
         super(container);
 
         // Motor controllers (Spark Maxes)
+
+        /*
 
         // Spring motor
         _springMotor = new CANSparkMax(RobotMap.CAN.SPARKMAX.SPRING_BABY_NEO, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -223,6 +226,7 @@ public class Catapult extends OutliersSubsystem {
                 )
         );
         _winchController.setTolerance(WINCH_TOLERANCE);
+        */
 
         // set state
         _springEncoderZeroed = false;
@@ -230,45 +234,54 @@ public class Catapult extends OutliersSubsystem {
         _state = CatapultState.DEBUG;
     }
 
-
     @Override
     public void periodic() {
         super.periodic();
 
         if (isSpringHallTriggered()) {
-            _springEncoder.setPosition(Constants.Catapult.SPRING_BOTTOM_LIMIT);
+            // _springEncoder.setPosition(Constants.Catapult.SPRING_BOTTOM_LIMIT);
             _springEncoderZeroed = true;
         }
 //
-        if (isArmLowered() && (_winchMotor.getAppliedOutput() > 0)) {
+        if (
+            isArmLowered() // && (_winchMotor.getAppliedOutput() > 0)
+        ) {
             setWinchMotorSpeed(0);
             setWinchGoal(0);
         }
+        /*
         if (_winchMotor.getOutputCurrent() > 25) {
             setWinchMotorSpeed(0);
         }
+        */
 
+    }
+
+    public void shoot() {
+        // shoot the catapult
     }
 
     public void setSpringMotorSpeed(double speed) {
-        _springMotor.set(speed);
+        // _springMotor.set(speed);
     }
 
     public void setWinchMotorSpeed(double speed) {
-        _winchMotor.set(speed);
+        // _winchMotor.set(speed);
     }
 
     public double getSpringEncoderRotation() {
-        return _springEncoder.getPosition();
+        // return _springEncoder.getPosition();
+        return 0.0;
     }
 
     public double getWinchRotation() {
-        return _winchEncoder.getPosition();
+        // return _winchEncoder.getPosition();
+        return 0.0;
     }
 
     public void zeroWinchEncoder() {
         if (!_winchEncoderZeroed) {
-            _winchEncoder.setPosition(WINCH_BOTTOM_LIMIT);
+            // _winchEncoder.setPosition(WINCH_BOTTOM_LIMIT);
             _winchEncoderZeroed = true;
         }
     }
@@ -309,37 +322,39 @@ public class Catapult extends OutliersSubsystem {
     }
 
     public void runSpringController() {
-        setSpringMotorSpeed(
-            _springController.calculate(getSpringRailPosition()) + springDisplacement() * SPRING_DISPLACEMENT_FACTOR);
+        // setSpringMotorSpeed(
+            // _springController.calculate(getSpringRailPosition()) + springDisplacement() * SPRING_DISPLACEMENT_FACTOR);
     }
 
     public void setSpringGoal(double position) {
-        _springController.setGoal(position);
+        // _springController.setGoal(position);
     }
 
     public void setWinchGoal(double stringLength) {
-        _winchController.setGoal(-stringLength);
+        // _winchController.setGoal(-stringLength);
     }
 
     public void runWinchController() {
-        setWinchMotorSpeed(
-            _winchController.calculate(getWinchStringLength()));
+        // setWinchMotorSpeed(
+            // _winchController.calculate(getWinchStringLength()));
     }
 
     public boolean isSpringAtPosition() {
-        return _springController.atGoal();
+        // return _springController.atGoal();
+        return false;
     }
 
     public boolean isWinchAtGoal() {
-        return _winchController.atGoal();
+        // return _winchController.atGoal();
+        return false;
     }
 
     public void lockArm() {
-        _releasePin.set(PinPosition.LOCKED.getSolenoidValue());
+        // _releasePin.set(PinPosition.LOCKED.getSolenoidValue());
     }
 
     public void releaseArm() {
-        _releasePin.set(PinPosition.RELEASED.getSolenoidValue());
+        // _releasePin.set(PinPosition.RELEASED.getSolenoidValue());
     }
 
     // calculate the spring displacement based on angle displacement.
@@ -360,16 +375,29 @@ public class Catapult extends OutliersSubsystem {
         return angularVelocity * ARM_LENGTH;
     }
 
+    public boolean isReset() {
+        // TODO: determine when catapult.isReset()
+        return true;
+    }
+
     public boolean isReleasePinLocked() {
-        return _releasePin.get() == PinPosition.LOCKED.getSolenoidValue();
+        // return _releasePin.get() == PinPosition.LOCKED.getSolenoidValue();
+        return false;
     }
 
     public boolean isReleasePinReleased() {
-        return _releasePin.get() == PinPosition.RELEASED.getSolenoidValue();
+        // return _releasePin.get() == PinPosition.RELEASED.getSolenoidValue();
+        return false;
     }
 
-    public boolean isSpringHallTriggered() { return _springHall.get(); }
-    public boolean isArmLowered() { return _armHall.get(); }
+    public boolean isSpringHallTriggered() {
+        // return _springHall.get();
+        return false;
+    }
+    public boolean isArmLowered() {
+        // return _armHall.get();
+        return false;
+    }
 
     public CatapultState getState() {
         return _state;
@@ -380,6 +408,7 @@ public class Catapult extends OutliersSubsystem {
     }
 
     public PinPosition getPinPosition() {
+        /*
         // Get the release pin's position
         DoubleSolenoid.Value current = _releasePin.get();
         if (current == PinPosition.LOCKED.getSolenoidValue()) {
@@ -389,6 +418,7 @@ public class Catapult extends OutliersSubsystem {
             // Catapult arm released
             return PinPosition.RELEASED;
         }
+        */
         return PinPosition.UNKNOWN;
     }
 
@@ -397,14 +427,14 @@ public class Catapult extends OutliersSubsystem {
         // Spring values
 //        metric("Spring encoder rotations", getSpringEncoderRotation());
         metric("Spring rail position", getSpringRailPosition());
-        metric("Spring motor output", _springMotor.getAppliedOutput());
-        metric("Spring goal", _springController.getGoal().position);
+        // metric("Spring motor output", _springMotor.getAppliedOutput());
+        // metric("Spring goal", _springController.getGoal().position);
         metric("Spring Hall Effect", isSpringHallTriggered());
 
         // Winch values
         metric("Winch rotation", getWinchRotation());
-        metric("Winch controller output", _winchMotor.getAppliedOutput());
-        metric("winch goal", _winchController.getGoal().position);
+        // metric("Winch controller output", _winchMotor.getAppliedOutput());
+        // metric("winch goal", _winchController.getGoal().position);
         metric("Winch string length", getWinchStringLength());
 //        metric("String length", stringLengthToAngle(getArmReleaseAngle()));
 //        metric("Winch goal", Units.radiansToDegrees(stringLengthToAngle(_winchController.getGoal().position)));
