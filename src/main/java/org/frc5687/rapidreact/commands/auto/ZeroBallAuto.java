@@ -32,7 +32,14 @@ public class ZeroBallAuto extends SequentialCommandGroup {
         _velocity = 0.2;
 
         addCommands(
-            new DriveToPose(driveTrain, _destination, _heading, _velocity)
+            new DriveToPose(
+                driveTrain,
+                destination.getX(),
+                destination.getY(),
+                destination.getRotation().getRadians(),
+                destination.getRotation().getRadians(),
+                _velocity
+                )
          );
     }
 

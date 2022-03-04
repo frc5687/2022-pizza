@@ -3,15 +3,19 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.frc5687.rapidreact.config.Constants;
 
 // import org.frc5687.rapidreact.util.AutoChooser;
+import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
@@ -40,7 +44,7 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
 
     private OI _oi;
-    // private AutoChooser _autoChooser;
+    private AutoChooser _autoChooser;
     private AHRS _imu;
 
     public Catapult catapult;
@@ -121,7 +125,7 @@ public class RobotContainer extends OutliersContainer {
 
     /** Wrap DriveTrain.controllerPeriodic.
      * 
-     * <p> _driveTrain can be null during initial development
+     * <p> driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
         if (driveTrain != null) {
@@ -153,56 +157,43 @@ public class RobotContainer extends OutliersContainer {
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
         
-
         switch(autoPosition) {
             case First:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
                 switch(autoMode) {
                     case ZeroBall:
-                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_ONE);
+                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_ONE);
                     case OneBall:
-                        return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_ONE);
+                        return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_ONE);
                 }
             case Second:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
                 switch(autoMode) {
                     case ZeroBall:
                     case OneBall:
                 }
             case Third:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
                 switch(autoMode) {
                     case ZeroBall:
-                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_TWO);
+                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_TWO);
                     case OneBall:
-                }       return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_TWO);
+                }       return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_TWO);
             case Fourth:
-                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
                 switch(autoMode) {
                     case ZeroBall:
-                        return new ZeroBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_THREE);
+                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_THREE);
                     case OneBall:
-                        return new OneBallAuto(_driveTrain, Constants.Auto.BallPositions.BALL_THREE);
+                        return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_THREE);
                 }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         WaitCommand _waitOneSecondA;
         WaitCommand _waitOneSecondB;
         DeployIntake _deployIntake;
         DriveToPose _driveToA;
-        // DriveAuto _driveToB;
+        DriveToPose _driveToB;
 
         double _xPos; // meters
         double _yPos; // meters
@@ -212,7 +203,7 @@ public class RobotContainer extends OutliersContainer {
         
         // _waitOneSecondA = new WaitCommand(1.0);
         _waitOneSecondB = new WaitCommand(1.0);
-        _deployIntake = new DeployIntake(_intake);
+        _deployIntake = new DeployIntake(intake);
 
         //These are the balls' exact positions,
         //be careful not to use ball3's position, or you'll run into the wall
@@ -236,8 +227,14 @@ public class RobotContainer extends OutliersContainer {
         _omega = 0.0;
         _velocity = 0.2;
 
+        _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
+
+        return _driveToA;
+
+    }
+
         // _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-        return null;
+        // return null;
         // These all have to be unique commands.
         // Cannot execute same command twice.
         // return new SequentialCommandGroup(
@@ -248,7 +245,9 @@ public class RobotContainer extends OutliersContainer {
         //     _driveToB
         // );
 
-        return _auto;
+        // return _auto;
+
+        // return null;
 
     /**
      * Return a drive to destination command
@@ -279,13 +278,13 @@ public class RobotContainer extends OutliersContainer {
         _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
         _heading = new Rotation2d(_omega);
     
-        return new DriveToPose(_driveTrain, _wayPoint, _heading, velocity);
+        return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
     }
 
     @Override
     public void updateDashboard() {
         //Updates the driver station
-        _driveTrain.updateDashboard();
+        driveTrain.updateDashboard();
         // metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
         _autoChooser.updateDashboard();
         metric("Position", _autoChooser.getSelectedPosition().name());

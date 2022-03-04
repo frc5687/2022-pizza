@@ -15,7 +15,13 @@ public class OneBallAuto extends SequentialCommandGroup{
     ) {
         addCommands(
             //shoot
-            new DriveToPose(driveTrain, destination, destination.getRotation(), 0.2)
+            new DriveToPose(
+                driveTrain,
+                destination.getX(),
+                destination.getY(),
+                destination.getRotation().getRadians(),
+                destination.getRotation().getRadians(),
+                .2)
         );
     }
 }
