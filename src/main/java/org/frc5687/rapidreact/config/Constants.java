@@ -311,6 +311,9 @@ public class Constants {
             public static Pose2d THIRD = new Pose2d(6.9, 2.5, new Rotation2d());
             public static Pose2d FOURTH = new Pose2d(8.25, 1.9, new Rotation2d());
         }
+        public static class Rotations {
+            public static Rotation2d BALL_THREE_FROM_FOURTH = new Rotation2d(0.5);
+        }
 
     }
 }

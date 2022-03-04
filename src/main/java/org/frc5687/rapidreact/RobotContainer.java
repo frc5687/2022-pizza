@@ -166,6 +166,8 @@ public class RobotContainer extends OutliersContainer {
 
         Pose2d[] destinationsZeroBall = { new Pose2d() };
         Pose2d[] destinationsOneBall = { new Pose2d() };
+        Rotation2d[] rotationsZeroBall = { new Rotation2d() };
+        Rotation2d[] rotationsOneBall = { new Rotation2d() };
         
         switch(autoPosition) {
             case First:
@@ -187,6 +189,8 @@ public class RobotContainer extends OutliersContainer {
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
                 destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                rotationsZeroBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
+                rotationsOneBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
                 break;
             default:
                 return new Wait(15);
