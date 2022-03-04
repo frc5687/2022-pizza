@@ -190,7 +190,7 @@ public class Robot extends OutliersRobot {
             reader.close();
         } catch (Exception e) {
             // in case USB config isn't found
-            // _identityMode = OutliersContainer.IdentityMode.programming;
+            _identityMode = OutliersContainer.IdentityMode.programming;
         }
     }
 

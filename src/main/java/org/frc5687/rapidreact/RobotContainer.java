@@ -156,80 +156,43 @@ public class RobotContainer extends OutliersContainer {
 
         AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
+
+        Pose2d[] destinationsZeroBall = {};
+        Pose2d[] destinationsOneBall = {};
         
         switch(autoPosition) {
             case First:
-                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
-                switch(autoMode) {
-                    case ZeroBall:
-                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_ONE);
-                    case OneBall:
-                        return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_ONE);
-                }
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
+                destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_ONE;
+                destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_ONE;
+                break;
             case Second:
-                driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
-                switch(autoMode) {
-                    case ZeroBall:
-                    case OneBall:
-                }
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
+                destinationsZeroBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
+                destinationsOneBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
+                break;
             case Third:
-                driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
-                switch(autoMode) {
-                    case ZeroBall:
-                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_TWO);
-                    case OneBall:
-                }       return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_TWO);
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
+                destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_TWO;
+                destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_TWO;
+                break;
             case Fourth:
-                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
-                switch(autoMode) {
-                    case ZeroBall:
-                        return new ZeroBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_THREE);
-                    case OneBall:
-                        return new OneBallAuto(driveTrain, Constants.Auto.BallPositions.BALL_THREE);
-                }
+                _driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
+                destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                break;
+            default:
+                return new Wait(15);
         }
 
-        WaitCommand _waitOneSecondA;
-        WaitCommand _waitOneSecondB;
-        DeployIntake _deployIntake;
-        DriveToPose _driveToA;
-        DriveToPose _driveToB;
-
-        double _xPos; // meters
-        double _yPos; // meters
-        double _theta; // fractions of PI for radians
-        double _omega; // fractions of PI for radians
-        Double _velocity; // m/s
-        
-        // _waitOneSecondA = new WaitCommand(1.0);
-        _waitOneSecondB = new WaitCommand(1.0);
-        _deployIntake = new DeployIntake(intake);
-
-        //These are the balls' exact positions,
-        //be careful not to use ball3's position, or you'll run into the wall
-        Pose2d ball1 = new Pose2d(4.8, 6.2, new Rotation2d());
-        Pose2d ball2 = new Pose2d(5.1, 1.77, new Rotation2d());
-        Pose2d ball3 = new Pose2d(7.7, 0.28, new Rotation2d());
-
-        // destination A
-        _xPos = ball2.getX();
-        _yPos = ball2.getY();
-        _theta = 0.69;
-        _omega = 0.0;
-        _velocity = 0.1;
-
-        _driveToA = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-
-        // destination B
-        _xPos = 2.0;
-        _yPos = 2.0;
-        _theta = 0.69;
-        _omega = 0.0;
-        _velocity = 0.2;
-
-        _driveToB = getAutoDriveCommand(_xPos, _yPos, _theta, _omega, _velocity);
-
-        return _driveToA;
+        switch (autoMode) {
+            case ZeroBall:
+                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], new Rotation2d());
+            case OneBall:
+                return new OneBallAuto(driveTrain, destinationsOneBall[0], new Rotation2d());
+            default:
+                return new Wait(15);
+        }
 
     }
 
