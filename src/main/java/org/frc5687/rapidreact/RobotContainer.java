@@ -198,9 +198,9 @@ public class RobotContainer extends OutliersContainer {
 
         switch (autoMode) {
             case ZeroBall:
-                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], new Rotation2d());
+                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], rotationsZeroBall[0]);
             case OneBall:
-                return new OneBallAuto(driveTrain, destinationsOneBall[0], new Rotation2d());
+                return new OneBallAuto(driveTrain, destinationsOneBall[0], rotationsOneBall[0]);
             default:
                 return new Wait(15);
         }
