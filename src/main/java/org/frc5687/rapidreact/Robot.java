@@ -98,6 +98,7 @@ public class Robot extends OutliersRobot {
         _autoCommand = _robotContainer.getAutonomousCommand();
 
         // _fmsConnected = DriverStation.isFMSAttached();
+        _autoCommand = _robotContainer.getAutonomousCommand();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();
@@ -189,7 +190,7 @@ public class Robot extends OutliersRobot {
             reader.close();
         } catch (Exception e) {
             // in case USB config isn't found
-            // _identityMode = OutliersContainer.IdentityMode.programming;
+            _identityMode = OutliersContainer.IdentityMode.programming;
         }
     }
 
@@ -237,7 +238,8 @@ public class Robot extends OutliersRobot {
         _updateTick++;
         if (_updateTick >= Constants.TICKS_PER_UPDATE) {
             _updateTick = 0;
-            _robotContainer.updateDashboard();
+            //TODO: Uncomment
+            //_robotContainer.updateDashboard();
         }
     }
 }

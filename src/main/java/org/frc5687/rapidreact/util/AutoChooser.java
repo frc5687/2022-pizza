@@ -40,49 +40,39 @@ public class AutoChooser extends OutliersProxy {
         try {
             return Position.values()[raw];
         } catch (Exception e) {
-            return Position.LeftOneBall;
+            return Position.First;
         }
     }
 
     public void updateDashboard() {
-        metric("Label/Mode", getSelectedMode().getLabel());
         metric("Raw/Mode", _autoSwitch.getRaw());
         metric("Numeric/Mode", _autoSwitch.get());
-        metric("Label/Position", getSelectedPosition().getLabel());
         metric("Raw/Position", _positionSwitch.getRaw());
         metric("Numeric/Position", _positionSwitch.get());
+        
     }
 
     public enum Position {
-        LeftOneBall(0, "Left1ballT"), RightOneBall(1, "Right1ballT"), 
-        LeftTwoBall(2, "Left2ballT"), RightTwoBall(3, "Right2ballT");
+        First(0), Second(1), 
+        Third(2), Fourth(3);
 
-        private String _label;
         private int _value;
 
-        Position(int value, String label) {
+        Position(int value) {
             _value = value;
-            _label = label;
-//            _metric.put("Position", label);
         }
 
         public int getValue() {
             return _value;
         }
-
-        public String getLabel() {
-            return _label;
-        }
     }
     public enum Mode {
-        ZeroBall(0, "ZB"), OneBall(1, "ZB");
+        ZeroBall(0), OneBall(1);
 
-        private String _label;
         private int _value;
 
-        Mode(int value, String label) {
+        Mode(int value) {
             _value = value;
-            _label = label;
 //            _metric.put("Auto Mode", label);
         }
 
@@ -90,15 +80,6 @@ public class AutoChooser extends OutliersProxy {
             return _value;
         }
 
-        public String getLabel() {
-            return _label;
-        }
-    }
-
-    public String getPath(Mode mode, Position position) {
-        String pathMode = mode.getLabel();
-        String pathPosition = position.getLabel();
-        return "output/" + pathMode + pathPosition + ".wpilib.json";
     }
 }
 

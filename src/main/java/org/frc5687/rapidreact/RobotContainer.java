@@ -3,15 +3,19 @@ package org.frc5687.rapidreact;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.frc5687.rapidreact.config.Constants;
 
 // import org.frc5687.rapidreact.util.AutoChooser;
+import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
@@ -22,8 +26,11 @@ import org.frc5687.rapidreact.subsystems.Catapult;
 
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.AutoZeroBall;
-import org.frc5687.rapidreact.commands.auto.AutoOneBall;
+import org.frc5687.rapidreact.commands.auto.DeployIntake;
+import org.frc5687.rapidreact.commands.auto.DriveToPose;
+import org.frc5687.rapidreact.commands.auto.OneBallAuto;
+import org.frc5687.rapidreact.commands.auto.Wait;
+import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 
 /**
  * Define subsystems and commands, bind commands to triggering events (such as buttons),
@@ -37,7 +44,10 @@ public class RobotContainer extends OutliersContainer {
     private Robot _robot;
 
     private OI _oi;
-    // private AutoChooser _autoChooser;
+    private AutoChooser autoChooser;
+    AutoChooser.Position autoPosition;
+    AutoChooser.Mode autoMode;
+
     private AHRS _imu;
 
     public Catapult catapult;
@@ -112,13 +122,14 @@ public class RobotContainer extends OutliersContainer {
 
     public void periodic() {
         // Run every 20ms
+        updateDashboard();
     }
 
     // Helper methods
 
     /** Wrap DriveTrain.controllerPeriodic.
      * 
-     * <p> _driveTrain can be null during initial development
+     * <p> driveTrain can be null during initial development
     */
     public void controllerPeriodic() {
         if (driveTrain != null) {
@@ -147,32 +158,97 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-        SequentialCommandGroup _auto;
-        
-        // TODO: replace this with AutoChooser once we have a switch
+        // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
+        // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
 
-        // Choose which auto to run
-        switch(Constants.Auto.AUTO_MODE) {
-            case ZERO_BALL:
-                _auto = new AutoZeroBall(this);
+        autoPosition = AutoChooser.Position.Fourth;
+        autoMode = AutoChooser.Mode.OneBall;
+
+        Pose2d[] destinationsZeroBall = { new Pose2d() };
+        Pose2d[] destinationsOneBall = { new Pose2d() };
+        
+        switch(autoPosition) {
+            case First:
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
+                destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_ONE;
+                destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_ONE;
                 break;
-            case ONE_BALL:
-                _auto = new AutoOneBall(this);
+            case Second:
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
+                destinationsZeroBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
+                destinationsOneBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
+                break;
+            case Third:
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
+                destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_TWO;
+                destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_TWO;
+                break;
+            case Fourth:
+                driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
+                destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
                 break;
             default:
-                _auto = new AutoZeroBall(this);
+                return new Wait(15);
         }
 
-        return _auto;
+        switch (autoMode) {
+            case ZeroBall:
+                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], new Rotation2d());
+            case OneBall:
+                return new OneBallAuto(driveTrain, destinationsOneBall[0], new Rotation2d());
+            default:
+                return new Wait(15);
+        }
 
+    }
+
+    /**
+     * Return a drive to destination command
+     * 
+     * @param xPos
+     * @param yPos
+     * @param theta
+     * @param omega
+     * @param velocity
+     * @return new DriveAuto
+     */
+    public DriveToPose getAutoDriveCommand(
+        double xPos,
+        double yPos,
+        double theta,
+        double omega,
+        double velocity
+        ) {
+
+        Pose2d _wayPoint; // contains xPos, yPos and theta
+        Rotation2d _heading; // uses omega
+        double _theta;
+        double _omega;
+
+        _theta = theta/* Math.PI*/;
+        _omega = omega/* Math.PI*/;
+
+        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
+        _heading = new Rotation2d(_omega);
+    
+        return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
     }
 
     @Override
     public void updateDashboard() {
-        // Update driver station to show what driveTrain is doing
-        driveTrain.updateDashboard();
-        // TODO: is this right place to AutoChooser.updateDashboard()?
-        // metric("AutoChooser", _autoChooser.getSelectedMode().getValue());
-        // _autoChooser.updateDashboard();
+        // Updates the driver station
+        if (driveTrain != null) {
+            driveTrain.updateDashboard();
+        }
+        if (autoChooser != null) {
+            autoChooser.updateDashboard();
+        }
+        if (autoPosition != null) {
+            metric("Auto Position", autoPosition.name());
+        }
+        if (autoMode != null) {
+            metric("Auto Mode", autoMode.name());
+        }
     }
 }
