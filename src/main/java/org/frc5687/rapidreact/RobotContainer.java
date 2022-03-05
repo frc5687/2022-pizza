@@ -80,7 +80,7 @@ public class RobotContainer extends OutliersContainer {
 
         // Starting position chooser
         SmartDashboard.putString("DB/String 0", "Starting Position:");
-        SmartDashboard.putString("DB/String 5", "3");
+        SmartDashboard.putString("DB/String 5", "three");
 
         // Auto mode chooser
         // m_chooser_mode = new SendableChooser<>();
@@ -173,20 +173,19 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-
-        String _autoposition = SmartDashboard.getString("DB/String 5", "3");
+        String _autoposition = SmartDashboard.getString("DB/String 5", "three");
 
         switch(_autoposition) {
-            case "1":
+            case "one":
                 autoPosition = AutoChooser.Position.First;
                 break;
-            case "2":
+            case "two":
                 autoPosition = AutoChooser.Position.Second;
                 break;
-            case "3":
+            case "three":
                 autoPosition = AutoChooser.Position.Third;
                 break;
-            case "4":
+            case "four":
                 autoPosition = AutoChooser.Position.Fourth;
                 break;
             default:

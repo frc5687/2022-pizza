@@ -98,7 +98,6 @@ public class Robot extends OutliersRobot {
         _autoCommand = _robotContainer.getAutonomousCommand();
 
         // _fmsConnected = DriverStation.isFMSAttached();
-        _autoCommand = _robotContainer.getAutonomousCommand();
         _robotContainer.autonomousInit();
         if (_autoCommand != null) {
             _autoCommand.schedule();
