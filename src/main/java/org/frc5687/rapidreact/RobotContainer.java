@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import org.frc5687.rapidreact.config.Constants;
 
@@ -166,6 +165,8 @@ public class RobotContainer extends OutliersContainer {
 
         Pose2d[] destinationsZeroBall = { new Pose2d() };
         Pose2d[] destinationsOneBall = { new Pose2d() };
+        Rotation2d[] rotationsZeroBall = { new Rotation2d() };
+        Rotation2d[] rotationsOneBall = { new Rotation2d() };
         
         switch(autoPosition) {
             case First:
@@ -187,6 +188,8 @@ public class RobotContainer extends OutliersContainer {
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
                 destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                rotationsZeroBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
+                rotationsOneBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
                 break;
             default:
                 return new Wait(15);
@@ -194,9 +197,9 @@ public class RobotContainer extends OutliersContainer {
 
         switch (autoMode) {
             case ZeroBall:
-                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], new Rotation2d());
+                return new ZeroBallAuto(driveTrain, destinationsZeroBall[0], rotationsZeroBall[0]);
             case OneBall:
-                return new OneBallAuto(driveTrain, destinationsOneBall[0], new Rotation2d());
+                return new OneBallAuto(driveTrain, destinationsOneBall[0], rotationsOneBall[0]);
             default:
                 return new Wait(15);
         }
@@ -213,27 +216,27 @@ public class RobotContainer extends OutliersContainer {
      * @param velocity
      * @return new DriveAuto
      */
-    public DriveToPose getAutoDriveCommand(
-        double xPos,
-        double yPos,
-        double theta,
-        double omega,
-        double velocity
-        ) {
+    // public DriveToPose getAutoDriveCommand(
+    //     double xPos,
+    //     double yPos,
+    //     double theta,
+    //     double omega,
+    //     double velocity
+    //     ) {
 
-        Pose2d _wayPoint; // contains xPos, yPos and theta
-        Rotation2d _heading; // uses omega
-        double _theta;
-        double _omega;
+    //     Pose2d _wayPoint; // contains xPos, yPos and theta
+    //     Rotation2d _heading; // uses omega
+    //     double _theta;
+    //     double _omega;
 
-        _theta = theta/* Math.PI*/;
-        _omega = omega/* Math.PI*/;
+    //     _theta = theta/* Math.PI*/;
+    //     _omega = omega/* Math.PI*/;
 
-        _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
-        _heading = new Rotation2d(_omega);
+    //     _wayPoint = new Pose2d(xPos, yPos, new Rotation2d(_theta));
+    //     _heading = new Rotation2d(_omega);
     
-        return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
-    }
+    //     return new DriveToPose(driveTrain, xPos, yPos, _theta, _omega, velocity);
+    // }
 
     @Override
     public void updateDashboard() {

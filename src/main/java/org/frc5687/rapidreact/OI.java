@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.frc5687.rapidreact.config.JoystickMap;
 import org.frc5687.rapidreact.config.Constants;
 
-import org.frc5687.rapidreact.commands.auto.AutoOneBall;
 import org.frc5687.rapidreact.commands.DeployIntakeOI;
 
 import org.frc5687.rapidreact.util.Gamepad;
@@ -115,9 +114,9 @@ public class OI extends OutliersProxy {
     public void initializeButtons(RobotContainer robot) {
         // We may or may not have assigned each command to a button.
         // So check for null before initializing button method.
-        if (_autoRun != null) {
-            _autoRun.whenPressed(new AutoOneBall(robot));
-        }
+        // if (_autoRun != null) {
+        //     _autoRun.whenPressed(new AutoOneBall(robot));
+        // }
         if (_intakeDeploy != null) {
             _intakeDeploy.whenHeld(new DeployIntakeOI(robot.intake));
         }

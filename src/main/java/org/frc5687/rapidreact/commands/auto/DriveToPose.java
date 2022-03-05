@@ -7,37 +7,31 @@ import org.frc5687.rapidreact.subsystems.DriveTrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/** Drive in autonomous mode (i.e., no OI control) to a field-relative pose. */
+/**
+ * Drive in autonomous mode (i.e., no OI control) to a field-relative pose.
+ */
 public class DriveToPose extends OutliersCommand {
 
-    private final DriveTrain _driveTrain;
-
     private final Pose2d _destination;
-    private Rotation2d _heading;
+    private final DriveTrain _driveTrain;
+    // private final SlewRateLimiter _vxFilter;
+    // private final SlewRateLimiter _vyFilter;
+
     private Double _velocity;
 
-    /** Create DriveToPose command
+    /**
+     * Create DriveAuto command
      * 
      * @param driveTrain pass in from RobotContainer
-     * @param xPos meters
-     * @param yPos meters
-     * @param theta fraction of radians
-     * @param omega fraction of radians
+     * @param pose xPos in meters, yPos in meters, theta in radians
      * @param velocity m/s
      */
     public DriveToPose(
         DriveTrain driveTrain,
-        double xPos,
-        double yPos,
-        double theta,
-        double omega,
+        Pose2d pose,
         double velocity) {
-
         _driveTrain = driveTrain;
-        double _theta = theta * Math.PI;
-        double _omega = omega * Math.PI;
-        _destination = new Pose2d(xPos, yPos, new Rotation2d(_theta));
-        _heading = new Rotation2d(_omega);
+        _destination = pose;
         _velocity = velocity;
         addRequirements(_driveTrain);
     }
@@ -53,20 +47,14 @@ public class DriveToPose extends OutliersCommand {
         super.execute();
 
         /**
-         * According to HolonomicDriveController:
-         * 
-         * Positive X is away from your alliance wall.
-         * Positive Y is to your left when standing behind your alliance wall.
-         * Robot's angle is considered 0 when it is facing directly away
-         * from your alliance wall.
-         * Turning left (CCW) is positive.
+         * Based on observation, appears that
          * 
          *             North = +X
          *  West = +Y              East = -Y
          *             South = -X
          */
 
-        _driveTrain.poseFollower(_destination, _heading, _velocity);
+        _driveTrain.poseFollower(_destination, _velocity);
     }
 
     @Override
