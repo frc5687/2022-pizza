@@ -179,12 +179,16 @@ public class RobotContainer extends OutliersContainer {
         switch(_autoposition) {
             case "1":
                 autoPosition = AutoChooser.Position.First;
+                break;
             case "2":
                 autoPosition = AutoChooser.Position.Second;
+                break;
             case "3":
                 autoPosition = AutoChooser.Position.Third;
+                break;
             case "4":
                 autoPosition = AutoChooser.Position.Fourth;
+                break;
             default:
                 autoPosition = AutoChooser.Position.Unknown;         
         }
@@ -194,8 +198,10 @@ public class RobotContainer extends OutliersContainer {
         switch(_automode) {
             case "Zero Ball":
                 autoMode = AutoChooser.Mode.ZeroBall;
+                break;
             case "One Ball":
                 autoMode = AutoChooser.Mode.OneBall;
+                break;
             case "Two Ball":
             case "Three Ball":
             case "Four Ball":
