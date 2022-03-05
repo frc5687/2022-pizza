@@ -91,7 +91,7 @@ public class RobotContainer extends OutliersContainer {
 
         // Auto mode chooser
         m_chooser_mode = new SendableChooser<>();
-        String [] modes = { "Zero Ball", "One Ball" };
+        String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
         SmartDashboard.putStringArray("Auto List", modes);
 
         _oi = new OI();
@@ -125,6 +125,23 @@ public class RobotContainer extends OutliersContainer {
     public void autonomousInit() {
         // Run once when entering auto mode
         info("Running RobotContainer.autonomousInit()");
+
+        String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball")
+
+        String _autostate = _automode;
+
+        /*
+        switch(_automode) {
+            case "One Ball":
+            case "Two Ball":
+            case "Three Ball":
+            case "Four Ball":
+            case "Five Ball":
+            default:
+
+        } */
+
+        metric("Auto Mode", _autostate);
 
         // Set state of subsystems
         indexer.setState(Indexer.IndexerState.DEPLOYED);
