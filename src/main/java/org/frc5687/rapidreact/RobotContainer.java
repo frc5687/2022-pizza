@@ -173,22 +173,28 @@ public class RobotContainer extends OutliersContainer {
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.FIRST);
                 destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_ONE;
                 destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_ONE;
+                rotationsZeroBall[0] = new Rotation2d();
+                rotationsOneBall[0] = new Rotation2d();
                 break;
             case Second:
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.SECOND);
                 destinationsZeroBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.ROBOT_POS_TWO_DEST;
+                rotationsZeroBall[0] = new Rotation2d();
+                rotationsOneBall[0] = new Rotation2d();
                 break;
             case Third:
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.THIRD);
                 destinationsZeroBall[0] = Constants.Auto.BallPositions.BALL_TWO;
                 destinationsOneBall[0] = Constants.Auto.BallPositions.BALL_TWO;
+                rotationsZeroBall[0] = new Rotation2d();
+                rotationsOneBall[0] = new Rotation2d();
                 break;
             case Fourth:
                 driveTrain.resetOdometry(Constants.Auto.RobotPositions.FOURTH);
-                destinationsZeroBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
+                destinationsZeroBall[0] = Constants.Auto.FieldPositions.PARALLEL_PARK;
                 destinationsOneBall[0] = Constants.Auto.FieldPositions.SAFE_BALL_THREE;
-                rotationsZeroBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
+                rotationsZeroBall[0] = new Rotation2d();
                 rotationsOneBall[0] = Constants.Auto.Rotations.BALL_THREE_FROM_FOURTH;
                 break;
             default:
