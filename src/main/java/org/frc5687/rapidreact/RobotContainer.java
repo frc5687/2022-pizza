@@ -78,10 +78,6 @@ public class RobotContainer extends OutliersContainer {
     public void init() {
         info("Running RobotContainer.init()");
 
-        // Starting position chooser
-        SmartDashboard.putString("DB/String 0", "Starting Position:");
-        SmartDashboard.putString("DB/String 5", "three");
-
         // Auto mode chooser
         // m_chooser_mode = new SendableChooser<>();
         String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
@@ -173,26 +169,24 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-        Boolean _positionKey = SmartDashboard.containsKey("DB/String 5");
-        metric("Dashboard contains key DB/String 5", _positionKey);
+        Boolean _positionOne = SmartDashboard.getBoolean("DB/Button 0", false);
+        Boolean _positionTwo = SmartDashboard.getBoolean("DB/Button 1", false);
+        Boolean _positionThree = SmartDashboard.getBoolean("DB/Button 2", false);
+        Boolean _positionFour = SmartDashboard.getBoolean("DB/Button 3", false);
 
-        String _autoposition = SmartDashboard.getString("DB/String 5", "bogus");
-
-        switch(_autoposition) {
-            case "one":
-                autoPosition = AutoChooser.Position.First;
-                break;
-            case "two":
-                autoPosition = AutoChooser.Position.Second;
-                break;
-            case "three":
-                autoPosition = AutoChooser.Position.Third;
-                break;
-            case "four":
-                autoPosition = AutoChooser.Position.Fourth;
-                break;
-            default:
-                autoPosition = AutoChooser.Position.Unknown;         
+        // Set position to highest value that is selected
+        autoPosition = AutoChooser.Position.Unknown;
+        if (_positionOne) {
+            autoPosition = AutoChooser.Position.First;
+        }
+        if (_positionTwo) {
+            autoPosition = AutoChooser.Position.Second;
+        }
+        if (_positionThree) {
+            autoPosition = AutoChooser.Position.Third;
+        }
+        if (_positionFour) {
+            autoPosition = AutoChooser.Position.Fourth;
         }
 
         String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
