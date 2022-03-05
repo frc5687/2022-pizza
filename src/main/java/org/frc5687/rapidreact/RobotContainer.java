@@ -119,20 +119,6 @@ public class RobotContainer extends OutliersContainer {
         // Run once when entering auto mode
         info("Running RobotContainer.autonomousInit()");
 
-        String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
-        /*
-        switch(_automode) {
-            case "One Ball":
-            case "Two Ball":
-            case "Three Ball":
-            case "Four Ball":
-            case "Five Ball":
-            default:
-                // Zero Ball
-        } */
-
-        metric("Auto Mode", _automode);
-
         // Set state of subsystems
         indexer.setState(Indexer.IndexerState.DEPLOYED);
         intake.setState(Intake.IntakeState.STOWED);
@@ -187,11 +173,42 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
+
+        String _autoposition = SmartDashboard.getString("DB/String 5", "3");
+
+        switch(_autoposition) {
+            case "1":
+                autoPosition = AutoChooser.Position.First;
+            case "2":
+                autoPosition = AutoChooser.Position.Second;
+            case "3":
+                autoPosition = AutoChooser.Position.Third;
+            case "4":
+                autoPosition = AutoChooser.Position.Fourth;
+            default:
+                autoPosition = AutoChooser.Position.Unknown;         
+        }
+
+        String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
+        
+        switch(_automode) {
+            case "Zero Ball":
+                autoMode = AutoChooser.Mode.ZeroBall;
+            case "One Ball":
+                autoMode = AutoChooser.Mode.OneBall;
+            case "Two Ball":
+            case "Three Ball":
+            case "Four Ball":
+            case "Five Ball":
+            default:
+                autoMode = AutoChooser.Mode.Unknown;
+        }
+
         // AutoChooser.Position autoPosition = _autoChooser.getSelectedPosition();
         // AutoChooser.Mode autoMode = _autoChooser.getSelectedMode();
 
-        autoPosition = AutoChooser.Position.Fourth;
-        autoMode = AutoChooser.Mode.OneBall;
+        // autoPosition = AutoChooser.Position.Fourth;
+        // autoMode = AutoChooser.Mode.OneBall;
 
         Pose2d[] destinationsZeroBall = { new Pose2d() };
         Pose2d[] destinationsOneBall = { new Pose2d() };
