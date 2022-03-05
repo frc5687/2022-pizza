@@ -7,16 +7,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import org.frc5687.rapidreact.config.Constants;
 
-// import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
@@ -28,8 +25,6 @@ import org.frc5687.rapidreact.subsystems.Catapult;
 
 import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
-import org.frc5687.rapidreact.commands.auto.DeployIntake;
-import org.frc5687.rapidreact.commands.auto.DriveToPose;
 import org.frc5687.rapidreact.commands.auto.OneBallAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
 import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
@@ -44,10 +39,6 @@ import org.frc5687.rapidreact.commands.auto.ZeroBallAuto;
 public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
-
-    // Choosers for starting position and auto mode
-    private SendableChooser<Pose2d> m_chooser_position;
-    private SendableChooser<Command> m_chooser_mode;
 
     private AutoChooser autoChooser;
     AutoChooser.Position autoPosition;
@@ -82,8 +73,12 @@ public class RobotContainer extends OutliersContainer {
         SmartDashboard.putString("DB/String 0", "Starting Position:");
         SmartDashboard.putString("DB/String 5", "Unknown");
 
+        // Display auto mode value
+        SmartDashboard.putString("DB/String 1", "Auto Mode:");
+        String _automodeString = SmartDashboard.getString("Auto Selector", "Unknown");
+        SmartDashboard.putString("DB/String 6", _automodeString);
+
         // Auto mode chooser
-        // m_chooser_mode = new SendableChooser<>();
         String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
         SmartDashboard.putStringArray("Auto List", modes);
 
@@ -138,6 +133,7 @@ public class RobotContainer extends OutliersContainer {
     public void periodic() {
         // Run every 20ms
 
+        // Check starting position buttons
         Boolean _positionOne = SmartDashboard.getBoolean("DB/Button 0", false);
         Boolean _positionTwo = SmartDashboard.getBoolean("DB/Button 1", false);
         Boolean _positionThree = SmartDashboard.getBoolean("DB/Button 2", false);
@@ -164,6 +160,10 @@ public class RobotContainer extends OutliersContainer {
         if (autoPosition == AutoChooser.Position.Unknown) {
             SmartDashboard.putString("DB/String 5", "Unknown");
         }
+
+        // Display auto mode selector
+        String _automodeString = SmartDashboard.getString("Auto Selector", "Unknown");
+        SmartDashboard.putString("DB/String 6", _automodeString);
 
         updateDashboard();
     }
