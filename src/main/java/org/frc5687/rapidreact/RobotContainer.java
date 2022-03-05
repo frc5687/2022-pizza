@@ -78,6 +78,10 @@ public class RobotContainer extends OutliersContainer {
     public void init() {
         info("Running RobotContainer.init()");
 
+        // Display starting position value
+        SmartDashboard.putString("DB/String 0", "Starting Position:");
+        SmartDashboard.putString("DB/String 5", "Unknown");
+
         // Auto mode chooser
         // m_chooser_mode = new SendableChooser<>();
         String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
@@ -133,6 +137,34 @@ public class RobotContainer extends OutliersContainer {
 
     public void periodic() {
         // Run every 20ms
+
+        Boolean _positionOne = SmartDashboard.getBoolean("DB/Button 0", false);
+        Boolean _positionTwo = SmartDashboard.getBoolean("DB/Button 1", false);
+        Boolean _positionThree = SmartDashboard.getBoolean("DB/Button 2", false);
+        Boolean _positionFour = SmartDashboard.getBoolean("DB/Button 3", false);
+
+        // Set position to highest value that is selected
+        autoPosition = AutoChooser.Position.Unknown;
+        if (_positionOne) {
+            autoPosition = AutoChooser.Position.First;
+            SmartDashboard.putString("DB/String 5", "One");
+        }
+        if (_positionTwo) {
+            autoPosition = AutoChooser.Position.Second;
+            SmartDashboard.putString("DB/String 5", "Two");
+        }
+        if (_positionThree) {
+            autoPosition = AutoChooser.Position.Third;
+            SmartDashboard.putString("DB/String 5", "Three");
+        }
+        if (_positionFour) {
+            autoPosition = AutoChooser.Position.Fourth;
+            SmartDashboard.putString("DB/String 5", "Four");
+        }
+        if (autoPosition == AutoChooser.Position.Unknown) {
+            SmartDashboard.putString("DB/String 5", "Unknown");
+        }
+
         updateDashboard();
     }
 
@@ -168,26 +200,6 @@ public class RobotContainer extends OutliersContainer {
      * @return SequentialCommandGroup
     */
     public Command getAutonomousCommand() {
-
-        Boolean _positionOne = SmartDashboard.getBoolean("DB/Button 0", false);
-        Boolean _positionTwo = SmartDashboard.getBoolean("DB/Button 1", false);
-        Boolean _positionThree = SmartDashboard.getBoolean("DB/Button 2", false);
-        Boolean _positionFour = SmartDashboard.getBoolean("DB/Button 3", false);
-
-        // Set position to highest value that is selected
-        autoPosition = AutoChooser.Position.Unknown;
-        if (_positionOne) {
-            autoPosition = AutoChooser.Position.First;
-        }
-        if (_positionTwo) {
-            autoPosition = AutoChooser.Position.Second;
-        }
-        if (_positionThree) {
-            autoPosition = AutoChooser.Position.Third;
-        }
-        if (_positionFour) {
-            autoPosition = AutoChooser.Position.Fourth;
-        }
 
         String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
         
