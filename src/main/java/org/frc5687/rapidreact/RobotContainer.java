@@ -5,7 +5,10 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -42,10 +45,15 @@ public class RobotContainer extends OutliersContainer {
 
     private Robot _robot;
 
-    private OI _oi;
+    // Choosers for starting position and auto mode
+    private SendableChooser<Pose2d> m_chooser_position;
+    private SendableChooser<Command> m_chooser_mode;
+
     private AutoChooser autoChooser;
     AutoChooser.Position autoPosition;
     AutoChooser.Mode autoMode;
+
+    private OI _oi;
 
     private AHRS _imu;
 
@@ -70,8 +78,21 @@ public class RobotContainer extends OutliersContainer {
     public void init() {
         info("Running RobotContainer.init()");
 
+        // Starting position chooser
+        m_chooser_position = new SendableChooser<>();
+        // Add commands to the autonomous command chooser
+        m_chooser_position.setDefaultOption("Position 1", Constants.Auto.RobotPositions.FIRST);
+        m_chooser_position.addOption("Position 2", Constants.Auto.RobotPositions.SECOND);
+        m_chooser_position.addOption("Position 3", Constants.Auto.RobotPositions.THIRD);
+        m_chooser_position.addOption("Position 4", Constants.Auto.RobotPositions.FOURTH);
+
+        // Put the chooser on the dashboard
+        SmartDashboard.putData(m_chooser_position);
+
+        // Auto mode chooser
+        m_chooser_mode = new SendableChooser<>();
+
         _oi = new OI();
-        // _autoChooser = new AutoChooser();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
 
         // Create subsystems
