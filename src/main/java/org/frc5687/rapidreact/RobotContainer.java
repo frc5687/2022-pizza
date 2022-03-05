@@ -173,7 +173,10 @@ public class RobotContainer extends OutliersContainer {
     */
     public Command getAutonomousCommand() {
 
-        String _autoposition = SmartDashboard.getString("DB/String 5", "three");
+        Boolean _positionKey = SmartDashboard.containsKey("DB/String 5");
+        metric("Dashboard contains key DB/String 5", _positionKey);
+
+        String _autoposition = SmartDashboard.getString("DB/String 5", "bogus");
 
         switch(_autoposition) {
             case "one":
