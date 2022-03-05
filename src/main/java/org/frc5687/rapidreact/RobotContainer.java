@@ -91,6 +91,8 @@ public class RobotContainer extends OutliersContainer {
 
         // Auto mode chooser
         m_chooser_mode = new SendableChooser<>();
+        String [] modes = { "Zero Ball", "One Ball" };
+        SmartDashboard.putStringArray("Auto List", modes);
 
         _oi = new OI();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
