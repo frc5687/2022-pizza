@@ -248,9 +248,9 @@ public class DriveTrain extends OutliersSubsystem {
     }
 
     /** Turn to a given heading */
-    public void snap(Rotation2d theta){
-        poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
-    }
+    // public void snap(Rotation2d theta){
+    //     poseFollower(_odometry.getPoseMeters(), theta, Constants.SnapPose.SNAP_LRF);
+    // }
 
     /** Control each swerve module to reach the desired pose and velocity
      * 
@@ -260,7 +260,7 @@ public class DriveTrain extends OutliersSubsystem {
      * @param heading omega in radians
      * @param vel in m/s
      */
-    public void poseFollower(Pose2d pose, Rotation2d heading, double vel) {
+    public void poseFollower(Pose2d pose, double vel) {
         ChassisSpeeds adjustedSpeeds = _controller.calculate(_odometry.getPoseMeters(), pose, vel, pose.getRotation());
         SwerveModuleState[] moduleStates = _kinematics.toSwerveModuleStates(adjustedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.DriveTrain.MAX_MPS);

@@ -17,7 +17,6 @@ public class DriveToPose extends OutliersCommand {
     // private final SlewRateLimiter _vxFilter;
     // private final SlewRateLimiter _vyFilter;
 
-    private Rotation2d _heading;
     private Double _velocity;
 
     /**
@@ -25,17 +24,14 @@ public class DriveToPose extends OutliersCommand {
      * 
      * @param driveTrain pass in from RobotContainer
      * @param pose xPos in meters, yPos in meters, theta in radians
-     * @param heading omega in radians
      * @param velocity m/s
      */
     public DriveToPose(
         DriveTrain driveTrain,
         Pose2d pose,
-        Rotation2d heading,
         double velocity) {
         _driveTrain = driveTrain;
         _destination = pose;
-        _heading = heading;
         _velocity = velocity;
         addRequirements(_driveTrain);
     }
@@ -58,7 +54,7 @@ public class DriveToPose extends OutliersCommand {
          *             South = -X
          */
 
-        _driveTrain.poseFollower(_destination, _heading, _velocity);
+        _driveTrain.poseFollower(_destination, _velocity);
     }
 
     @Override

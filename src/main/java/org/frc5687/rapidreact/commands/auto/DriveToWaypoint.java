@@ -73,7 +73,7 @@ public class DriveToWaypoint extends OutliersCommand {
 
          // TODO: fix this to use Pose and Vector for destination
 
-        _driveTrain.poseFollower(_destination, _heading, _velocity);
+        _driveTrain.poseFollower(_destination, _velocity);
     }
 
     @Override

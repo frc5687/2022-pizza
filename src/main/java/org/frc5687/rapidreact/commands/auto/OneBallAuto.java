@@ -22,7 +22,7 @@ public class OneBallAuto extends SequentialCommandGroup{
         _newPose = new Pose2d(destination.getX(), destination.getY(), _rotation);
         addCommands(
             //shoot
-            new DriveToPose(driveTrain, _newPose, new Rotation2d(0.0), 0.2)
+            new DriveToPose(driveTrain, _newPose, 0.2)
         );
     }
 }
