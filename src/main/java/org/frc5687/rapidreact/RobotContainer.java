@@ -79,18 +79,11 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.init()");
 
         // Starting position chooser
-        m_chooser_position = new SendableChooser<>();
-        // Add commands to the autonomous command chooser
-        m_chooser_position.setDefaultOption("Position 1", Constants.Auto.RobotPositions.FIRST);
-        m_chooser_position.addOption("Position 2", Constants.Auto.RobotPositions.SECOND);
-        m_chooser_position.addOption("Position 3", Constants.Auto.RobotPositions.THIRD);
-        m_chooser_position.addOption("Position 4", Constants.Auto.RobotPositions.FOURTH);
-
-        // Put the chooser on the dashboard
-        SmartDashboard.putData(m_chooser_position);
+        SmartDashboard.putString("DB/String 0", "Starting Position:");
+        SmartDashboard.putString("DB/String 5", "3");
 
         // Auto mode chooser
-        m_chooser_mode = new SendableChooser<>();
+        // m_chooser_mode = new SendableChooser<>();
         String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
         SmartDashboard.putStringArray("Auto List", modes);
 
@@ -127,9 +120,6 @@ public class RobotContainer extends OutliersContainer {
         info("Running RobotContainer.autonomousInit()");
 
         String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
-
-        String _autostate = _automode;
-
         /*
         switch(_automode) {
             case "One Ball":
@@ -138,10 +128,10 @@ public class RobotContainer extends OutliersContainer {
             case "Four Ball":
             case "Five Ball":
             default:
-
+                // Zero Ball
         } */
 
-        metric("Auto Mode", _autostate);
+        metric("Auto Mode", _automode);
 
         // Set state of subsystems
         indexer.setState(Indexer.IndexerState.DEPLOYED);
