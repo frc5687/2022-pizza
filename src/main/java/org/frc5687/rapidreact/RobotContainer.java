@@ -126,7 +126,7 @@ public class RobotContainer extends OutliersContainer {
         // Run once when entering auto mode
         info("Running RobotContainer.autonomousInit()");
 
-        String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball")
+        String _automode = SmartDashboard.getString("Auto Selector", "Zero Ball");
 
         String _autostate = _automode;
 
