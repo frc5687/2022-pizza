@@ -25,3 +25,17 @@ Copy log file from roboRio
 ## view console errors in Driver Station
 
 The problem is that if code panics, it automatically restarts. This makes it impossible to use consoler to see what the error is b/c it keeps scrolling off the screen and there is no way to pause. Solution is to jump off WiFi so console doesn't keep getting updated. Then you can see the errors in console without it scrolling on you.
+
+## See current log on roboRio
+
+The current session log is at
+
+/var/local/natinst/log/FRC_UserProgram.log
+
+To filter out all the navX-Sensor messages,
+
+grep -Ev '(navX-Sensor)' FRC_UserProgram.log | more
+
+To get just the info and debug messages,
+
+grep -E '(info|debug)' FRC_UserProgram.log | more
