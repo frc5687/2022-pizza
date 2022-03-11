@@ -16,6 +16,7 @@ import org.frc5687.rapidreact.config.Constants;
 
 import org.frc5687.rapidreact.util.AutoChooser;
 import org.frc5687.rapidreact.util.OutliersContainer;
+import org.frc5687.rapidreact.util.Version;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
@@ -81,6 +82,10 @@ public class RobotContainer extends OutliersContainer {
         // Auto mode chooser
         String [] modes = { "Zero Ball", "One Ball", "Two Ball", "Three Ball", "Four Ball", "Five Ball" };
         SmartDashboard.putStringArray("Auto List", modes);
+
+        // Code branch and version running
+        SmartDashboard.putString("DB/String 2", Version.BRANCH);
+        SmartDashboard.putString("DB/String 7", Version.REVISION);
 
         _oi = new OI();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
