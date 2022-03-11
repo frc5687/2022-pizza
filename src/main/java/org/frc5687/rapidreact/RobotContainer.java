@@ -112,6 +112,7 @@ public class RobotContainer extends OutliersContainer {
     @Override
     public void disabledInit() {
         // Run once when entering disabled mode
+        debug("Starting RobotContainer.disabledInit()");
     }
 
     @Override
