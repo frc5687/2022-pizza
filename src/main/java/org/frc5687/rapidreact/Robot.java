@@ -51,9 +51,9 @@ public class Robot extends OutliersRobot {
      */
     @Override
     public void robotInit() {
+        loadConfigFromUSB();
         info("Running Robot.robotInit()");
 
-        loadConfigFromUSB();
         RioLogger.getInstance().init(_fileLogLevel, _dsLogLevel);
         LiveWindow.disableAllTelemetry();
         DriverStation.silenceJoystickConnectionWarning(true);
