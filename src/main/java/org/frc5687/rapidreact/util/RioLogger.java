@@ -124,8 +124,7 @@ public class RioLogger {
                 writeData(getDateTimeString(), level.toString(), source, message);
             }    
         } catch (Exception e) {
-            // TODO: figure out how to report an error here
-            DriverStation.reportError("Logging error", true);
+            DriverStation.reportError("Logging error:" + e.toString(), true);
             return;
         }
     }
