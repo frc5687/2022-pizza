@@ -316,4 +316,25 @@ public class Constants {
         }
 
     }
+
+    /**
+     * Constants for Maverick
+     */
+    public static class Maverick{
+        //Constants for controling Maverick
+        public static short numberOfWaypoints = 2; // Dropped down from four so Maverick doesn't overrun the position
+        public static double[] waypointsX = {12.10, 2.0, 0.0, 0.0};
+        public static double[] waypointsY = {3.67, 1.0, 0.0, 0.0};
+        public static double[] rotations = {2.0, 1.0, 0.0, 0.0};
+        public static double[] tolerences = {0.0, 0.0, 0.0, 0.0};
+        public static double[] speeds = {3.5, 3.5, 3.5, 3.5, 3.5};
+        public static boolean[] afterburner = {false, false, false, false};
+    }
+
+    /**
+     * Dimentions of the field
+     */
+    public static class Field{
+            //The fields mesurements
+    }
 }

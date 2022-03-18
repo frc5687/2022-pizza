@@ -21,6 +21,7 @@ import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
+import org.frc5687.rapidreact.subsystems.Maverick;
 import org.frc5687.rapidreact.subsystems.Catapult;
 
 import org.frc5687.rapidreact.commands.DriveOI;
@@ -52,6 +53,7 @@ public class RobotContainer extends OutliersContainer {
     public DriveTrain driveTrain;
     private Indexer indexer;
     public Intake intake;
+    public Maverick maverick;
 
     /** Create RobotContainer 
      * 
@@ -90,6 +92,7 @@ public class RobotContainer extends OutliersContainer {
         catapult = new Catapult(this);
         indexer = new Indexer(this);
         intake = new Intake(this);
+        maverick = new Maverick(this, driveTrain);
 
         _oi.initializeButtons(this);
 
