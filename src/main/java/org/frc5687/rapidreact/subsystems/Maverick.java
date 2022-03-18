@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class Maverick extends OutliersSubsystem{
 
     private DriveTrain _driveTrain;
+    private Pose2d destnation;
     
     public Maverick(OutliersContainer container, DriveTrain driveTrain){
         super(container);
@@ -51,7 +52,7 @@ public class Maverick extends OutliersSubsystem{
         }
     }
     
-    public void wayPointMove(Pose2d destnation){
+    public void wayPointMove(){
         //Iterate through all of the waypoints
         metric("MAVERICK", "Running");
         for(int i = 0; i < Constants.Maverick.numberOfWaypoints; i++){
@@ -65,6 +66,14 @@ public class Maverick extends OutliersSubsystem{
             _driveTrain.poseFollower(destnation, Constants.Maverick.speeds[i]);
         }
         metric("MAVERICK", "Move(s) Complete");
+    }
+
+    /**
+     * Check to see if the robot is at the set pose
+     * @return true if at pose / false if at pose
+     */
+    public boolean isAtPose(){
+        return _driveTrain.MaverickDone(destnation);
     }
 
 

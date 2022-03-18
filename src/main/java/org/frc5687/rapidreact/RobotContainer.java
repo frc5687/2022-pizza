@@ -24,7 +24,6 @@ import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.subsystems.Maverick;
 import org.frc5687.rapidreact.subsystems.Catapult;
 
-import org.frc5687.rapidreact.commands.DriveOI;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.OneBallAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
@@ -94,10 +93,9 @@ public class RobotContainer extends OutliersContainer {
         intake = new Intake(this);
         maverick = new Maverick(this, driveTrain);
 
-        _oi.initializeButtons(this);
+        _oi.initializeButtons(this, maverick);
 
         // What command to run if nothing else is scheduled for driveTrain
-        setDefaultCommand(driveTrain, new DriveOI(driveTrain, _oi));
 
         // Run the control loop for each individual swerve drive unit every 5 ms.
         // DriveTrain has four DiffSwerveModules.

@@ -282,6 +282,21 @@ public class DriveTrain extends OutliersSubsystem {
         return (rotation == theta);
     }
 
+    /**
+     * Check to see if Maverick is at the correct pose
+     * @param destnation the end goal position
+     * @return true if at possition / false if not at position
+     */
+    public boolean MaverickDone(Pose2d destnation){
+        Pose2d cPose =  _odometry.getPoseMeters(); 
+        if(cPose == destnation){
+            //Is the robots position equal to the Maverick supplied destenation
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /** Check if robot is at pose
      * 
      * <p> NOTE: set TOLERANCE in Constants
