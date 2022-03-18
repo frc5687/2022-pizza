@@ -16,7 +16,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.frc5687.rapidreact.Constants;
+
+import org.frc5687.rapidreact.config.Constants;
 import org.frc5687.rapidreact.util.Helpers;
 
 /**

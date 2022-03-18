@@ -1,11 +1,14 @@
 /* Team 5687 (C)2021-2022 */
-package org.frc5687.rapidreact.commands;
+package org.frc5687.rapidreact.commands.auto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
+
+import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 
+/** Drive in autonomous mode (i.e., no OI control) following a trajectory. */
 public class DriveTrajectory extends OutliersCommand {
 
     private final DriveTrain _driveTrain;
