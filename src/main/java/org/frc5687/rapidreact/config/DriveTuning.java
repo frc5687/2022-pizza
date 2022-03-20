@@ -34,7 +34,7 @@ public class DriveTuning {
     public static final double DEADBAND_ROTATION = 0.2;
 
     // Maximum rates of motion
-    public static final double MAX_MPS = 1.5; // Max speed of robot (m/s)
+    public static final double MAX_MPS = 3.5; // Max speed of robot (m/s)
     public static final double MAX_ANG_VEL = Math.PI * 1.5; // Max rotation rate of robot (rads/s)
     public static final double MAX_MPSS = 0.5; // Max acceleration of robot (m/s^2)
     public static final double SLEW_LIMIT_X = 3.0; // rate of change limit, units per s

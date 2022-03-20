@@ -373,6 +373,21 @@ public class DriveTrain extends OutliersSubsystem {
         _odometry.resetPosition(position, getHeading());
     }
 
+    public void resetOForTesting(){
+        Translation2d translation = new Translation2d(0.0, 0.0);
+        Rotation2d rotation = new Rotation2d(0);
+        Pose2d pose = new Pose2d(translation, rotation);
+        _odometry.resetPosition(pose, getHeading());
+    }
+
+    public void MaverickRummble(){
+        _oi.rumble();
+    }
+
+    public void stopMaverickRumble(){
+        _oi.stopRummble();
+    }
+
     /** Set all modules to _running = true */
     public void startModules() {
         _northWest.start();

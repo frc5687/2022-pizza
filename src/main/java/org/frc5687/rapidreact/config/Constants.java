@@ -116,8 +116,8 @@ public class Constants {
         public static final double DEADBAND_ROTATION = DriveTuning.DEADBAND_ROTATION;
 
         // Maximum rates of motion
-        public static final double MAX_MPS = DriveTuning.MAX_MPS;
-        public static final double MAX_ANG_VEL = DriveTuning.MAX_ANG_VEL;
+        public static final double MAX_MPS = 1.5;
+        public static final double MAX_ANG_VEL = 2.0;
         public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
         public static final double SLEW_LIMIT_X = DriveTuning.SLEW_LIMIT_X;
         public static final double SLEW_LIMIT_Y = DriveTuning.SLEW_LIMIT_Y;
@@ -323,11 +323,11 @@ public class Constants {
     public static class Maverick{
         //Constants for controling Maverick
         public static short numberOfWaypoints = 2; // Dropped down from four so Maverick doesn't overrun the position
-        public static double[] waypointsX = {12.10, 2.0, 0.0, 0.0};
-        public static double[] waypointsY = {3.67, 1.0, 0.0, 0.0};
-        public static double[] rotations = {2.0, 1.0, 0.0, 0.0};
+        public static double[] waypointsX = {0.5, -0.5, 0.0, 0.0};
+        public static double[] waypointsY = {0.0, 0.0, 0.0, 0.0};
+        public static double[] rotations = {0.0, 0.0, 0.0, 0.0};
         public static double[] tolerences = {0.0, 0.0, 0.0, 0.0};
-        public static double[] speeds = {3.5, 3.5, 3.5, 3.5, 3.5};
+        public static double[] speeds = {1.5, 1.5, 3.5, 3.5, 3.5};
         public static boolean[] afterburner = {false, false, false, false};
     }
 

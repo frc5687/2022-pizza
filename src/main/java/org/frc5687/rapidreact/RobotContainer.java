@@ -23,7 +23,7 @@ import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.subsystems.Maverick;
 import org.frc5687.rapidreact.subsystems.Catapult;
-
+import org.frc5687.rapidreact.commands.Drive;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.OneBallAuto;
 import org.frc5687.rapidreact.commands.auto.Wait;
@@ -93,7 +93,7 @@ public class RobotContainer extends OutliersContainer {
         intake = new Intake(this);
         maverick = new Maverick(this, driveTrain);
 
-        _oi.initializeButtons(this, maverick);
+        _oi.initializeButtons(this, maverick, driveTrain);
 
         // What command to run if nothing else is scheduled for driveTrain
 
@@ -103,6 +103,7 @@ public class RobotContainer extends OutliersContainer {
         _robot.addPeriodic(this::controllerPeriodic, Constants.DifferentialSwerveModule.kDt, 0.005);
 
         _imu.reset();
+        setDefaultCommand(driveTrain, new Drive(driveTrain, _oi));
     }
 
     @Override

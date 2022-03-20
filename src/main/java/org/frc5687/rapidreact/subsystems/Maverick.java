@@ -15,6 +15,7 @@ public class Maverick extends OutliersSubsystem{
     public Maverick(OutliersContainer container, DriveTrain driveTrain){
         super(container);
         _driveTrain = driveTrain;
+        metric("Maverick running", true);
     }
 
     /**
@@ -53,10 +54,10 @@ public class Maverick extends OutliersSubsystem{
     }
     
     public void wayPointMove(){
+        metric("Hello", true);
         //Iterate through all of the waypoints
-        metric("MAVERICK", "Running");
         for(int i = 0; i < Constants.Maverick.numberOfWaypoints; i++){
-            metric("MAVERICK", "At waypoint: " + i);
+            metric("Debug", false);
             //Create translations and rotations based off of the Maverick presets
             Translation2d move = new Translation2d(Constants.Maverick.waypointsX[i], Constants.Maverick.waypointsY[i]);
             Rotation2d rotation = new Rotation2d(Constants.Maverick.rotations[i]);
@@ -66,6 +67,14 @@ public class Maverick extends OutliersSubsystem{
             _driveTrain.poseFollower(destnation, Constants.Maverick.speeds[i]);
         }
         metric("MAVERICK", "Move(s) Complete");
+    }
+
+    public void rumble(){
+        _driveTrain.MaverickRummble();
+    }
+
+    public void stopRumble(){
+        _driveTrain.stopMaverickRumble();
     }
 
     /**

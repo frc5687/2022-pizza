@@ -17,14 +17,13 @@ import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.subsystems.Maverick;
 import org.frc5687.rapidreact.util.Gamepad;
 import org.frc5687.rapidreact.util.OutliersProxy;
+import edu.wpi.first.wpilibj.GenericHID;
 
 import javax.print.attribute.standard.JobHoldUntil;
 
 public class OI extends OutliersProxy {
 
     // Joysticks and gamepads
-    private Joystick _translation;
-    private Joystick _rotation;
     private Gamepad _debug;
 
     // Buttons
@@ -39,10 +38,11 @@ public class OI extends OutliersProxy {
     private JoystickButton _readyToClimb;
     private JoystickButton _stowClimber;
     private JoystickButton _release;
-    private JoystickButton _resetNavX;
     private JoystickButton _shootButton;
 
     private JoystickButton _maverick;
+    private JoystickButton _resetOdometry;
+    private JoystickButton _resetNavx;
 
     private JoystickButton _shootSetpointOne;
     private JoystickButton _shootSetpointTwo;
@@ -53,47 +53,22 @@ public class OI extends OutliersProxy {
     private double xIn = 0;
 
     public OI() {
-        _translation = new Joystick(0);
-        _rotation = new Joystick(1);
+      //  _tran = new Joystick(0);
+
         _debug = new Gamepad(2);
 
-        // debug gamepad
-        //_catapultDebugButton = new JoystickButton(_debug, Gamepad.Buttons.A.getNumber());
-        _preloadButton = new JoystickButton(_debug, Gamepad.Buttons.B.getNumber());
-//        _release = new JoystickButton(_debug, Gamepad.Buttons.X.getNumber());
-        _readyToClimb = new JoystickButton(_debug, Gamepad.Buttons.RIGHT_BUMPER.getNumber());
-        _stowClimber = new JoystickButton(_debug, Gamepad.Buttons.Y.getNumber());
         _maverick = new JoystickButton(_debug, Gamepad.Buttons.A.getNumber());
-
-        // adding buttons while driving: Ben pls look
-
-//        _shootButton = new JoystickButton(_debug, Gamepad.Buttons.Y.getNumber());
-
-        // rotation joystick
-        _intakeButton = new JoystickButton(_rotation, 1);
-        _autoAim = new JoystickButton(_rotation, 2);
-        _deployRetract = new JoystickButton(_rotation, 3);
-
-        // translation joystick
-        _shootButton= new JoystickButton(_translation, 1);
-        _release = new JoystickButton(_translation, 2);
-        _dropArm = new JoystickButton(_translation, 3);
-        _resetNavX = new JoystickButton(_translation, 5);
-
-        // while driving, ben check.
-        _shootSetpointOne = new JoystickButton(_translation, 9);
-        _shootSetpointTwo = new JoystickButton(_translation, 10);
-        _shootSetpointThree = new JoystickButton(_translation, 11);
-
-        _exitKill = new JoystickButton(_translation, 6);
-        _kill = new JoystickButton(_translation, 7);
-
+        _resetOdometry = new JoystickButton(_debug, Gamepad.Buttons.Y.getNumber());
+        _resetNavx = new JoystickButton(_debug, Gamepad.Buttons.RIGHT_BUMPER.getNumber());
         
     }
 
-    public void initializeButtons(RobotContainer robotContainer, Maverick maverick) {
+    public void initializeButtons(RobotContainer robotContainer, Maverick maverick, DriveTrain driveTrain) {
         // driving, Ben check pls.
+        metric("Init buttons", true);
         _maverick.whenHeld(new MaverickMove(maverick));
+        _resetOdometry.whenPressed(driveTrain::resetOForTesting);
+        _resetNavx.whenPressed(driveTrain::resetYaw);
     }
 
     public boolean readyToClimb() { return _readyToClimb.get(); }
@@ -103,12 +78,14 @@ public class OI extends OutliersProxy {
     public boolean releaseArm() { return _release.get(); }
     public boolean intakeDeployRetract() { return _deployRetract.get(); }
     public boolean exitKill() { return _exitKill.get(); }
+
     public boolean kill() { return _kill.get(); }
     public boolean autoAim() { return _autoAim.get(); }
 
     public double getDriveY() {
         //Comment for gamepad control
-        yIn = getSpeedFromAxis(_translation, _translation.getYChannel());
+        //rumble();
+        yIn = getSpeedFromAxis(_debug, _debug.getYChannel());
         // yIn = getSpeedFromAxis(Gamepad, Gamepad.getYChannel());
         yIn = applyDeadband(yIn, 0.2);
 
@@ -119,7 +96,8 @@ public class OI extends OutliersProxy {
 
     public double getDriveX() {
         //Comment for gamepad control
-        xIn = -getSpeedFromAxis(_translation, _translation.getXChannel());
+        //rumble();
+        xIn = -getSpeedFromAxis(_debug, _debug.getXChannel());
         //xIn = -getSpeedFromAxis(Gamepad, Gamepad.getXChannel());
         xIn = applyDeadband(xIn, 0.2);
         double xOut = xIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);
@@ -128,13 +106,24 @@ public class OI extends OutliersProxy {
     }
 
     public double getRotationX() {
-        double speed = -getSpeedFromAxis(_rotation, _rotation.getXChannel());
+        double speed = -getSpeedFromAxis(_debug, Gamepad.Axes.RIGHT_X.getNumber());
         speed = applyDeadband(speed, 0.2);
         return speed;
     }
 
+    public void rumble(){
+        _debug.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+        _debug.setRumble(GenericHID.RumbleType.kRightRumble, 1);
+    }
+
+    public void stopRummble(){
+        _debug.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+        _debug.setRumble(GenericHID.RumbleType.kRightRumble, 0);
+    }
+
     public double getSpringMotorSpeed() {
         double speed = -getSpeedFromAxis(_debug, Gamepad.Axes.LEFT_Y.getNumber());
+
         speed = applyDeadband(speed, 0.2);
         return speed;
     }
