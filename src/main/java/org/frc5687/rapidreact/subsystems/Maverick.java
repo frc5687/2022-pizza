@@ -54,19 +54,7 @@ public class Maverick extends OutliersSubsystem{
     }
     
     public void wayPointMove(){
-        metric("Hello", true);
-        //Iterate through all of the waypoints
-        for(int i = 0; i < Constants.Maverick.numberOfWaypoints; i++){
-            metric("Debug", false);
-            //Create translations and rotations based off of the Maverick presets
-            Translation2d move = new Translation2d(Constants.Maverick.waypointsX[i], Constants.Maverick.waypointsY[i]);
-            Rotation2d rotation = new Rotation2d(Constants.Maverick.rotations[i]);
-            destnation = new Pose2d(move, rotation);
-            //Update the speeds with the realivent Maverick speed
-            //Move the robot
-            _driveTrain.poseFollower(destnation, Constants.Maverick.speeds[i]);
-        }
-        metric("MAVERICK", "Move(s) Complete");
+        
     }
 
     public void rumble(){
