@@ -323,8 +323,8 @@ public class Constants {
     public static class Maverick{
         //Constants for controling Maverick
         public static short numberOfWaypoints = 2; // Dropped down from four so Maverick doesn't overrun the position
-        public static double[] waypointsX = {0.5, -0.5, 0.0, 0.0};
-        public static double[] waypointsY = {0.0, 0.0, 0.0, 0.0};
+        public static double[] waypointsX = {0.0, 0.0, 0.0, 0.0};
+        public static double[] waypointsY = {0.0, 0., 0.0, 0.0};
         public static double[] rotations = {0.0, 0.0, 0.0, 0.0};
         public static double[] tolerences = {0.0, 0.0, 0.0, 0.0};
         public static double[] speeds = {1.5, 1.5, 3.5, 3.5, 3.5};
