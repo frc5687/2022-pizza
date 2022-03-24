@@ -14,13 +14,12 @@ public class MaverickMove extends OutliersCommand{
     @Override
     public void initialize(){
         super.initialize();
-        _maverick.rumble();
+       // _maverick.rumble();
     }
 
     @Override
     public void execute(){
         super.execute();
-        metric("Hello", true);
         _maverick.wayPointMove();
     }
 

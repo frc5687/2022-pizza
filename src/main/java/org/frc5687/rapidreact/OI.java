@@ -41,6 +41,7 @@ public class OI extends OutliersProxy {
     private JoystickButton _shootButton;
 
     private JoystickButton _maverick;
+    private JoystickButton _nextWaypoint;
     private JoystickButton _resetOdometry;
     private JoystickButton _resetNavx;
 
@@ -58,6 +59,7 @@ public class OI extends OutliersProxy {
         _debug = new Gamepad(2);
 
         _maverick = new JoystickButton(_debug, Gamepad.Buttons.A.getNumber());
+        _nextWaypoint = new JoystickButton(_debug, Gamepad.Buttons.B.getNumber());
         _resetOdometry = new JoystickButton(_debug, Gamepad.Buttons.Y.getNumber());
         _resetNavx = new JoystickButton(_debug, Gamepad.Buttons.RIGHT_BUMPER.getNumber());
         
@@ -67,6 +69,7 @@ public class OI extends OutliersProxy {
         // driving, Ben check pls.
         metric("Init buttons", true);
         _maverick.whenHeld(new MaverickMove(maverick));
+        _nextWaypoint.whenPressed(maverick::nextPoint);
         _resetOdometry.whenPressed(driveTrain::resetOForTesting);
         _resetNavx.whenPressed(driveTrain::resetYaw);
     }
@@ -85,7 +88,7 @@ public class OI extends OutliersProxy {
     public double getDriveY() {
         //Comment for gamepad control
         //rumble();
-        yIn = getSpeedFromAxis(_debug, _debug.getYChannel());
+        yIn = getSpeedFromAxis(_debug, Gamepad.Axes.LEFT_Y.getNumber());
         // yIn = getSpeedFromAxis(Gamepad, Gamepad.getYChannel());
         yIn = applyDeadband(yIn, 0.2);
 
@@ -97,7 +100,7 @@ public class OI extends OutliersProxy {
     public double getDriveX() {
         //Comment for gamepad control
         //rumble();
-        xIn = -getSpeedFromAxis(_debug, _debug.getXChannel());
+        xIn = -getSpeedFromAxis(_debug, Gamepad.Axes.LEFT_X.getNumber());
         //xIn = -getSpeedFromAxis(Gamepad, Gamepad.getXChannel());
         xIn = applyDeadband(xIn, 0.2);
         double xOut = xIn / (Math.sqrt(yIn * yIn + (xIn * xIn)) + Constants.EPSILON);

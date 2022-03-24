@@ -11,6 +11,8 @@ public class Maverick extends OutliersSubsystem{
 
     private DriveTrain _driveTrain;
     private Pose2d destnation;
+    private boolean _move = false;
+    public int _wayPointCounter = 0;
     
     public Maverick(OutliersContainer container, DriveTrain driveTrain){
         super(container);
@@ -53,20 +55,17 @@ public class Maverick extends OutliersSubsystem{
         }
     }
     
+    public void nextPoint(){
+        _wayPointCounter++;
+    }
+
     public void wayPointMove(){
-        metric("Hello", true);
         //Iterate through all of the waypoints
-        for(int i = 0; i < Constants.Maverick.numberOfWaypoints; i++){
-            metric("Debug", false);
-            //Create translations and rotations based off of the Maverick presets
-            Translation2d move = new Translation2d(Constants.Maverick.waypointsX[i], Constants.Maverick.waypointsY[i]);
-            Rotation2d rotation = new Rotation2d(Constants.Maverick.rotations[i]);
-            destnation = new Pose2d(move, rotation);
-            //Update the speeds with the realivent Maverick speed
-            //Move the robot
-            _driveTrain.poseFollower(destnation, Constants.Maverick.speeds[i]);
-        }
-        metric("MAVERICK", "Move(s) Complete");
+        metric("point", _wayPointCounter);
+        Translation2d translation = new Translation2d(Constants.Maverick.waypointsX[_wayPointCounter], Constants.Maverick.waypointsY[_wayPointCounter]);
+        Rotation2d rotation = new Rotation2d(Constants.Maverick.rotations[_wayPointCounter]);
+        destnation = new Pose2d(translation, rotation);
+        _driveTrain.poseFollower(destnation, Constants.Maverick.speeds[_wayPointCounter]);
     }
 
     public void rumble(){
@@ -88,6 +87,6 @@ public class Maverick extends OutliersSubsystem{
 
     @Override
     public void updateDashboard() {
-
+        metric("Waypoint", _wayPointCounter);
     }
 }
