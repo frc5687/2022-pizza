@@ -14,7 +14,7 @@ public class MaverickMove extends OutliersCommand{
     @Override
     public void initialize(){
         super.initialize();
-       // _maverick.rumble();
+        _maverick.rumble();
     }
 
     @Override
@@ -32,5 +32,6 @@ public class MaverickMove extends OutliersCommand{
     public void end(boolean interrupted){
         super.end(interrupted);
         _maverick.stopRumble();
+        _maverick.nextPoint();
     }
 }

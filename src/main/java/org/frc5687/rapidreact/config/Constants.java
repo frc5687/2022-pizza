@@ -322,12 +322,12 @@ public class Constants {
      */
     public static class Maverick{
         //Constants for controling Maverick
-        public static short TOTAL_NUMB_OF_WAYPOINTS = 2; // Dropped down from four so Maverick doesn't overrun the position
-        public static double[] waypointsX = {0.0, 1.0, 0.0, 0.0};
-        public static double[] waypointsY = {0.0, 0.0, 0.0, 0.0};
+        public static short TOTAL_NUMB_OF_WAYPOINTS = 1; // Dropped down from four so Maverick doesn't overrun the position
+        public static double[] waypointsX = {1.0, -1.0, 0.0, 0.0};
+        public static double[] waypointsY = {1.0, -1.0, 0.0, 0.0};
         public static double[] rotations = {0.0, 0.0, 0.0, 0.0};
         public static double[] tolerences = {0.0, 0.0, 0.0, 0.0};
-        public static double[] speeds = {1.5, 1.5, 3.5, 3.5, 3.5};
+        public static double[] speeds = {1.5, 1.5, 1.5, 3.5, 3.5};
         public static boolean[] afterburner = {false, false, false, false};
     }
 

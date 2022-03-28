@@ -92,6 +92,7 @@ public class RobotContainer extends OutliersContainer {
         indexer = new Indexer(this);
         intake = new Intake(this);
         maverick = new Maverick(this, driveTrain);
+        maverick.stopRumble();
 
         _oi.initializeButtons(this, maverick, driveTrain);
 
@@ -316,5 +317,7 @@ public class RobotContainer extends OutliersContainer {
         if (autoMode != null) {
             metric("Auto Mode", autoMode.name());
         }
+
+        maverick.updateDashboard();
     }
 }
