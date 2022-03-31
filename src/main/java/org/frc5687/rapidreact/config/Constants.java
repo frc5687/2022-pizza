@@ -116,8 +116,8 @@ public class Constants {
         public static final double DEADBAND_ROTATION = DriveTuning.DEADBAND_ROTATION;
 
         // Maximum rates of motion
-        public static final double MAX_MPS = 1.5;
-        public static final double MAX_ANG_VEL = 2.0;
+        public static final double MAX_MPS = 2.5;
+        public static final double MAX_ANG_VEL = 2.5;
         public static final double MAX_MPSS = DriveTuning.MAX_MPSS;
         public static final double SLEW_LIMIT_X = DriveTuning.SLEW_LIMIT_X;
         public static final double SLEW_LIMIT_Y = DriveTuning.SLEW_LIMIT_Y;
