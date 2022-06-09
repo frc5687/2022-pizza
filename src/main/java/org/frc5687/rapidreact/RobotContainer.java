@@ -1,6 +1,9 @@
 /* Team 5687 (C)2021 */
 package org.frc5687.rapidreact;
 
+import java.io.IOException;
+import java.net.SocketException;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.frc5687.rapidreact.config.Constants;
 
 import org.frc5687.rapidreact.util.AutoChooser;
+import org.frc5687.rapidreact.util.JetsonProxy;
 import org.frc5687.rapidreact.util.OutliersContainer;
 
 import org.frc5687.rapidreact.subsystems.OutliersSubsystem;
@@ -23,6 +27,7 @@ import org.frc5687.rapidreact.subsystems.Indexer;
 import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.subsystems.Maverick;
 import org.frc5687.rapidreact.subsystems.Catapult;
+import org.frc5687.rapidreact.subsystems.DiffIntake;
 import org.frc5687.rapidreact.commands.Drive;
 import org.frc5687.rapidreact.commands.OutliersCommand;
 import org.frc5687.rapidreact.commands.auto.OneBallAuto;
@@ -54,6 +59,10 @@ public class RobotContainer extends OutliersContainer {
     public Intake intake;
     public Maverick maverick;
 
+    private DiffIntake diffIntake;
+
+    private JetsonProxy _proxy;
+
     /** Create RobotContainer 
      * 
      * @param robot this robot
@@ -65,9 +74,7 @@ public class RobotContainer extends OutliersContainer {
     }
 
     // Initialization methods
-
-    /** Run once when robot code starts. */
-    public void init() {
+    public void init(){
         info("Running RobotContainer.init()");
 
         // Display starting position value
@@ -85,6 +92,10 @@ public class RobotContainer extends OutliersContainer {
 
         _oi = new OI();
         _imu = new AHRS(SPI.Port.kMXP, (byte) 200); //Config the NavX
+        _proxy = new JetsonProxy();
+        _proxy.run();
+
+        diffIntake = new DiffIntake(this);
 
         // Create subsystems
         driveTrain = new DriveTrain(this, _oi, _imu);
@@ -94,7 +105,7 @@ public class RobotContainer extends OutliersContainer {
         maverick = new Maverick(this, driveTrain);
         maverick.stopRumble();
 
-        _oi.initializeButtons(this, maverick, driveTrain);
+        _oi.initializeButtons(this, maverick, driveTrain, diffIntake);
 
         // What command to run if nothing else is scheduled for driveTrain
 

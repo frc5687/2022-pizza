@@ -10,8 +10,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import org.frc5687.rapidreact.commands.Backward;
+import org.frc5687.rapidreact.commands.Forward;
 import org.frc5687.rapidreact.commands.MaverickMove;
 import org.frc5687.rapidreact.config.Constants;
+import org.frc5687.rapidreact.subsystems.DiffIntake;
 import org.frc5687.rapidreact.subsystems.DriveTrain;
 import org.frc5687.rapidreact.subsystems.Intake;
 import org.frc5687.rapidreact.subsystems.Maverick;
@@ -25,6 +28,7 @@ public class OI extends OutliersProxy {
 
     // Joysticks and gamepads
     private Gamepad _debug;
+    private Joystick _joy;
 
     // Buttons
     private JoystickButton _autoAim;
@@ -45,6 +49,9 @@ public class OI extends OutliersProxy {
     private JoystickButton _resetOdometry;
     private JoystickButton _resetNavx;
 
+    private JoystickButton forward;
+    private JoystickButton backward;
+
     private JoystickButton _shootSetpointOne;
     private JoystickButton _shootSetpointTwo;
     private JoystickButton _shootSetpointThree;
@@ -54,10 +61,11 @@ public class OI extends OutliersProxy {
     private double xIn = 0;
 
     public OI() {
-      //  _tran = new Joystick(0);
+        _joy = new Joystick(1);
+        _debug = new Gamepad(0);
 
-        _debug = new Gamepad(2);
-
+        forward = new JoystickButton(_joy, 5);
+        backward = new JoystickButton(_joy, 6);
         _maverick = new JoystickButton(_debug, Gamepad.Buttons.A.getNumber());
         _nextWaypoint = new JoystickButton(_debug, Gamepad.Buttons.B.getNumber());
         _resetOdometry = new JoystickButton(_debug, Gamepad.Buttons.Y.getNumber());
@@ -65,10 +73,12 @@ public class OI extends OutliersProxy {
         
     }
 
-    public void initializeButtons(RobotContainer robotContainer, Maverick maverick, DriveTrain driveTrain) {
+    public void initializeButtons(RobotContainer robotContainer, Maverick maverick, DriveTrain driveTrain, DiffIntake diffIntake) {
         // driving, Ben check pls.
         metric("Init buttons", true);
-        _maverick.whenHeld(new MaverickMove(maverick));
+
+        forward.whenHeld(new Forward(diffIntake));
+        backward.whenHeld(new Backward(diffIntake));
         _nextWaypoint.whenPressed(maverick::nextPoint);
         _resetOdometry.whenPressed(driveTrain::resetOForTesting);
         _resetNavx.whenPressed(driveTrain::resetYaw);

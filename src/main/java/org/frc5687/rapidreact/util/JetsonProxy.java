@@ -14,30 +14,43 @@ public class JetsonProxy {
     private byte[] buf = new byte[256];
     DatagramPacket packet;
 
-    public JetsonProxy() throws SocketException{
-        socket = new DatagramSocket(5687);
+    public JetsonProxy(){
+        try {
+            socket = new DatagramSocket(5687);
+            SmartDashboard.putString("Starting jetson proxy", "started");
+        } catch (SocketException e) {
+            e.printStackTrace();
+            SmartDashboard.putString("Socket", e.toString());
+        }
     }
 
-    public void run() throws IOException {
-        running = true;
-
-        while (running) {
-            packet = new DatagramPacket(buf, buf.length);
-            socket.receive(packet);
-            
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
-            packet = new DatagramPacket(buf, buf.length, address, port);
-            String received 
-              = new String(packet.getData(), 0, packet.getLength());
-            SmartDashboard.putString("Packet", received);
-            
-            if (received.equals("end")) {
-                running = false;
-                continue;
+    public void run(){
+        new Thread(() -> {
+            try{
+                running = true;
+                while (running) {
+                    SmartDashboard.putString("Listening", "true");
+                    packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    InetAddress address = packet.getAddress();
+                    int port = packet.getPort();
+                    packet = new DatagramPacket(buf, buf.length, address, port);
+                    String received = new String(packet.getData(), 0, packet.getLength());
+                    SmartDashboard.putString("Packet", received);
+                    
+                    if (received.equals("end")) {
+                        running = false;
+                        continue;
+                    }
+                }
+                socket.close();
+            } catch (IOException e) {
+                SmartDashboard.putString("mke", "ionr");
+                e.printStackTrace();
             }
-            socket.send(packet);
-        }
-        socket.close();
+            finally{
+                SmartDashboard.putString("Debug2", "Debug2");
+            }
+        }).start();
     }
 }
